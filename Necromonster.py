@@ -7,6 +7,7 @@ pygame.init()
 
 class Necro():
 	def __init__(self):
+		# initiate the clock and screen
 		self.clock = pygame.time.Clock()
 		self.last_tick = pygame.time.get_ticks()
 		self.screen = pygame.display.set_mode([900, 650], 0, 32)
@@ -16,6 +17,7 @@ class Necro():
 		self.player_face = 'back' # this is the part of the player that you see
 		self.player_state = 1.
 
+		# load all images
 		self.bg = pygame.image.load('rec/map/tower.png').convert()
 		self.player = pygame.image.load('rec/char/front1.png')
 
@@ -23,6 +25,7 @@ class Necro():
 			self.Loop()
 
 	def Loop(self):
+		# main game loop
 		self.eventLoop()
 		if pygame.time.get_ticks() - self.last_tick > 20:
 			self.Tick()
@@ -30,6 +33,7 @@ class Necro():
 		pygame.display.update()
 
 	def eventLoop(self):
+		# the main event loop, detects keypresses
 		for event in pygame.event.get():
 			if event.type == QUIT:
 				sys.exit()
