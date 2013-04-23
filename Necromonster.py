@@ -51,18 +51,22 @@ class Necro():
 		if 1 in keys_pressed:
 			if keys_pressed[K_w]:
 				self.player_l[1] += -2
+				self.player_r.y += -2
 				if self.player_r.colliderect(self.tower_r): self.player_l[1] -= -2
 				self.player_face = 'back'
 			if keys_pressed[K_a]:
 				self.player_l[0] += -2
+				self.player_r.x += -2
 				if self.player_r.colliderect(self.tower_r): self.player_l[0] -= -2
 				self.player_face = 'left'
 			if keys_pressed[K_s]:
 				self.player_l[1] += 2
+				self.player_r.y += 2
 				if self.player_r.colliderect(self.tower_r): self.player_l[1] -= 2
 				self.player_face = 'front'
 			if keys_pressed[K_d]:
 				self.player_l[0] += 2
+				self.player_r.x += 2
 				if self.player_r.colliderect(self.tower_r): self.player_l[0] -= 2
 				self.player_face = 'right'
 
