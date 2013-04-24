@@ -1,0 +1,1 @@
+colliderect function is incredibly cheap
