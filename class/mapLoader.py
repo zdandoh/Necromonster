@@ -30,6 +30,6 @@ def load(map_name, game):
 		game.solid_list.append(game.screen.blit(load_result, pos_dict[fi]))
 	surfaces.append('player')
 	# load all buildings
-	for fi in os.listdir(main_direc + 'build\\'):
-		surfaces.append([imageload(main_direc + 'build\\' + fi).convert_alpha(), pos_dict[fi], 3])
+	for fi in os.listdir(main_direc + 'buildings\\'):
+		surfaces.append([imageload(main_direc + 'buildings\\' + fi).convert_alpha(), pos_dict[fi], 3])
 	return surfaces
