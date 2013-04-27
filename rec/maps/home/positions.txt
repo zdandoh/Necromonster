@@ -1,0 +1,5 @@
+# POSITION RULES:
+# NO TWO FILES CAN HAVE SAME NAME
+
+tower.png:[440, 264]
+tower_solid.png:[445, 384]
