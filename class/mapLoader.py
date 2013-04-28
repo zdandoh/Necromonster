@@ -19,6 +19,8 @@ def load(map_name, game):
 			pass
 		elif line.startswith('#'):
 			pass
+		elif 'SET_PLAYER' in line:
+			game.Player.setPos(eval(line.split(':')[1]))
 		else:
 			ln = line.split(':')
 			pos_dict[ln[0]] = eval(ln[1]) # this is very dangerous. get less lazy and remove.
@@ -26,6 +28,8 @@ def load(map_name, game):
 	for fi in os.listdir(main_direc + 'solids\\'):
 		ident = random.randrange(1, 500000)
 		load_result = imageload(main_direc + 'solids\\' + fi).convert_alpha()
+		if game.DEBUG:
+			load_result.fill((255, 0, 0))
 		surfaces.append([load_result, pos_dict[fi], 'solid']) # the list format of a solid: [surface, position, type identifier]
 		game.solid_list.append(game.screen.blit(load_result, pos_dict[fi]))
 	surfaces.append('player')

@@ -70,6 +70,7 @@ class Necro():
 		self.clock = pygame.time.Clock()
 		self.last_tick = pygame.time.get_ticks()
 		self.screen = pygame.display.set_mode([900, 650], 0, 32)
+		self.DEBUG = 0
 
 		# get the map that you are on
 		self.blit_list = mapLoader.load('home', self)
