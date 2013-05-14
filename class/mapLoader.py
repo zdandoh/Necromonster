@@ -10,7 +10,7 @@ def load(map_name, game):
 	main_direc = '\\'.join(l) + '\\rec\\maps\\%s\\' % map_name
 	
 	# load bg
-	surfaces.append([imageload(main_direc + 'bg.png').convert(), [0, 0], 1])
+	surfaces.append([imageload(main_direc + 'bg.png').convert_alpha(), [0, 0], 1])
 	# get dict from positions.txt
 	pos_dict = {}
 	positions = open(main_direc + 'positions.txt', 'r').read()

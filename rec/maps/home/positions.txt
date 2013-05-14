@@ -4,4 +4,4 @@
 # SET_PLAYER:[X, Y]
 
 tower.png:[440, 264]
-tower_solid.png:[450, 384]
+tower_solid.png:[450, 387]
