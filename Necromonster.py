@@ -112,14 +112,9 @@ class Necro():
 
     def Draw(self):
         self.screen.fill((0, 0, 0))
-        solid_count = 0
         for surf in self.blit_list:
             if 'player' in surf:
                 self.Player.blitPlayer()
-            elif 'solid' in surf:
-                # I removed 'self.solid_list[solid_count] = ' here, not really sure what it was for.
-                self.screen.blit(surf[0], self.off(surf[1]))
-                solid_count += 1
             else:
                 self.screen.blit(surf[0], self.off(surf[1]))
 
