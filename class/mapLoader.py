@@ -7,10 +7,9 @@ def load(map_name, game, new_pos = 0, face = 0):
     surfaces = []
     game.links = []
     game.solid_list = []
-    l = os.path.abspath(__file__).split('\\')
+    l = os.path.abspath(__file__).replace('\\', '/').split('/')
     l.pop()
-    l.pop()
-    main_direc = 'rec\\maps\\%s\\' % map_name
+    main_direc = 'rec/maps/%s/' % map_name.replace('\\', '/')
 
     if new_pos:
         game.Player.setPos(literal_eval(new_pos))
@@ -41,6 +40,6 @@ def load(map_name, game, new_pos = 0, face = 0):
     # load all buildings
     tile = imageload(main_direc + 'tile.png').convert()
     game.tile = [tile, tile.get_size()]
-    for fi in os.listdir(main_direc + 'buildings\\'):
-        surfaces.append([imageload(main_direc + 'buildings\\' + fi).convert_alpha(), pos_dict[fi], 3])
+    for fi in os.listdir(main_direc + 'buildings/'):
+        surfaces.append([imageload(main_direc + 'buildings/' + fi).convert_alpha(), pos_dict[fi], 3])
     return surfaces
