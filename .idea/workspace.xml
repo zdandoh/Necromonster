@@ -7,7 +7,7 @@
     <file path="/Dummy.txt" changelist="cef73d62-1cab-4426-bf92-44e79d331702" time="1368941978806" ignored="false" />
     <file path="/positions.txt" changelist="cef73d62-1cab-4426-bf92-44e79d331702" time="1369277933718" ignored="false" />
     <file path="/editor.py" changelist="cef73d62-1cab-4426-bf92-44e79d331702" time="1369372149974" ignored="false" />
-    <file path="/Necromonster.py" changelist="cef73d62-1cab-4426-bf92-44e79d331702" time="1369369960187" ignored="false" />
+    <file path="/Necromonster.py" changelist="cef73d62-1cab-4426-bf92-44e79d331702" time="1369425572065" ignored="false" />
     <file path="/Python Console" changelist="cef73d62-1cab-4426-bf92-44e79d331702" time="1368944791301" ignored="false" />
     <file path="/a.py" changelist="cef73d62-1cab-4426-bf92-44e79d331702" time="1368944893227" ignored="false" />
     <file path="/mapLoader.py" changelist="cef73d62-1cab-4426-bf92-44e79d331702" time="1369372136670" ignored="false" />
@@ -38,7 +38,7 @@
       <file leaf-file-name="Necromonster.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Necromonster.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="133" column="13" selection-start="4338" selection-end="4338" vertical-scroll-proportion="0.5844327">
+            <state line="57" column="47" selection-start="1963" selection-end="1963" vertical-scroll-proportion="-0.33552632">
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -58,7 +58,7 @@
       <file leaf-file-name="mapLoader.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/class/mapLoader.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="41" column="55" selection-start="1286" selection-end="1286" vertical-scroll-proportion="-22.52">
+            <state line="22" column="26" selection-start="591" selection-end="591" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -92,9 +92,9 @@
     <option name="changedFiles">
       <list>
         <option value="$PROJECT_DIR$/rec/maps/home/positions.txt" />
-        <option value="$PROJECT_DIR$/Necromonster.py" />
         <option value="$PROJECT_DIR$/class/mapLoader.py" />
         <option value="$PROJECT_DIR$/mapeditor/editor.py" />
+        <option value="$PROJECT_DIR$/Necromonster.py" />
       </list>
     </option>
   </component>
@@ -232,11 +232,11 @@
   <component name="PropertiesComponent">
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="options.lastSelected" value="com.jetbrains.python.configuration.PythonSdkConfigurable" />
     <property name="recentsLimit" value="5" />
+    <property name="options.lastSelected" value="com.jetbrains.python.configuration.PythonSdkConfigurable" />
     <property name="FullScreen" value="false" />
-    <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.searchVisible" value="true" />
+    <property name="options.splitter.details.proportions" value="0.2" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -390,11 +390,11 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32942432" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32977587" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.26414087" sideWeight="0.8740245" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2673426" sideWeight="0.8743048" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.19680852" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.12597547" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.12569521" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32942432" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -468,6 +468,20 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/rec/maps/home/positions.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="4" column="24" selection-start="105" selection-end="105" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/class/mapLoader.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="41" column="55" selection-start="1286" selection-end="1286" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/mapeditor/editor.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="60" column="4" selection-start="2081" selection-end="2081" vertical-scroll-proportion="0.0">
@@ -540,9 +554,9 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/class/mapLoader.py">
+    <entry file="file://$PROJECT_DIR$/rec/maps/home/positions.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="41" column="55" selection-start="1286" selection-end="1286" vertical-scroll-proportion="-22.52">
+        <state line="4" column="24" selection-start="105" selection-end="105" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -554,16 +568,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/rec/maps/home/positions.txt">
+    <entry file="file://$PROJECT_DIR$/class/mapLoader.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="24" selection-start="105" selection-end="105" vertical-scroll-proportion="0.0">
+        <state line="22" column="26" selection-start="591" selection-end="591" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Necromonster.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="133" column="13" selection-start="4338" selection-end="4338" vertical-scroll-proportion="0.5844327">
+        <state line="57" column="47" selection-start="1963" selection-end="1963" vertical-scroll-proportion="-0.33552632">
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>

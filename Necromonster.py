@@ -40,7 +40,7 @@ class Player():
                 self.onMove(0, 2)
                 self.player_face = 'right'
 
-            self.player_state += 0.3
+            self.player_state += 0.15
             if self.player_state >= 4:
                 self.player_state = 1
             self.player = pygame.image.load('rec/char/%s%s.png' % (self.player_face, int(self.player_state)))
