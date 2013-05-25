@@ -94,7 +94,7 @@ class Necro():
         self.default_font = pygame.font.SysFont(None, 20)
 
         # get the map that you are on
-        self.blit_list = mapLoader.load('home', self)
+        self.blit_list = mapLoader.load('inside', self)
 
         while 1:
             self.Loop()
@@ -122,6 +122,7 @@ class Necro():
         self.last_tick = pygame.time.get_ticks()
 
     def off(self, coords):
+        newx = coords[0] - self.Player.player_r.x + 450
         newx = coords[0] - self.Player.player_r.x + 450
         newy = coords[1] - self.Player.player_r.y + 325
         return [newx, newy]

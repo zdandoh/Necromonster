@@ -79,7 +79,7 @@ class Editor():
 
 ''')
         for index, item in enumerate(self.surface_list):
-            posfi.write('SURFACE:%s:%s\n' % (self.surface_paths[index], item[1]))
+            posfi.write('SURFACE:%s:%s:ground%s\n' % (self.surface_paths[index], item[1], item[2]))
         for index, hitbox in enumerate(self.hitbox_list):
             send_tuple = str(tuple(hitbox[0]) + tuple([hitbox[1][0] - hitbox[0][0], hitbox[1][1] - hitbox[0][1]]))
             posfi.write('SOLID:%s\n' % send_tuple)
@@ -98,8 +98,9 @@ class Editor():
                     img = inputbox.ask(self.screen, 'Path to image')
                     self.surface_paths.append(img)
                     if os.path.exists(img):
+                        ground = inputbox.ask(self.screen, 'Back or fore (1 / 2)')
                         img = pygame.image.load(img).convert_alpha()
-                        self.surface_list.append([img, [0, 0]])
+                        self.surface_list.append([img, [0, 0], ground])
                     else:
                         pass
                 elif event.key == K_e:

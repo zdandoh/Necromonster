@@ -1,0 +1,5 @@
+#INFO:
+#LINK:(RECT):NEWMAP:PLAYERFACE:PLAYERCOORDS
+
+SURFACE:towerinside.png:[0, 0]:ground1
+LINK:(411, 519, 87, 30):home:[200, 200]:front

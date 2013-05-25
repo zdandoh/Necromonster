@@ -16,7 +16,8 @@ Features:
 Controls:
 
 - Press b to load a background image, this should be done first
-- Press a to add surfaces
+- Press a to add surfaces. Enter 1 for a background image (player will be drawn on top). Enter 2 for a foreground image (player will be drawn under).
 - Press m while hovering over a surface to move it. Press m again to place.
 - Press h to start drawing a new hitbox. Press h again to complete it.
+- Press l to start drawing a new link. Press l again to complete it.
 - Press e to export the map.
