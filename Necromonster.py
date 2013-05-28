@@ -18,8 +18,8 @@ class Player():
         self.player_state = 1.
         self.player_r = self.player.get_rect()
 
-        self.player_r.x = 50
-        self.player_r.y = 50
+        self.player_r.x = 450
+        self.player_r.y = 528
 
     def update(self):
         if 1 in self.game.keys_pressed:
@@ -94,7 +94,7 @@ class Necro():
         self.default_font = pygame.font.SysFont(None, 20)
 
         # get the map that you are on
-        self.blit_list = mapLoader.load('inside', self)
+        self.blit_list = mapLoader.load('home', self)
 
         while 1:
             self.Loop()
@@ -123,7 +123,6 @@ class Necro():
 
     def off(self, coords):
         newx = coords[0] - self.Player.player_r.x + 450
-        newx = coords[0] - self.Player.player_r.x + 450
         newy = coords[1] - self.Player.player_r.y + 325
         return [newx, newy]
 
@@ -144,6 +143,7 @@ class Necro():
             else:
                 self.screen.blit(surf[0], self.off(surf[1]))
         if self.DEBUG:
-            self.screen.blit(self.default_font.render(str(self.clock.get_fps()), True, (255, 255, 255)), [0, 0])
+            self.screen.blit(self.default_font.render(str(round(self.clock.get_fps())), True, (255, 255, 255)), [0, 0])
+            self.screen.blit(self.default_font.render(str('%s, %s' % (self.Player.player_r.x, self.Player.player_r.y)), True, (255, 255, 255)), [0, 12])
 
 Necro()

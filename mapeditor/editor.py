@@ -18,14 +18,27 @@ class Editor():
         self.surface_paths = []
         self.hitbox_list = []
         self.link_list = []
+        self.movebox = [0, 0]
         self.screen = pygame.display.set_mode((900, 650), 1, 32)
 
         self.font = pygame.font.SysFont(None, 20)
 
         while 1:
             self.eventLoop()
+            self.Tick()
             self.Draw()
 
+    def Tick(self):
+        self.keys_pressed = pygame.key.get_pressed()
+        if 1 in self.keys_pressed:
+            if self.keys_pressed[K_UP]:
+                self.movebox[1] += -1
+            if self.keys_pressed[K_LEFT]:
+                self.movebox[0] += -1
+            if self.keys_pressed[K_DOWN]:
+                self.movebox[1] += 1
+            if self.keys_pressed[K_RIGHT]:
+                self.movebox[0] += 1
 
     def Draw(self):
         self.screen.fill((0, 0, 0))
@@ -42,11 +55,14 @@ class Editor():
         if self.moving:
             self.screen.blit(self.surface_list[self.moving - 1][0], pygame.mouse.get_pos())
         for item in self.hitbox_list:
-            pygame.draw.rect(self.screen, (255, 0, 0), pygame.Rect(item[0][0], item[0][1], item[1][0] - item[0][0], item[1][1] - item[0][1]), 3)
+            rectloc = [item[0][0], item[0][1]]
+            rectexten = [item[1][0] - item[0][0], item[1][1] - item[0][1]]
+            pygame.draw.rect(self.screen, (255, 0, 0), pygame.Rect(rectloc, rectexten), 3)
         for item in self.link_list:
             pygame.draw.rect(self.screen, (0, 0, 255), pygame.Rect(item[0][0], item[0][1], item[1][0] - item[0][0], item[1][1] - item[0][1]), 3)
         coords = self.font.render(str(pygame.mouse.get_pos()), True, (255, 255, 255))
         self.screen.blit(coords, (0, 0))
+        pygame.draw.circle(self.screen, (0, 255, 0), self.off([0, 0]), 10)
 
         pygame.display.update()
 
@@ -125,6 +141,7 @@ class Editor():
                                 self.moving = index + 1
                 elif event.key == K_h:
                     if self.hitbox:
+                        print self.hitbox, pygame.mouse.get_pos()
                         self.hitbox_list.append([list(self.hitbox), pygame.mouse.get_pos()])
                         self.hitbox = 0
                     else:
@@ -139,5 +156,10 @@ class Editor():
                         self.link = 0
                     else:
                         self.link = pygame.mouse.get_pos()
+
+    def off(self, coords):
+        newx = coords[0] - self.movebox[0]
+        newy = coords[1] - self.movebox[1]
+        return [newx, newy]
 
 Editor()

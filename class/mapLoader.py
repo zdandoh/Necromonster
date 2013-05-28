@@ -29,13 +29,13 @@ def load(map_name, game, new_pos = 0, face = 0):
             game.links.append(line_bits)
             game.solid_list.append('LINK')
         elif 'SET_PLAYER' in line:
-            game.Player.setPos(eval(line.split(':')[1]))
+            game.Player.setPos(literal_eval(line.split(':')[1]))
         elif 'SURFACE' in line:
             ln = line.split(':')
             pos_dict[ln[1]] = ln
         elif 'SOLID' in line:
             ln = line.split(':')
-            game.solid_list.append(rect.Rect(eval(ln[1])))
+            game.solid_list.append(rect.Rect(literal_eval(ln[1])))
     # load all buildings
     tile = imageload(main_direc + 'tile.png').convert()
     game.tile = [tile, tile.get_size()]

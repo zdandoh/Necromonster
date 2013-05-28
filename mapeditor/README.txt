@@ -6,6 +6,9 @@ Keep all images that you want to use inside the
 directory where the main editor script is stored, full paths can be typed,
 but these may cause errors on export.
 
+All bounding boxes (links, hitboxes) MUST be drawn from the top left corner
+to the bottom right corner. Oddness will ensue if you don't. (Will fix eventually.)
+
 Features:
 
 - loading textures

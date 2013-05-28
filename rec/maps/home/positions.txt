@@ -3,4 +3,4 @@
 
 SURFACE:tower.png:[390, 104]:ground2
 SOLID:(410, 353, 114, 51)
-LINK:(474, 406, -14, -32):inside:[50, 50]:back
+LINK:(474, 406, -14, -32):inside:[432, 464]:back
