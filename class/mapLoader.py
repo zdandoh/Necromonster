@@ -1,7 +1,4 @@
-from pygame.image import load as imageload
-from pygame import rect
-from ast import literal_eval
-import os
+from globals import *
 
 def load(map_name, game, new_pos = 0, face = 0):
     surfaces = []
@@ -35,15 +32,15 @@ def load(map_name, game, new_pos = 0, face = 0):
             pos_dict[ln[1]] = ln
         elif 'SOLID' in line:
             ln = line.split(':')
-            game.solid_list.append(rect.Rect(literal_eval(ln[1])))
+            game.solid_list.append(pygame.rect.Rect(literal_eval(ln[1])))
     # load all buildings
-    tile = imageload(main_direc + 'tile.png').convert()
+    tile = pygame.image.load(main_direc + 'tile.png').convert()
     game.tile = [tile, tile.get_size()]
     for time in [1, 2]:
         for index, fi in enumerate(os.listdir(main_direc + 'buildings/')):
             if pos_dict[fi][3] == 'ground%s' % time:
                 print pos_dict[fi][1]
-                surfaces.append([imageload(main_direc + 'buildings/' + fi).convert_alpha(), literal_eval(pos_dict[fi][2]), 3])
+                surfaces.append([pygame.image.load(main_direc + 'buildings/' + fi).convert_alpha(), literal_eval(pos_dict[fi][2]), 3])
         if time == 1:
             surfaces.append('player')
     return surfaces

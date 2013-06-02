@@ -144,7 +144,7 @@ bin
 var
 sdist
 develop-eggs
-.idea
+idea
 .installed.cfg
 
 # Installer logs
