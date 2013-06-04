@@ -39,8 +39,8 @@ def load(map_name, game, new_pos = 0, face = 0):
     for time in [1, 2]:
         for index, fi in enumerate(os.listdir(main_direc + 'buildings/')):
             if pos_dict[fi][3] == 'ground%s' % time:
-                print pos_dict[fi][1]
                 surfaces.append([pygame.image.load(main_direc + 'buildings/' + fi).convert_alpha(), literal_eval(pos_dict[fi][2]), 3])
         if time == 1:
             surfaces.append('player')
+    game.ItemHandler.clear()
     return surfaces

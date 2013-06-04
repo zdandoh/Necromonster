@@ -1,12 +1,19 @@
 import sys
+import os
 sys.path.append('class')
 
 from globals import *
-from player import *
+from player import Player
+from items import Item
+from inventory import Invent
 
 class Necro():
     def __init__(self):
+        self.main_path = os.getcwd()
+        #Init custom game classes
         self.Player = Player(self)
+        self.ItemHandler = Item(self)
+        self.Invent = Invent(self)
         # initiate the clock and screen
         self.clock = pygame.time.Clock()
         self.last_tick = pygame.time.get_ticks()
@@ -14,11 +21,14 @@ class Necro():
         self.screen = pygame.display.set_mode(self.screen_res, 0, 32)
         self.DEBUG = 1
 
-        # load fonts
+        # load fonts, create font list
+        self.text_list = []
         self.default_font = pygame.font.SysFont(None, 20)
 
         # get the map that you are on
         self.blit_list = mapLoader.load('home', self)
+
+        self.ItemHandler.add('Iron Ingot', [200, 200], 0)
 
         while 1:
             self.Loop()
@@ -42,6 +52,10 @@ class Necro():
         self.keys_pressed = pygame.key.get_pressed()
         self.clock.tick()
         self.Player.update()
+        self.ItemHandler.update()
+        for index, text in enumerate(self.text_list):
+            if text[2] < time():
+                self.text_list.pop(index)
 
         self.last_tick = pygame.time.get_ticks()
 
@@ -61,11 +75,13 @@ class Necro():
             for i in xrange(self.screen_res[0] / tile_width + 3):
                 self.screen.blit(self.tile[0], [i * tile_width - tile_width - tile_extrax, y - tile_height - tile_extray])
             y += self.tile[1][1]
-        for surf in self.blit_list:
+        for surf in self.blit_list + self.ItemHandler.blitItems():
             if 'player' in surf:
                 self.Player.blitPlayer()
             else:
                 self.screen.blit(surf[0], self.off(surf[1]))
+        for text in self.text_list:
+            self.screen.blit(text[0], text[1])
         if self.DEBUG:
             self.screen.blit(self.default_font.render(str(round(self.clock.get_fps())), True, (255, 255, 255)), [0, 0])
             self.screen.blit(self.default_font.render(str('%s, %s' % (self.Player.player_r.x, self.Player.player_r.y)), True, (255, 255, 255)), [0, 12])

@@ -3,10 +3,12 @@ from globals import *
 class Player():
     def __init__(self, game):
         self.game = game
-        self.player = pygame.image.load('rec/char/back1.png')
+        self.player = pygame.image.load('rec\\char\\back1.png')
+        self.head_font = pygame.font.Font('rec\\font\\p_head.ttf', 15)
         self.player_face = 'back'  # this is the part of the player that you see
         self.player_state = 1.
-        self.player_r = self.player.get_bounding_rect()
+        self.player_r = self.player.get_rect()
+        self.player_dims = self.player.get_size()
 
         self.player_r.x = 450
         self.player_r.y = 528
@@ -47,7 +49,6 @@ class Player():
                 link_active = 1
             if self.player_r.colliderect(rect):
                 if link_active:
-                    print 'Link triggered'
                     self.game.blit_list = mapLoader.load(link[2], self.game, new_pos = link[3], face = link[4])
                 else:
                     if pos:
@@ -55,9 +56,16 @@ class Player():
                     elif not pos:
                         self.player_r.x -= offset
 
+    def headDraw(self, text, dur=3):
+        font_render = self.head_font.render(text, True, (255, 255, 255))
+        self.game.text_list.append([font_render, self.game.off([self.player_r.x - (self.player_dims[0] / 2), self.player_r.y - 25]), time() + dur])
+
     def addPos(self, move):
         self.player_r.x += move[0]
         self.player_r.y += move[1]
+
+    def collides(self, rect):
+        return self.player_r.colliderect(rect)
 
     def setPos(self, new):
         self.player_r.x = new[0]
