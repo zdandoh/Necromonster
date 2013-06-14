@@ -7,6 +7,7 @@ class Player():
         self.head_font = pygame.font.Font('rec\\font\\p_head.ttf', 15)
         self.player_face = 'back'  # this is the part of the player that you see
         self.player_state = 1.
+        self.head_drawn = 0
         self.player_r = self.player.get_rect()
         self.player_dims = self.player.get_size()
 
@@ -58,7 +59,7 @@ class Player():
 
     def headDraw(self, text, dur=3):
         font_render = self.head_font.render(text, True, (255, 255, 255))
-        self.game.text_list.append([font_render, self.game.off([self.player_r.x - (self.player_dims[0] / 2), self.player_r.y - 25]), time() + dur])
+        self.head_drawn = [font_render, self.game.off([self.player_r.x - (self.player_dims[0] / 2), self.player_r.y - 25]), time() + dur]
 
     def addPos(self, move):
         self.player_r.x += move[0]
@@ -75,4 +76,9 @@ class Player():
         self.player_face = pygame.image.load('rec/char/%s%s.png' % (face, state))
 
     def blitPlayer(self):
+        if self.head_drawn:
+            if self.head_drawn[2] < time():
+                self.head_drawn = 0
+            else:
+                self.game.screen.blit(self.head_drawn[0], self.head_drawn[1])
         self.game.screen.blit(self.player, self.game.off([self.player_r.x, self.player_r.y]))
