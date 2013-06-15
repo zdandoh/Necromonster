@@ -18,7 +18,7 @@ class Item():
         item['rect'].x = item['pos'][0]
         item['rect'].y = item['pos'][1]
         if spin:
-            item['vector'] = [randrange(0, 3), randrange(0, 3)]
+            item['vector'] = [-3, -3]
         else:
             item['vector'] = [0, 0]
         # decides to put item in world or not
@@ -32,6 +32,17 @@ class Item():
 
     def update(self):
         for index, item in enumerate(self.world_items):
+            item['pos'][0] += item['vector'][0]
+            item['pos'][1] += item['vector'][1]
+            if sum(item['vector']):
+                if item['vector'][0] < 0:
+                    item['vector'][0] += 1
+                elif item['vector'][0] > 0:
+                    item['vector'][0] -= 1
+                if item['vector'][1] < 0:
+                    item['vector'][1] += 1
+                elif item['vector'][1] > 0:
+                    item['vector'][1] -= 1
             if self.game.Player.collides(item['rect']):
                 rem_item = self.world_items.pop(index)
                 self.game.Invent.add(rem_item)

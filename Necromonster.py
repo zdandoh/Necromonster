@@ -56,6 +56,11 @@ class Necro():
             if event.type == KEYDOWN:
                 if event.key == K_e:
                     self.Invent.toggleView()
+            if event.type == MOUSEBUTTONDOWN:
+                if self.Invent.in_hand:
+                    self.Invent.testThrow(pygame.mouse.get_pos())
+                if self.Invent.shown:
+                    self.Invent.inventClick(pygame.mouse.get_pos())
 
     def Tick(self):
         # updates to player location and animation frame
@@ -63,6 +68,7 @@ class Necro():
         self.clock.tick()
         self.Player.update()
         self.ItemHandler.update()
+        self.Invent.update()
         for index, text in enumerate(self.text_list):
             if text[2] < time():
                 self.text_list.pop(index)
@@ -75,6 +81,7 @@ class Necro():
         return [newx, newy]
 
     def Draw(self):
+        #Responsible for calling all functions that draw to the screen
         tile_width = self.tile[1][0]
         tile_height = self.tile[1][1]
         tile_extrax = self.Player.player_r.x % tile_width

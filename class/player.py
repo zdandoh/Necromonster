@@ -15,6 +15,7 @@ class Player():
         self.player_r.y = 528
 
     def update(self):
+        #Update player position based on keypresses
         if 1 in self.game.keys_pressed:
             if self.game.keys_pressed[K_w]:
                 self.player_r.y += -2
@@ -41,6 +42,7 @@ class Player():
             self.player_state = 1
 
     def onMove(self, pos, offset, link_count = 0):
+        #Collision detection run on movement
         for rect in self.game.solid_list:
             link_active = 0
             if 'LINK' in rect:
@@ -58,6 +60,7 @@ class Player():
                         self.player_r.x -= offset
 
     def headDraw(self, text, dur=3):
+        #Draw text at head of player
         font_render = self.head_font.render(text, True, (255, 255, 255))
         self.head_drawn = [font_render, self.game.off([self.player_r.x - (self.player_dims[0] / 2), self.player_r.y - 25]), time() + dur]
 
@@ -72,10 +75,14 @@ class Player():
         self.player_r.x = new[0]
         self.player_r.y = new[1]
 
+    def getPos(self, offset=[0, 0]):
+        return [self.player_r.x + offset[0], self.player_r.y + offset[1]]
+
     def setFace(self, face, state=1):
         self.player_face = pygame.image.load('rec/char/%s%s.png' % (face, state))
 
     def blitPlayer(self):
+        #Draws player and head text if it exists
         if self.head_drawn:
             if self.head_drawn[2] < time():
                 self.head_drawn = 0
