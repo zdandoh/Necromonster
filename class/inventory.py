@@ -21,6 +21,7 @@ class Invent():
         self.inv_rect.x = self.inv_corner[0]
         self.inv_rect.y = self.inv_corner[1]
         self.item_bg = pygame.image.load(game.main_path + '\\rec\\gui\\item_bg.png').convert_alpha()
+        self.bg_rects = []
         self.reload()
 
     def reload(self):
@@ -144,9 +145,19 @@ class Invent():
                 self.game.ItemHandler.load(self.in_hand[0], pos=self.game.Player.getPos(offset=[-1, -1]), spin=1, world=1)
             self.in_hand = []
         else:
-            for _ in xrange(self.in_hand[2]):
-                self.add(self.in_hand[0])
-            self.in_hand = []
+            new_hand = []
+            for index, rect in enumerate(self.bg_rects):
+                if rect.collidepoint(mpos):
+                    if self.slots[index]:
+                        # item already in slot, add it to the hand and remove
+                        new_hand = [self.slots[index][0], self.game.ItemHandler.getSurface(self.slots[index][0]), self.slots[index][1]]
+                        self.rem(index)
+                    for _ in xrange(self.in_hand[2]):
+                        self.add(self.in_hand[0], slotno=index)
+                    self.in_hand = []
+                    break
+            if new_hand:
+                self.in_hand = new_hand
 
     def blitInvent(self):
         #define formatting vars
@@ -158,13 +169,14 @@ class Invent():
         y = invent_corner[1] - item_dim + 5
         blit_count = 0
         items_blitted = 0
+        self.bg_rects = []
         for index, slot in enumerate(self.slots):
             if not blit_count or blit_count == ceil(invent_dims[0] / (float(item_dim) + padding * 2.)):
                 blit_count = 0
                 y += item_dim + padding
                 x = invent_corner[0] - item_dim + 5
             x += padding + item_dim
-            self.game.screen.blit(self.item_bg, [x, y])
+            self.bg_rects.append(self.game.screen.blit(self.item_bg, [x, y]))
             if slot:
                 item_surf = self.item_surfaces[items_blitted]
                 self.item_rects[items_blitted] = self.game.screen.blit(item_surf, [x, y])

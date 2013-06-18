@@ -14,7 +14,7 @@
     <file path="/start_script.py" changelist="cef73d62-1cab-4426-bf92-44e79d331702" time="1369697766398" ignored="false" />
     <file path="/player.py" changelist="cef73d62-1cab-4426-bf92-44e79d331702" time="1371518953394" ignored="false" />
     <file path="/fragment.py" changelist="cef73d62-1cab-4426-bf92-44e79d331702" time="1369978843848" ignored="false" />
-    <file path="/inventory.py" changelist="cef73d62-1cab-4426-bf92-44e79d331702" time="1371508087106" ignored="false" />
+    <file path="/inventory.py" changelist="cef73d62-1cab-4426-bf92-44e79d331702" time="1371529026299" ignored="false" />
     <file path="/globals.py" changelist="cef73d62-1cab-4426-bf92-44e79d331702" time="1370235443149" ignored="false" />
     <file path="/items.py" changelist="cef73d62-1cab-4426-bf92-44e79d331702" time="1371499065940" ignored="false" />
     <file path="/HUD.py" changelist="cef73d62-1cab-4426-bf92-44e79d331702" time="1370403687794" ignored="false" />
@@ -49,10 +49,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Necromonster.py" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="Necromonster.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Necromonster.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="40" column="23" selection-start="1228" selection-end="1228" vertical-scroll-proportion="0.33381712">
+            <state line="45" column="57" selection-start="1357" selection-end="1357" vertical-scroll-proportion="-30.6">
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
@@ -60,10 +60,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="inventory.py" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="inventory.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/class/inventory.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="150" column="25" selection-start="4839" selection-end="4839" vertical-scroll-proportion="-93.84">
+            <state line="153" column="39" selection-start="5144" selection-end="5144" vertical-scroll-proportion="0.57910013">
               <folding>
                 <element signature="e#0#21#0" expanded="true" />
               </folding>
@@ -74,7 +74,7 @@
       <file leaf-file-name="items.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/class/items.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="51" column="0" selection-start="1901" selection-end="1901" vertical-scroll-proportion="-19.4">
+            <state line="51" column="0" selection-start="1901" selection-end="1901" vertical-scroll-proportion="-25.16">
               <folding />
             </state>
           </provider>
@@ -133,9 +133,9 @@
         <option value="$PROJECT_DIR$/class/mapLoader.py" />
         <option value="$PROJECT_DIR$/class/HUD.py" />
         <option value="$PROJECT_DIR$/class/items.py" />
-        <option value="$PROJECT_DIR$/class/inventory.py" />
         <option value="$PROJECT_DIR$/class/player.py" />
         <option value="$PROJECT_DIR$/Necromonster.py" />
+        <option value="$PROJECT_DIR$/class/inventory.py" />
       </list>
     </option>
   </component>
@@ -310,7 +310,7 @@
   <component name="PropertiesComponent">
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="options.lastSelected" value="com.jetbrains.python.configuration.PythonSdkConfigurable" />
+    <property name="options.lastSelected" value="preferences.keymap" />
     <property name="recentsLimit" value="5" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../Programming/Python/Neo/Tools/Restock" />
     <property name="restartRequiresConfirmation" value="true" />
@@ -668,22 +668,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/class/inventory.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="150" column="25" selection-start="4839" selection-end="4839" vertical-scroll-proportion="-93.84">
-          <folding>
-            <element signature="e#0#21#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/class/items.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="51" column="0" selection-start="1901" selection-end="1901" vertical-scroll-proportion="-19.4">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/class/player.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="64" column="3" selection-start="2601" selection-end="2601" vertical-scroll-proportion="0.0">
@@ -695,9 +679,25 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Necromonster.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="40" column="23" selection-start="1228" selection-end="1228" vertical-scroll-proportion="0.33381712">
+        <state line="45" column="57" selection-start="1357" selection-end="1357" vertical-scroll-proportion="-30.6">
           <folding>
             <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/class/items.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="51" column="0" selection-start="1901" selection-end="1901" vertical-scroll-proportion="-25.16">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/class/inventory.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="153" column="39" selection-start="5144" selection-end="5144" vertical-scroll-proportion="0.57910013">
+          <folding>
+            <element signature="e#0#21#0" expanded="true" />
           </folding>
         </state>
       </provider>
