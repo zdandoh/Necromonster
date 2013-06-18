@@ -1,4 +1,5 @@
 from globals import *
+from os import listdir
 
 class Player():
     def __init__(self, game):
@@ -10,6 +11,10 @@ class Player():
         self.head_drawn = 0
         self.player_r = self.player.get_rect()
         self.player_dims = self.player.get_size()
+
+        self.player_frames = {}
+        for fi in os.listdir(self.game.main_path + '\\rec\\char'):
+            self.player_frames[fi] = pygame.image.load(self.game.main_path + '\\rec\\char\\' + fi).convert_alpha()
 
         self.player_r.x = 450
         self.player_r.y = 528
@@ -37,9 +42,9 @@ class Player():
             self.player_state += 0.15
             if self.player_state >= 4:
                 self.player_state = 1
-            self.player = pygame.image.load('rec/char/%s%s.png' % (self.player_face, int(self.player_state)))
         if not self.game.keys_pressed[K_w] and not self.game.keys_pressed[K_a] and not self.game.keys_pressed[K_s] and not self.game.keys_pressed[K_d]:
             self.player_state = 1
+        self.player = self.player_frames['%s%s.png' % (self.player_face, int(self.player_state))]
 
     def onMove(self, pos, offset, link_count = 0):
         #Collision detection run on movement
@@ -62,7 +67,7 @@ class Player():
     def headDraw(self, text, dur=3):
         #Draw text at head of player
         font_render = self.head_font.render(text, True, (255, 255, 255))
-        self.head_drawn = [font_render, self.game.off([self.player_r.x - (self.player_dims[0] / 2), self.player_r.y - 25]), time() + dur]
+        self.head_drawn = [font_render, self.game.off([self.player_r.x - font_render.get_size()[0] / 2 + self.player_dims[0] / 2, self.player_r.y - 25]), time() + dur]
 
     def addPos(self, move):
         self.player_r.x += move[0]

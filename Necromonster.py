@@ -33,9 +33,9 @@ class Necro():
         # get the map that you are on
         self.blit_list = mapLoader.load('home', self)
 
-        self.ItemHandler.load('Iron Ingot2', [200, 200], world=1)
+        self.ItemHandler.load('Adamantium', [200, 200], world=1)
         self.ItemHandler.load('Iron Ingot', [150, 200], world=1)
-        self.ItemHandler.load('Iron Ingot3', [100, 200], world=1)
+        self.ItemHandler.load('Mythril', [100, 200], world=1)
 
         while 1:
             self.Loop()
@@ -53,10 +53,10 @@ class Necro():
         for event in pygame.event.get():
             if event.type == QUIT:
                 sys.exit()
-            if event.type == KEYDOWN:
+            elif event.type == KEYDOWN:
                 if event.key == K_e:
                     self.Invent.toggleView()
-            if event.type == MOUSEBUTTONDOWN:
+            elif event.type == MOUSEBUTTONDOWN:
                 if self.Invent.in_hand:
                     self.Invent.testThrow(pygame.mouse.get_pos())
                 if self.Invent.shown:
@@ -92,13 +92,14 @@ class Necro():
             for i in xrange(self.screen_res[0] / tile_width + 3):
                 self.screen.blit(self.tile[0], [i * tile_width - tile_width - tile_extrax, y - tile_height - tile_extray])
             y += self.tile[1][1]
-        for surf in self.blit_list + self.ItemHandler.blitItems():
+        for surf in self.blit_list:
             if 'player' in surf:
                 self.Player.blitPlayer()
             else:
                 self.screen.blit(surf[0], self.off(surf[1]))
         for text in self.text_list:
             self.screen.blit(text[0], text[1])
+        self.ItemHandler.blitItems()
         if self.Invent.shown:
             self.Invent.draw()
         if self.DEBUG:

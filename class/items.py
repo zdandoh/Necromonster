@@ -18,7 +18,7 @@ class Item():
         item['rect'].x = item['pos'][0]
         item['rect'].y = item['pos'][1]
         if spin:
-            item['vector'] = [-3, -3]
+            item['vector'] = [-7, -7]
         else:
             item['vector'] = [0, 0]
         # decides to put item in world or not
@@ -34,6 +34,8 @@ class Item():
         for index, item in enumerate(self.world_items):
             item['pos'][0] += item['vector'][0]
             item['pos'][1] += item['vector'][1]
+            item['rect'].x += item['vector'][0]
+            item['rect'].y += item['vector'][1]
             if sum(item['vector']):
                 if item['vector'][0] < 0:
                     item['vector'][0] += 1
@@ -43,16 +45,14 @@ class Item():
                     item['vector'][1] += 1
                 elif item['vector'][1] > 0:
                     item['vector'][1] -= 1
-            if self.game.Player.collides(item['rect']):
+            if self.game.Player.collides(item['rect']) and not sum(item['vector']):
                 rem_item = self.world_items.pop(index)
-                self.game.Invent.add(rem_item)
+                self.game.Invent.add(rem_item['name'])
                 self.game.Player.headDraw(item['name'])
 
     def blitItems(self):
-        all_items = []
         for item in self.world_items:
-            all_items.append([item['image'], item['pos']])
-        return all_items
+            self.game.screen.blit(item['image'], self.game.off(item['pos']))
 
     def clear(self):
         self.world_items = []
