@@ -4,6 +4,7 @@ sys.path.append('class')
 
 from globals import *
 from player import Player
+from monster import Monster
 from items import Item
 from inventory import Invent
 
@@ -23,6 +24,7 @@ class Necro():
 
         #Init custom game classes
         self.Player = Player(self)
+        self.Monsters = Monster(self)
         self.ItemHandler = Item(self)
         self.Invent = Invent(self)
 
@@ -33,9 +35,7 @@ class Necro():
         # get the map that you are on
         self.blit_list = mapLoader.load('home', self)
 
-        self.ItemHandler.load('Adamantium', [200, 200], world=1)
-        self.ItemHandler.load('Iron Ingot', [150, 200], world=1)
-        self.ItemHandler.load('Mythril', [100, 200], world=1)
+        self.Monsters.create('goop', [200, 200], 3, 'neutral')
 
         while 1:
             self.Loop()
@@ -67,6 +67,7 @@ class Necro():
         self.keys_pressed = pygame.key.get_pressed()
         self.clock.tick()
         self.Player.update()
+        self.Monsters.update()
         self.ItemHandler.update()
         self.Invent.update()
         for index, text in enumerate(self.text_list):
@@ -95,6 +96,7 @@ class Necro():
         for surf in self.blit_list:
             if 'player' in surf:
                 self.Player.blitPlayer()
+                self.Monsters.blitMonsters()
             else:
                 self.screen.blit(surf[0], self.off(surf[1]))
         for text in self.text_list:

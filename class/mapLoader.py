@@ -43,4 +43,5 @@ def load(map_name, game, new_pos = 0, face = 0):
         if time == 1:
             surfaces.append('player')
     game.ItemHandler.clear()
+    game.Monsters.monsters = []
     return surfaces

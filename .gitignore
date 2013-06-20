@@ -136,6 +136,7 @@ Desktop.ini
 # Packages
 *.egg
 *.egg-info
+.idea
 dist
 build
 eggs
@@ -144,7 +145,6 @@ bin
 var
 sdist
 develop-eggs
-idea
 .installed.cfg
 
 # Installer logs
