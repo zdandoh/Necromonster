@@ -35,8 +35,6 @@ class Necro():
         # get the map that you are on
         self.blit_list = mapLoader.load('home', self)
 
-        self.Monsters.create('goop', [200, 200], 3, 'neutral')
-
         while 1:
             self.Loop()
 

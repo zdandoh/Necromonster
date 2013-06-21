@@ -1,5 +1,5 @@
 from globals import *
-from os import listdir
+from pygame.rect import Rect
 
 class Player():
     def __init__(self, game):
@@ -48,7 +48,7 @@ class Player():
 
     def onMove(self, pos, offset, link_count = 0):
         #Collision detection run on movement
-        for rect in self.game.solid_list:
+        for rect in self.game.solid_list + self.game.Monsters.getRects():
             link_active = 0
             if 'LINK' in rect:
                 link = self.game.links[link_count]
@@ -79,6 +79,9 @@ class Player():
     def setPos(self, new):
         self.player_r.x = new[0]
         self.player_r.y = new[1]
+
+    def getRect(self):
+        return Rect(self.player_r)
 
     def getPos(self, offset=[0, 0]):
         return [self.player_r.x + offset[0], self.player_r.y + offset[1]]

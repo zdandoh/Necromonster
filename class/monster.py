@@ -13,6 +13,12 @@ class Monster():
         # stat format [level, health, attack, defense]
         return [difficulty, difficulty * 5, difficulty, difficulty]
 
+    def getRects(self):
+        rects = []
+        for monster in self.monsters:
+            rects.append(monster['rect'])
+        return rects
+
     def loadFrames(self, name):
         frames = {}
         for fi in listdir(self.game.main_path + '\\rec\\enemy\\%s' % name):
@@ -25,8 +31,9 @@ class Monster():
         monster['name'] = name
         monster['frames'] = self.loadFrames(name)
         monster['path'] = pathfinding
-        monster['pos'] = pos
         monster['rect'] = monster['frames'].values()[0].get_rect()
+        monster['rect'].x = pos[0]
+        monster['rect'].y = pos[1]
         monster['movements'] = 0
         monster['moving'] = '' # 1, 2, 3, 4; up, left, down, right
         monster['face'] = 'front'
@@ -39,25 +46,11 @@ class Monster():
         monster['defense'] = stats[3]
         self.monsters.append(monster)
 
-    def onMove(self, rect):
-        for solid in self.game.solid_list:
-            if solid == 'LINK':
-                pass
-            else:
-                if rect.colliderect(solid):
-                    return 1
-        return 0
-
-
     def update(self):
         for index, monster in enumerate(self.monsters):
-            new_monster = getattr(pathfind, monster['path'])(monster)
-            if self.onMove(new_monster['rect']):
-                pass
-            else:
-                self.monsters[index] = new_monster
+            self.monsters[index] = getattr(pathfind, monster['path'])(monster, self.game)
 
 
     def blitMonsters(self):
         for index, monster in enumerate(self.monsters):
-            self.monsters[index]['rect'] = self.game.screen.blit(monster['frames']['%s%s.png' % (monster['face'], monster['frameno'])], self.game.off(monster['pos']))
+            self.game.screen.blit(monster['frames']['%s%s.png' % (monster['face'], monster['frameno'])], self.game.off([monster['rect'].x, monster['rect'].y]))

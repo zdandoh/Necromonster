@@ -33,6 +33,7 @@ def load(map_name, game, new_pos = 0, face = 0):
         elif 'SOLID' in line:
             ln = line.split(':')
             game.solid_list.append(pygame.rect.Rect(literal_eval(ln[1])))
+
     # load all buildings
     tile = pygame.image.load(main_direc + 'tile.png').convert()
     game.tile = [tile, tile.get_size()]
