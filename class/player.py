@@ -19,6 +19,16 @@ class Player():
         self.player_r.x = 450
         self.player_r.y = 528
 
+        # stats
+        self.player_stats = {}
+        self.player_stats['hp'] = 10
+        self.player_stats['maxhp'] = 10
+        self.player_stats['maxpxp'] = 1000
+        self.player_stats['maxmxp'] = 1000
+        self.player_stats['pxp'] = 312
+        self.player_stats['mxp'] = 654
+
+
     def update(self):
         #Update player position based on keypresses
         if 1 in self.game.keys_pressed:

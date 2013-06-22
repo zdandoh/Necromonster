@@ -7,6 +7,7 @@ from player import Player
 from monster import Monster
 from items import Item
 from inventory import Invent
+from HUD import HUD
 
 class Necro():
     def __init__(self):
@@ -19,7 +20,7 @@ class Necro():
         self.clock = pygame.time.Clock()
         self.last_tick = pygame.time.get_ticks()
         self.screen_res = [900, 650]
-        self.screen = pygame.display.set_mode(self.screen_res, 0, 32)
+        self.screen = pygame.display.set_mode(self.screen_res, pygame.HWSURFACE, 32)
         self.DEBUG = 1
 
         #Init custom game classes
@@ -27,6 +28,7 @@ class Necro():
         self.Monsters = Monster(self)
         self.ItemHandler = Item(self)
         self.Invent = Invent(self)
+        self.HUD = HUD(self)
 
         # load fonts, create font list
         self.text_list = []
@@ -34,6 +36,8 @@ class Necro():
 
         # get the map that you are on
         self.blit_list = mapLoader.load('home', self)
+
+        self.Monsters.create('goop', [300, 300], 2, 'neutral')
 
         while 1:
             self.Loop()
@@ -106,5 +110,6 @@ class Necro():
             self.screen.blit(self.default_font.render(str(round(self.clock.get_fps())), True, (255, 255, 255)), [0, 0])
             self.screen.blit(self.default_font.render(str('%s, %s' % (self.Player.player_r.x, self.Player.player_r.y)), True, (255, 255, 255)), [0, 12])
             self.screen.blit(self.default_font.render(str(pygame.mouse.get_pos()), True, (255, 255, 255)), [0, 24])
+        self.HUD.blitHUD()
 
 Necro()

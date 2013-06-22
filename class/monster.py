@@ -44,7 +44,14 @@ class Monster():
         monster['health'] = stats[1]
         monster['attack'] = stats[2]
         monster['defense'] = stats[3]
+        monster['loot'] = 'Iron Ingot'
         self.monsters.append(monster)
+
+    def kill(self, index):
+        monster = self.monsters[index]
+        if monster['loot']:
+            self.game.ItemHandler.load(monster['loot'], pos=[monster['rect'].x, monster['rect'].y], spin=1, world=1)
+        del self.monsters[index]
 
     def update(self):
         for index, monster in enumerate(self.monsters):
