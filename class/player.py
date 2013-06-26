@@ -1,20 +1,32 @@
-from globals import *
-from pygame.rect import Rect
+import pygame
+from pygame.locals import *
+
+import mapLoader
+
+import math
+import os
+from time import time
+from ast import literal_eval
 
 class Player():
     def __init__(self, game):
         self.game = game
-        self.player = pygame.image.load('rec\\char\\back1.png')
-        self.head_font = pygame.font.Font('rec\\font\\p_head.ttf', 15)
+        self.player = pygame.image.load(os.path.join('rec', 'char', 'back1.png'))
+        self.head_font = pygame.font.Font(os.path.join('rec', 'font', 'p_head.ttf'), 15)
+        self.light_beam = pygame.image.load(os.path.join(self.game.main_path, 'rec', 'misc', 'light_beam.png')).convert_alpha()
         self.player_face = 'back'  # this is the part of the player that you see
         self.player_state = 1.
         self.head_drawn = 0
         self.player_r = self.player.get_rect()
         self.player_dims = self.player.get_size()
 
+        # setup attack vars
+        self.last_attack = time()
+        self.projectiles = []
+
         self.player_frames = {}
-        for fi in os.listdir(self.game.main_path + '\\rec\\char'):
-            self.player_frames[fi] = pygame.image.load(self.game.main_path + '\\rec\\char\\' + fi).convert_alpha()
+        for fi in os.listdir(os.path.join(self.game.main_path, 'rec', 'char')):
+            self.player_frames[fi] = pygame.image.load(os.path.join(self.game.main_path, 'rec', 'char', fi)).convert_alpha()
 
         self.player_r.x = 450
         self.player_r.y = 528
@@ -27,6 +39,7 @@ class Player():
         self.player_stats['maxmxp'] = 1000
         self.player_stats['pxp'] = 312
         self.player_stats['mxp'] = 654
+        self.player_stats['attack'] = 5
 
 
     def update(self):
@@ -55,10 +68,13 @@ class Player():
         if not self.game.keys_pressed[K_w] and not self.game.keys_pressed[K_a] and not self.game.keys_pressed[K_s] and not self.game.keys_pressed[K_d]:
             self.player_state = 1
         self.player = self.player_frames['%s%s.png' % (self.player_face, int(self.player_state))]
+        for index, proj in enumerate(self.projectiles):
+            if proj.update():
+                del self.projectiles[index]
 
     def onMove(self, pos, offset, link_count = 0):
         #Collision detection run on movement
-        for rect in self.game.solid_list + self.game.Monsters.getRects():
+        for rect in self.game.solid_list + self.game.Monster.getRects():
             link_active = 0
             if 'LINK' in rect:
                 link = self.game.links[link_count]
@@ -73,6 +89,24 @@ class Player():
                         self.player_r.y -= offset
                     elif not pos:
                         self.player_r.x -= offset
+
+    def getDegrees(self, mpos):
+        ppos = [470., 350.]
+        mpos = pygame.mouse.get_pos()
+        degrees = math.degrees(math.atan((mpos[0] - ppos[0]) / (mpos[1] - ppos[1])))
+        if not degrees:
+            pass
+        elif mpos[0] > ppos[0] and mpos[1] < ppos[1]:
+            degrees = abs(degrees)
+        elif mpos[0] > ppos[0] and mpos[1] > ppos[1]:
+            degrees = 90 - degrees + 90
+        elif mpos[0] < ppos[0] and mpos[1] > ppos[1]:
+            degrees = abs(degrees) + 180
+        elif mpos[0] < ppos[0] and mpos[1] < ppos[1]:
+            degrees = 90 - degrees + 270
+        else:
+            raise Exception('Incalculable degrees %s' % degrees)
+        return int(360 - degrees)
 
     def headDraw(self, text, dur=3):
         #Draw text at head of player
@@ -97,7 +131,11 @@ class Player():
         return [self.player_r.x + offset[0], self.player_r.y + offset[1]]
 
     def setFace(self, face, state=1):
-        self.player_face = pygame.image.load('rec/char/%s%s.png' % (face, state))
+        face = face.replace('\r', '')
+        self.player_face = pygame.image.load(os.path.join(self.game.main_path, 'rec', 'char', '{}{}.png'.format(face, state)))
+
+    def attack(self, mpos):
+        self.projectiles.append(self.game.Projectile(self.game, self.player_stats['attack'], self.getDegrees(mpos), self.getPos(), [1, 1], os.path.join(self.game.main_path, 'rec', 'weapon', 'posess', 'arrow.png')))
 
     def blitPlayer(self):
         #Draws player and head text if it exists
@@ -107,3 +145,5 @@ class Player():
             else:
                 self.game.screen.blit(self.head_drawn[0], self.head_drawn[1])
         self.game.screen.blit(self.player, self.game.off([self.player_r.x, self.player_r.y]))
+        for proj in self.projectiles:
+            proj.blit()

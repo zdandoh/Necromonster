@@ -1,10 +1,11 @@
-from globals import *
+import pygame
+from os.path import join
 
 class HUD():
     def __init__(self, game):
         self.game = game
-        self.xpbar = pygame.image.load(self.game.main_path + '\\rec\\gui\\xpbar.png').convert_alpha()
-        self.hpbar = pygame.image.load(self.game.main_path + '\\rec\\gui\\hpbar.png').convert_alpha()
+        self.xpbar = pygame.image.load(join(self.game.main_path, 'rec', 'gui', 'xpbar.png')).convert_alpha()
+        self.hpbar = pygame.image.load(join(self.game.main_path, 'rec', 'gui', 'hpbar.png')).convert_alpha()
 
     def blitHUD(self):
         #hp bar creation

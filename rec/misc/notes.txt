@@ -1,1 +1,3 @@
-colliderect function is incredibly cheap
+Future:
+
+ - Make leaves or a bird fly accross the screen on occasion.

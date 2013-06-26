@@ -1,5 +1,7 @@
-from globals import *
+import pygame
+
 from math import ceil
+from os.path import join
 '''
 Class for managing invent
 Item storage format: Name:count:slotno;
@@ -16,11 +18,11 @@ class Invent():
         self.in_hand = []
         self.slots = [[] for x in xrange(24)]
         self.inv_corner = [20, 0]
-        self.inv_surf = pygame.image.load(game.main_path + '\\rec\\gui\\inventory.png').convert_alpha()
+        self.inv_surf = pygame.image.load(join(game.main_path, 'rec', 'gui', 'inventory.png')).convert_alpha()
         self.inv_rect = self.inv_surf.get_rect()
         self.inv_rect.x = self.inv_corner[0]
         self.inv_rect.y = self.inv_corner[1]
-        self.item_bg = pygame.image.load(game.main_path + '\\rec\\gui\\item_bg.png').convert_alpha()
+        self.item_bg = pygame.image.load(join(game.main_path, 'rec', 'gui', 'item_bg.png')).convert_alpha()
         self.bg_rects = []
         self.reload()
 
@@ -78,13 +80,13 @@ class Invent():
         for index, slot in enumerate(self.slots):
             if slot:
                 to_write += ('%s:%s:%s;') % (slot[0], slot[1], index)
-        open(self.game.main_path + '\\rec\\user\\invent.dat', 'w').write(to_write)
+        open(join(self.game.main_path, 'rec', 'user', 'invent.dat'), 'w').write(to_write)
 
     def readInvent(self):
         try:
-            cont = open(self.game.main_path + '\\rec\\user\\invent.dat', 'r').read()
+            cont = open(join(self.game.main_path, 'rec', 'user', 'invent.dat'), 'r').read()
         except IOError:
-            fi = open(self.game.main_path + '\\rec\\user\\invent.dat', 'w')
+            fi = open(join(self.game.main_path, 'rec', 'user', 'invent.dat'), 'w')
             fi.close()
             self.readInvent()
         else:

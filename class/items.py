@@ -1,6 +1,6 @@
 from uuid import uuid4
-from random import randrange
 from pygame.image import load
+from os.path import join
 
 class Item():
     def __init__(self, game):
@@ -13,7 +13,7 @@ class Item():
         item['file'] = name.lower().replace(' ', '_') + '.png'
         item['pos'] = pos
         item['id'] = uuid4()
-        item['image'] = load(self.game.main_path + '\\rec\\items\\' + item['file'])
+        item['image'] = load(join(self.game.main_path, 'rec', 'items', item['file']))
         item['rect'] = item['image'].get_rect()
         item['rect'].x = item['pos'][0]
         item['rect'].y = item['pos'][1]
@@ -28,7 +28,7 @@ class Item():
 
     def getSurface(self, name):
         name = name.lower().replace(' ', '_') + '.png'
-        return load(self.game.main_path + '\\rec\\items\\' + name)
+        return load(join(self.game.main_path, 'rec', 'items', name))
 
     def update(self):
         for index, item in enumerate(self.world_items):
