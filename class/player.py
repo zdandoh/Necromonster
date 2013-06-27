@@ -98,15 +98,11 @@ class Player():
         except ZeroDivisionError:
             degrees = 0
         if not degrees:
-            if mpos[1] == ppos[1] or mpos[0] == ppos[0]:
+            if mpos[1] == ppos[1]:
                 if mpos[0] > ppos[0]:
                     degrees = 90
                 elif mpos[0] < ppos[0]:
                     degrees = 270
-                elif mpos[1] > ppos[1]:
-                    degrees = 180
-                elif mpos[1] > ppos[1]:
-                    degrees = 0
         elif mpos[0] > ppos[0] and mpos[1] < ppos[1]:
             degrees = abs(degrees)
         elif mpos[0] > ppos[0] and mpos[1] > ppos[1]:
