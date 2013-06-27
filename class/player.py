@@ -98,7 +98,11 @@ class Player():
         except ZeroDivisionError:
             degrees = 0
         if not degrees:
-            pass
+            if mpos[1] == ppos[1]:
+                if mpos[0] > ppos[0]:
+                    degrees = 90
+                elif mpos[0] < ppos[0]:
+                    degrees = 270
         elif mpos[0] > ppos[0] and mpos[1] < ppos[1]:
             degrees = abs(degrees)
         elif mpos[0] > ppos[0] and mpos[1] > ppos[1]:
@@ -140,11 +144,11 @@ class Player():
     def attack(self, mpos):
         # (y - y) / (x - x)
         degrees = 360 - self.getDegrees(mpos)
-        if 135 > degrees > 45:
+        if 135 > degrees >= 45:
             self.setFace('right')
-        elif 225 > degrees > 135:
+        elif 225 > degrees >= 135:
             self.setFace('front')
-        elif 315 > degrees > 225:
+        elif 315 > degrees >= 225:
             self.setFace('left')
         else:
             self.setFace('back')
