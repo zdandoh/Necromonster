@@ -93,7 +93,10 @@ class Player():
     def getDegrees(self, mpos):
         ppos = self.game.center_point
         mpos = pygame.mouse.get_pos()
-        degrees = math.degrees(math.atan((mpos[0] - ppos[0]) / (mpos[1] - ppos[1])))
+        try:
+            degrees = math.degrees(math.atan((mpos[0] - ppos[0]) / (mpos[1] - ppos[1])))
+        except ZeroDivisionError:
+            degrees = 0
         if not degrees:
             pass
         elif mpos[0] > ppos[0] and mpos[1] < ppos[1]:
@@ -136,13 +139,14 @@ class Player():
 
     def attack(self, mpos):
         # (y - y) / (x - x)
-        speed = 2.
+        speed = 4.
+        range = 2000
         distance = [mpos[0] - self.game.center_point[0], mpos[1] - self.game.center_point[1]]
         norm = math.sqrt(distance[0] ** 2 + distance[1] ** 2)
         direction = [distance[0] / norm, distance[1 ] / norm]
         bullet_vector = [direction[0] * speed, direction[1] * speed]
 
-        self.projectiles.append(self.game.Projectile(self.game, self.player_stats['attack'], self.getDegrees(mpos), self.getPos(), bullet_vector, os.path.join(self.game.main_path, 'rec', 'weapon', 'posess', 'arrow.png')))
+        self.projectiles.append(self.game.Projectile(self.game, self.player_stats['attack'], self.getDegrees(mpos), self.getPos(offset=[20, 30]), bullet_vector, speed, range, os.path.join(self.game.main_path, 'rec', 'weapon', 'posess', 'arrow.png')))
 
     def blitPlayer(self):
         #Draws player and head text if it exists
@@ -151,6 +155,6 @@ class Player():
                 self.head_drawn = 0
             else:
                 self.game.screen.blit(self.head_drawn[0], self.head_drawn[1])
-        self.game.screen.blit(self.player, self.game.off([self.player_r.x, self.player_r.y]))
         for proj in self.projectiles:
             proj.blit()
+        self.game.screen.blit(self.player, self.game.off([self.player_r.x, self.player_r.y]))
