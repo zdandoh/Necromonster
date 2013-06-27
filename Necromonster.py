@@ -26,6 +26,7 @@ class Necro():
         self.clock = pygame.time.Clock()
         self.last_tick = pygame.time.get_ticks()
         self.screen_res = [900, 650]
+        self.center_point = [470., 350.]
         self.screen = pygame.display.set_mode(self.screen_res, pygame.HWSURFACE, 32)
         self.DEBUG = 1
 

@@ -91,7 +91,7 @@ class Player():
                         self.player_r.x -= offset
 
     def getDegrees(self, mpos):
-        ppos = [470., 350.]
+        ppos = self.game.center_point
         mpos = pygame.mouse.get_pos()
         degrees = math.degrees(math.atan((mpos[0] - ppos[0]) / (mpos[1] - ppos[1])))
         if not degrees:
@@ -135,7 +135,14 @@ class Player():
         self.player_face = pygame.image.load(os.path.join(self.game.main_path, 'rec', 'char', '{}{}.png'.format(face, state)))
 
     def attack(self, mpos):
-        self.projectiles.append(self.game.Projectile(self.game, self.player_stats['attack'], self.getDegrees(mpos), self.getPos(), [1, 1], os.path.join(self.game.main_path, 'rec', 'weapon', 'posess', 'arrow.png')))
+        # (y - y) / (x - x)
+        speed = 2.
+        distance = [mpos[0] - self.game.center_point[0], mpos[1] - self.game.center_point[1]]
+        norm = math.sqrt(distance[0] ** 2 + distance[1] ** 2)
+        direction = [distance[0] / norm, distance[1 ] / norm]
+        bullet_vector = [direction[0] * speed, direction[1] * speed]
+
+        self.projectiles.append(self.game.Projectile(self.game, self.player_stats['attack'], self.getDegrees(mpos), self.getPos(), bullet_vector, os.path.join(self.game.main_path, 'rec', 'weapon', 'posess', 'arrow.png')))
 
     def blitPlayer(self):
         #Draws player and head text if it exists
