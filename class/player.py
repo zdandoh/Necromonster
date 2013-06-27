@@ -135,10 +135,19 @@ class Player():
 
     def setFace(self, face, state=1):
         face = face.replace('\r', '')
-        self.player_face = pygame.image.load(os.path.join(self.game.main_path, 'rec', 'char', '{}{}.png'.format(face, state)))
+        self.player_face = face
 
     def attack(self, mpos):
         # (y - y) / (x - x)
+        degrees = 360 - self.getDegrees(mpos)
+        if 135 > degrees > 45:
+            self.setFace('right')
+        elif 225 > degrees > 135:
+            self.setFace('front')
+        elif 315 > degrees > 225:
+            self.setFace('left')
+        else:
+            self.setFace('back')
         speed = 4.
         range = 2000
         distance = [mpos[0] - self.game.center_point[0], mpos[1] - self.game.center_point[1]]
