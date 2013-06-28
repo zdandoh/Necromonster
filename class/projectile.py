@@ -32,6 +32,8 @@ class Projectile():
             self.rect.y = self.pos[1]
 
     def update(self):
+        if self.dead:
+            self.game.EntityHandler.projectiles
         while self.collides_with_player:
             if self.rect.colliderect(self.game.Player.getRect()):
                 self.add()
@@ -42,9 +44,9 @@ class Projectile():
             self.dead = 1
         self.add()
         self.travelled += self.speed
-        for index, monster in enumerate(self.game.Monster.monsters):
-            if self.rect.colliderect(monster['rect']):
-                self.game.Monster.attack(index, self.damage)
+        for index, monster in enumerate(self.game.EntityHandler.monsters):
+            if self.rect.colliderect(monster.rect):
+                self.game.EntityHandler.monsters[index].takeDamage(index, self.damage)
                 self.dead = 1
                 return self.dead
         for solid in self.game.solid_list:

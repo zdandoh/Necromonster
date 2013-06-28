@@ -6,6 +6,7 @@ import pygame
 from pygame.locals import *
 
 import mapLoader
+from EntityHandler import EntityHandler
 from player import Player
 from monster import Monster
 from items import Item
@@ -31,12 +32,17 @@ class Necro():
         self.DEBUG = 1
 
         #Init custom game classes
+        self.EntityHandler = EntityHandler(self)
         self.Projectile = Projectile
+        self.Monster = Monster
         self.Player = Player(self)
-        self.Monster = Monster(self)
         self.ItemHandler = Item(self)
         self.Invent = Invent(self)
         self.HUD = HUD(self)
+
+        # Init entity manager vars
+        self.entities = []
+
 
         # load fonts, create font list
         self.text_list = []
@@ -45,7 +51,7 @@ class Necro():
         # get the map that you are on
         self.blit_list = mapLoader.load('home', self)
 
-        self.Monster.create('goop', [300, 300], 2, 'neutral')
+        self.EntityHandler.monsters.append(self.Monster(self, 'goop', [300, 300], 2, 'neutral'))
 
         while 1:
             self.Loop()
@@ -78,8 +84,7 @@ class Necro():
         # updates to player location and animation frame
         self.keys_pressed = pygame.key.get_pressed()
         self.clock.tick()
-        self.Player.update()
-        self.Monster.update()
+        self.EntityHandler.updateAll()
         self.ItemHandler.update()
         self.Invent.update()
         for index, text in enumerate(self.text_list):
@@ -107,8 +112,7 @@ class Necro():
             y += self.tile[1][1]
         for surf in self.blit_list:
             if 'player' in surf:
-                self.Player.blitPlayer()
-                self.Monster.blitMonsters()
+                self.EntityHandler.blitAll()
             else:
                 self.screen.blit(surf[0], self.off(surf[1]))
         for text in self.text_list:

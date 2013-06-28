@@ -22,7 +22,6 @@ class Player():
 
         # setup attack vars
         self.last_attack = time()
-        self.projectiles = []
 
         self.player_frames = {}
         for fi in os.listdir(os.path.join(self.game.main_path, 'rec', 'char')):
@@ -68,13 +67,11 @@ class Player():
         if not self.game.keys_pressed[K_w] and not self.game.keys_pressed[K_a] and not self.game.keys_pressed[K_s] and not self.game.keys_pressed[K_d]:
             self.player_state = 1
         self.player = self.player_frames['%s%s.png' % (self.player_face, int(self.player_state))]
-        for index, proj in enumerate(self.projectiles):
-            if proj.update():
-                del self.projectiles[index]
 
     def onMove(self, pos, offset, link_count = 0):
         #Collision detection run on movement
-        for rect in self.game.solid_list + self.game.Monster.getRects():
+        m_rects = [x.rect for x in self.game.EntityHandler.monsters]
+        for rect in self.game.solid_list + m_rects:
             link_active = 0
             if 'LINK' in rect:
                 link = self.game.links[link_count]
@@ -164,7 +161,7 @@ class Player():
         direction = [distance[0] / norm, distance[1 ] / norm]
         bullet_vector = [direction[0] * speed, direction[1] * speed]
 
-        self.projectiles.append(self.game.Projectile(self.game, self.player_stats['attack'], self.getDegrees(mpos), self.getPos(offset=[20, 30]), bullet_vector, speed, range, os.path.join(self.game.main_path, 'rec', 'weapon', 'posess', 'arrow.png')))
+        self.game.EntityHandler.projectiles.append(self.game.Projectile(self.game, self.player_stats['attack'], self.getDegrees(mpos), self.getPos(offset=[20, 30]), bullet_vector, speed, range, os.path.join(self.game.main_path, 'rec', 'weapon', 'posess', 'arrow.png')))
 
     def blitPlayer(self):
         #Draws player and head text if it exists
@@ -173,6 +170,4 @@ class Player():
                 self.head_drawn = 0
             else:
                 self.game.screen.blit(self.head_drawn[0], self.head_drawn[1])
-        for proj in self.projectiles:
-            proj.blit()
         self.game.screen.blit(self.player, self.game.off([self.player_r.x, self.player_r.y]))
