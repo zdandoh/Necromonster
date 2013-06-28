@@ -1,7 +1,8 @@
 import pathfind
 import os
 from pygame.image import load
-from pygame.rect import Rect
+from pygame.draw import rect
+
 
 class Monster():
     def __init__(self, game, name, pos, difficulty, pathfinding):
@@ -10,6 +11,7 @@ class Monster():
         self.frames = self.loadFrames(name)
         self.path = pathfinding
         self.rect = self.frames.values()[0].get_rect()
+        self.size = [self.rect.w, self.rect.h]
         self.rect.x = pos[0]
         self.rect.y = pos[1]
         self.pos = pos
@@ -21,7 +23,8 @@ class Monster():
 
         stats = self.getStats(difficulty)
         self.level = stats[0]
-        self.hp = stats[1]
+        self.hp = float(stats[1])
+        self.maxhp = float(stats[1])
         self.attack = stats[2]
         self.defense = stats[3]
         self.loot = 'Iron Ingot'
@@ -57,4 +60,8 @@ class Monster():
             return 1
 
     def blit(self):
+        if self.hp < self.maxhp:
+            pos = [self.pos[0], self.pos[1] - self.size[1] / 2]
+            rect(self.game.screen, (255, 0, 0), (self.game.off(pos), (self.size[0], 5)))
+            rect(self.game.screen, (0, 255, 0), (self.game.off(pos), (self.size[0] * (self.hp / self.maxhp), 5)))
         self.game.screen.blit(self.frames['%s%s.png' % (self.face, self.frameno)], self.game.off([self.rect.x, self.rect.y]))

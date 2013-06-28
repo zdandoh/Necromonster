@@ -68,6 +68,7 @@ class Necro():
         # the main event loop, detects keypresses
         for event in pygame.event.get():
             if event.type == QUIT:
+                pygame.quit()
                 sys.exit()
             elif event.type == KEYDOWN:
                 if event.key == K_e:
