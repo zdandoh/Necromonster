@@ -3,56 +3,52 @@ from pygame.image import load
 from os.path import join
 
 class Item():
-    def __init__(self, game):
-        self.world_items = []
+    def __init__(self, game, name, pos=[0, 0], spin=0, world=1):
         self.game = game
-
-    def load(self, name, pos=[0, 0], spin=0, world=1):
-        item = {}
-        item['name'] = name
-        item['file'] = name.lower().replace(' ', '_') + '.png'
-        item['pos'] = pos
-        item['id'] = uuid4()
-        item['image'] = load(join(self.game.main_path, 'rec', 'items', item['file']))
-        item['rect'] = item['image'].get_rect()
-        item['rect'].x = item['pos'][0]
-        item['rect'].y = item['pos'][1]
+        self.name = name
+        self.file = name.lower().replace(' ', '_') + '.png'
+        self.pos = pos
+        self.dead = 0
+        self.id = uuid4()
+        self.image = load(join(self.game.main_path, 'rec', 'items', self.file))
+        self.rect = self.image.get_rect()
+        self.rect.x = self.pos[0]
+        self.rect.y = self.pos[1]
         if spin:
-            item['vector'] = [-7, -7]
+            self.vector = [-7, -7]
         else:
-            item['vector'] = [0, 0]
+            self.vector = [0, 0]
         # decides to put item in world or not
         if world:
-            self.world_items.append(item)
-        return item
+            self.game.EntityHandler.world_items.append(self)
 
     def getSurface(self, name):
         name = name.lower().replace(' ', '_') + '.png'
         return load(join(self.game.main_path, 'rec', 'items', name))
 
-    def update(self):
-        for index, item in enumerate(self.world_items):
-            item['pos'][0] += item['vector'][0]
-            item['pos'][1] += item['vector'][1]
-            item['rect'].x += item['vector'][0]
-            item['rect'].y += item['vector'][1]
-            if sum(item['vector']):
-                if item['vector'][0] < 0:
-                    item['vector'][0] += 1
-                elif item['vector'][0] > 0:
-                    item['vector'][0] -= 1
-                if item['vector'][1] < 0:
-                    item['vector'][1] += 1
-                elif item['vector'][1] > 0:
-                    item['vector'][1] -= 1
-            if self.game.Player.collides(item['rect']) and not sum(item['vector']):
-                rem_item = self.world_items.pop(index)
-                self.game.Invent.add(rem_item['name'])
-                self.game.Player.headDraw(item['name'])
+    def update(self, index):
+        if self.dead:
+            return 1
+        self.pos[0] += self.vector[0]
+        self.pos[1] += self.vector[1]
+        self.rect.x += self.vector[0]
+        self.rect.y += self.vector[1]
+        if sum(self.vector):
+            if self.vector[0] < 0:
+                self.vector[0] += 1
+            elif self.vector[0] > 0:
+                self.vector[0] -= 1
+            if self.vector[1] < 0:
+                self.vector[1] += 1
+            elif self.vector[1] > 0:
+                self.vector[1] -= 1
+        if self.game.Player.collides(self.rect) and not sum(self.vector):
+            self.game.Invent.add(self.name)
+            self.game.Player.headDraw(self.name)
+            self.dead = 1
 
-    def blitItems(self):
-        for item in self.world_items:
-            self.game.screen.blit(item['image'], self.game.off(item['pos']))
+    def blit(self):
+        self.game.screen.blit(self.image, self.game.off(self.pos))
 
     def clear(self):
         self.world_items = []

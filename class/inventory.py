@@ -35,7 +35,7 @@ class Invent():
         for index, slot in enumerate(self.slots):
             if self.shown:
                 if slot:
-                    self.blit_items.append(self.game.ItemHandler.load(slot[0], world=0))
+                    self.blit_items.append(self.game.Item(self.game, slot[0], world=0))
 
     def add(self, item_name, slotno=-1):
         if self.hasItem(item_name):
@@ -106,13 +106,18 @@ class Invent():
         if self.shown:
             self.blitInvent()
 
+    def getSurface(self, name):
+        name = name.lower().replace(' ', '_') + '.png'
+        return pygame.image.load(join(self.game.main_path, 'rec', 'items', name))
+
+
     def loadInventSurfaces(self):
         self.item_surfaces = []
         self.item_dummy_names = []
         self.item_rects = []
         for slot in self.slots:
             if slot:
-                surf = self.game.ItemHandler.getSurface(slot[0])
+                surf = self.getSurface(slot[0])
                 self.item_surfaces.append(surf)
                 self.item_rects.append(surf.get_rect())
                 self.item_dummy_names.append(slot[0])
@@ -144,7 +149,7 @@ class Invent():
     def testThrow(self, mpos):
         if not self.inv_rect.collidepoint(mpos):
             for _ in xrange(self.in_hand[2]):
-                self.game.ItemHandler.load(self.in_hand[0], pos=self.game.Player.getPos(offset=[-1, -1]), spin=1, world=1)
+                self.game.Item(self.game, self.in_hand[0], pos=self.game.Player.getPos(offset=[-1, -1]), spin=1, world=1)
             self.in_hand = []
         else:
             new_hand = []
@@ -152,7 +157,7 @@ class Invent():
                 if rect.collidepoint(mpos):
                     if self.slots[index]:
                         # item already in slot, add it to the hand and remove
-                        new_hand = [self.slots[index][0], self.game.ItemHandler.getSurface(self.slots[index][0]), self.slots[index][1]]
+                        new_hand = [self.slots[index][0], self.getSurface(self.slots[index][0]), self.slots[index][1]]
                         self.rem(index)
                     for _ in xrange(self.in_hand[2]):
                         self.add(self.in_hand[0], slotno=index)

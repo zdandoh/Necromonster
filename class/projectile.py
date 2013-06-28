@@ -31,9 +31,7 @@ class Projectile():
             self.rect.x = self.pos[0]
             self.rect.y = self.pos[1]
 
-    def update(self):
-        if self.dead:
-            self.game.EntityHandler.projectiles
+    def update(self, index):
         while self.collides_with_player:
             if self.rect.colliderect(self.game.Player.getRect()):
                 self.add()

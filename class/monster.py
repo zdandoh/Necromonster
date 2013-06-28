@@ -38,9 +38,8 @@ class Monster():
 
     def onDeath(self, index, drop=1):
         if self.loot and drop == 1:
-            self.game.ItemHandler.load(self.loot, pos=[self.rect.x, self.rect.y], spin=1, world=1)
+            self.game.Item(self.game, self.loot, pos=[self.rect.x, self.rect.y], spin=1, world=1)
         self.dead = 1
-
 
     def takeDamage(self, index, damage):
         damage -= self.defense
@@ -50,7 +49,7 @@ class Monster():
         if self.hp <= 0:
             self.onDeath(index)
 
-    def update(self):
+    def update(self, index):
         self.moving, self.movements, self.rect, self.face = getattr(pathfind, self.path)([self.moving, self.movements, self.rect, self.face], self.game)
         self.pos[0] = self.rect.x
         self.pos[1] = self.rect.y

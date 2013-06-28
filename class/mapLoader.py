@@ -48,6 +48,5 @@ def load(map_name, game, new_pos = 0, face = 0):
                 surfaces.append([img.convert_alpha(), literal_eval(pos_dict[fi][2]), 3, pygame.mask.from_surface(img)])
         if time == 1:
             surfaces.append('player')
-    game.ItemHandler.clear()
     game.EntityHandler.clear()
     return surfaces

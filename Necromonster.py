@@ -35,8 +35,8 @@ class Necro():
         self.EntityHandler = EntityHandler(self)
         self.Projectile = Projectile
         self.Monster = Monster
+        self.Item = Item
         self.Player = Player(self)
-        self.ItemHandler = Item(self)
         self.Invent = Invent(self)
         self.HUD = HUD(self)
 
@@ -85,7 +85,6 @@ class Necro():
         self.keys_pressed = pygame.key.get_pressed()
         self.clock.tick()
         self.EntityHandler.updateAll()
-        self.ItemHandler.update()
         self.Invent.update()
         for index, text in enumerate(self.text_list):
             if text[2] < time():
@@ -117,7 +116,6 @@ class Necro():
                 self.screen.blit(surf[0], self.off(surf[1]))
         for text in self.text_list:
             self.screen.blit(text[0], text[1])
-        self.ItemHandler.blitItems()
         if self.Invent.shown:
             self.Invent.draw()
         if self.DEBUG:
