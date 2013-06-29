@@ -62,6 +62,6 @@ class Monster():
     def blit(self):
         if self.hp < self.maxhp:
             pos = [self.pos[0], self.pos[1] - self.size[1] / 2]
-            rect(self.game.screen, (255, 0, 0), (self.game.off(pos), (self.size[0], 5)))
-            rect(self.game.screen, (0, 255, 0), (self.game.off(pos), (self.size[0] * (self.hp / self.maxhp), 5)))
+            rect(self.game.screen, (200, 50, 0), (self.game.off(pos), (self.size[0], 5)))
+            rect(self.game.screen, (0, 200, 50), (self.game.off(pos), (self.size[0] * (self.hp / self.maxhp), 5)))
         self.game.screen.blit(self.frames['%s%s.png' % (self.face, self.frameno)], self.game.off([self.rect.x, self.rect.y]))
