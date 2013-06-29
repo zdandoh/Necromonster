@@ -26,33 +26,39 @@ def onMove(rect, game):
 
 def neutral(monster, game):
     # 1, 2, 3, 4; up, left, down, right
-    if monster[0]:
+    if monster.moving:
         change = [0, 0]
-        if monster[1] > 20:
-            monster[0] = 0
-            monster[1] = 0
-        elif monster[0] == 'back':
+        if monster.movements > 20:
+            monster.moving = 0
+            monster.movements = 0
+        elif monster.moving == 'back':
             change = [0, -2]
-        elif monster[0] == 'left':
+        elif monster.moving == 'left':
             change = [-2, 0]
-        elif monster[0] == 'front':
+        elif monster.moving == 'front':
             change = [0, 2]
-        elif monster[0] == 'right':
+        elif monster.moving == 'right':
             change = [2, 0]
         else:
             raise BaseException
-        temp_rect = Rect(monster[2])
+        temp_rect = Rect(monster.rect)
 
         temp_rect.x += change[0]
         temp_rect.y += change[1]
         if onMove(temp_rect, game):
             pass
         else:
-            monster[2] = temp_rect
-        monster[1] += 1
+            monster.rect = temp_rect
+        monster.movements += 1
     else:
         if random.randrange(0, 150) == 50:
             direc = getRandDirec()
-            monster[3] = direc
-            monster[0] = direc
+            monster.face = direc
+            monster.moving = direc
+    return monster
+
+def aggressive(monster, game):
+    speed = 2
+    current_pos = monster.pos
+    goal_pos = game.Player.getPos()
     return monster

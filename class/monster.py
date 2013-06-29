@@ -1,5 +1,6 @@
 import pathfind
 import os
+from random import randrange
 from pygame.image import load
 from pygame.draw import rect
 
@@ -45,6 +46,7 @@ class Monster():
         self.dead = 1
 
     def takeDamage(self, index, damage):
+        damage += randrange(0, damage / 3)
         damage -= self.defense
         if damage <= 0:
             damage = 1
@@ -53,7 +55,7 @@ class Monster():
             self.onDeath(index)
 
     def update(self, index):
-        self.moving, self.movements, self.rect, self.face = getattr(pathfind, self.path)([self.moving, self.movements, self.rect, self.face], self.game)
+        getattr(pathfind, self.path)(self, self.game)
         self.pos[0] = self.rect.x
         self.pos[1] = self.rect.y
         if self.dead:

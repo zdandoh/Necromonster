@@ -49,4 +49,13 @@ def load(map_name, game, new_pos = 0, face = 0):
         if time == 1:
             surfaces.append('player')
     game.EntityHandler.clear()
+    game.blit_list = surfaces
+    game.pixel_grid = getPixelGrid(game)
     return surfaces
+
+def getPixelGrid(game):
+    screen = pygame.Surface(game.screen_res)
+    for img in game.blit_list:
+        if img != 'LINK' and img != 'player':
+            screen.blit(img[0], img[1])
+    return pygame.surfarray.array2d(screen)

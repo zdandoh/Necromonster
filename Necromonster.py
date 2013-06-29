@@ -51,7 +51,9 @@ class Necro():
         # get the map that you are on
         self.blit_list = mapLoader.load('home', self)
 
-        self.EntityHandler.monsters.append(self.Monster(self, 'goop', [300, 300], 2, 'neutral'))
+        self.EntityHandler.monsters.append(self.Monster(self, 'goop', [300, 300], 2, 'aggressive'))
+
+        mapLoader.getPixelGrid(self)
 
         while 1:
             self.Loop()
