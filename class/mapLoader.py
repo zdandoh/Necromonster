@@ -1,4 +1,6 @@
 import pygame
+import numpy
+
 import os
 from ast import literal_eval
 
@@ -11,7 +13,7 @@ class Grid():
                 surf = pygame.Surface([rect.w + 30, rect.h + 30])
                 surf.fill((255, 0, 0))
                 screen.blit(surf, (rect.x - 20, rect.y - 20))
-        self.grid = pygame.surfarray.array2d(screen)
+        self.grid = pygame.surfarray.pixels2d(screen)
         self.compress()
 
     def getPix(self, x, y):
@@ -20,24 +22,15 @@ class Grid():
     def setNode(self, x, y, val):
         self.nodes[y][x] = val
 
-    def getNode(self, x, y):
-        begin_x = x * 10
-        begin_y = y * 10
-        pix_gotten = 0
-        block_volume = 0
-        for y_count in xrange(10):
-            for x_count in xrange(10):
-                if self.getPix(begin_x + x_count, begin_y + y_count):
-                    block_volume += 1
-        return block_volume
-
     def compress(self):
         self.nodes = [0 for x in xrange(self.game.screen_res[0] / 10)]
         self.nodes = [list(self.nodes) for x in xrange(self.game.screen_res[1] / 10)]
         for row_index, row in enumerate(self.nodes):
             for node_index, node in enumerate(row):
-                if self.getNode(node_index, row_index):
-                    self.nodes[row_index][node_index] = 1
+                begin_x = node_index * 10
+                begin_y = row_index * 10
+                if numpy.count_nonzero(self.grid[begin_y:begin_y + 10, begin_x:begin_x + 10]):
+                    self.nodes[node_index][row_index] = 1
 
 def load(map_name, game, new_pos = 0, face = 0):
     surfaces = []
