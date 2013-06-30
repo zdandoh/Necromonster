@@ -1,4 +1,6 @@
 import random
+import sys
+import time
 from pygame.rect import Rect
 
 def getRandDirec():
@@ -58,7 +60,72 @@ def neutral(monster, game):
     return monster
 
 def aggressive(monster, game):
-    speed = 2
-    current_pos = monster.pos
-    goal_pos = game.Player.getPos()
+    if monster.path_found:
+        print 'followed'
+        #old path is still valid, follow it
+        monster.next_node = monster.path_found.pop(0)
+        node_diff = [(monster.node[0] - monster.next_node[0]) * 10, (monster.node[1] - monster.next_node[1]) * 10]
+        if not sum(node_diff):
+            monster.next_node = 0
+            return monster
+        old_node = monster.node
+        monster.setNode(monster.next_node)
+        if onMove(monster.rect, game):
+            monster.setNode(old_node)
+            monster.path_again = 0
+    elif not monster.path_found and monster.path_again:
+        print 'pathfound'
+        #calculate a new path
+        monster.player_place = game.Player.getNode()
+        monster.path_found = astar(game.Grid.nodes, (monster.pos[0] / 10, monster.pos[1] / 10), monster.player_place)
+        if not monster.path_found:
+            monster.path_again = 0
+    elif not monster.path_again:
+        print 'waiting'
+        if not monster.player_place == game.Player.getNode():
+            monster.path_again = 1
+        #the monster is at his location, or there is no path
+
     return monster
+
+def astar(m, startp, endp):
+    width, height = 90, 65
+    start_x, start_y = startp
+    end_x, end_y = endp
+    node = [None, start_x, start_y, 0, abs(end_x - start_x) + abs(end_y - start_y)]
+    closed_list = [node]
+    c_list = {}
+    c_list[start_y * width + start_x] = node
+    k = 0
+    while c_list:
+        node = closed_list.pop(0)
+        x = node[1]
+        y = node[2]
+        l = node[3] + 1
+        k += 1
+        if k & 1:
+            neighbours = ((x, y + 1), (x, y - 1), (x + 1, y), (x - 1, y))
+        else:
+            neighbours = ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1))
+        for nx, ny in neighbours:
+            if nx == end_x and ny == end_y:
+                path = [(end_x, end_y)]
+                while node:
+                    path.append((node[1], node[2]))
+                    node = node[0]
+                return list(reversed(path))
+            if 0 <= nx < width and 0 <= ny < height and m[ny][nx] == 0:
+                if ny * width + nx not in c_list:
+                    nn = (node, nx, ny, l, l + abs(nx - end_x) + abs(ny - end_y))
+                    c_list[ny * width + nx] = nn
+                    #adding to closelist ,using binary heap
+                    nni = len(closed_list)
+                    closed_list.append(nn)
+                    while nni:
+                        i = (nni - 1) >> 1
+                        if closed_list[i][4] > nn[4]:
+                            closed_list[i], closed_list[nni] = nn, closed_list[i]
+                            nni = i
+                        else:
+                            break
+    return 0

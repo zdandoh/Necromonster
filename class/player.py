@@ -27,8 +27,8 @@ class Player():
         for fi in os.listdir(os.path.join(self.game.main_path, 'rec', 'char')):
             self.player_frames[fi] = pygame.image.load(os.path.join(self.game.main_path, 'rec', 'char', fi)).convert_alpha()
 
-        self.player_r.x = 450
-        self.player_r.y = 528
+        self.player_r.x = 610
+        self.player_r.y = 280
 
         # stats
         self.player_stats = {}
@@ -138,6 +138,9 @@ class Player():
 
     def getPos(self, offset=[0, 0]):
         return [self.player_r.x + offset[0], self.player_r.y + offset[1]]
+
+    def getNode(self):
+        return self.player_r.x / 10, self.player_r.y / 10
 
     def setFace(self, face, state=1):
         face = face.replace('\r', '')

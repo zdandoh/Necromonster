@@ -18,6 +18,11 @@ class Monster():
         self.pos = pos
         self.movements = 0
         self.moving = '' # 1, 2, 3, 4; up, left, down, right
+        self.path_found = 0
+        self.path_again = 1
+        self.player_place = self.game.Player.getNode()
+        self.node = self.getNode()
+        self.next_node = 0
         self.face = 'front'
         self.frameno = 1
         self.dead = 0
@@ -33,6 +38,15 @@ class Monster():
     def getStats(self, difficulty):
         # stat format [level, health, attack, defense]
         return [difficulty, difficulty * 5, difficulty, difficulty]
+
+    def getNode(self):
+        # gets the map node that the monster is in
+        return self.pos[0] / 10, self.pos[1] / 10
+
+    def setNode(self, node):
+        self.node = self.getNode()
+        self.rect.x = node[0] * 10
+        self.rect.y = node[1] * 10
 
     def loadFrames(self, name):
         frames = {}

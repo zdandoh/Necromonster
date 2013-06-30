@@ -49,11 +49,9 @@ class Necro():
         self.default_font = pygame.font.SysFont(None, 20)
 
         # get the map that you are on
-        self.blit_list = mapLoader.load('home', self)
+        self.blit_list = mapLoader.load('pathing', self)
 
         self.EntityHandler.monsters.append(self.Monster(self, 'goop', [300, 300], 2, 'aggressive'))
-
-        mapLoader.getPixelGrid(self)
 
         while 1:
             self.Loop()
