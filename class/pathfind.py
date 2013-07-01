@@ -1,6 +1,5 @@
 import random
-import sys
-import time
+import math
 from pygame.rect import Rect
 
 def getRandDirec():
@@ -59,34 +58,50 @@ def neutral(monster, game):
             monster.moving = direc
     return monster
 
+def getSign(num):
+    if num > 0:
+        return 1
+    elif num < 0:
+        return -1
+    else:
+        return 0
+
 def aggressive(monster, game):
-    if monster.path_found:
-        print 'followed'
-        #old path is still valid, follow it
-        monster.next_node = monster.path_found.pop(0)
-        node_diff = [(monster.node[0] - monster.next_node[0]) * 10, (monster.node[1] - monster.next_node[1]) * 10]
-        if not sum(node_diff):
-            monster.next_node = 0
-            return monster
-        old_node = monster.node
-        monster.setNode(monster.next_node)
+    if monster.path_progress:
+        move = monster.path_progress.pop()
+        monster.rect.x += move[0]
+        monster.rect.y += move[1]
         if onMove(monster.rect, game):
-            monster.setNode(old_node)
-            monster.path_again = 0
-    elif not monster.path_found and monster.path_again:
-        print 'pathfound'
+            monster.rect.x -= move[0]
+            monster.rect.y -= move[1]
+    else:
         #calculate a new path
         monster.player_place = game.Player.getNode()
         monster.path_found = astar(game.Grid.nodes, (monster.pos[0] / 10, monster.pos[1] / 10), monster.player_place)
-        if not monster.path_found:
-            monster.path_again = 0
-    elif not monster.path_again:
-        print 'waiting'
-        if not monster.player_place == game.Player.getNode():
-            monster.path_again = 1
-        #the monster is at his location, or there is no path
-
+        convertPath(monster)
     return monster
+
+def convertPath(monster):
+    monster.path_progress = []
+    last_node = monster.getNode()
+    while monster.path_found:
+        next_node = list(monster.path_found.pop(0))
+        node_diff = [(next_node[0] - last_node[0]) * 10, (next_node[1] - last_node[1]) * 10]
+        remainders = [(abs(node_diff[0]) % monster.speed) * getSign(node_diff[0]), (abs(node_diff[1]) % monster.speed) * getSign(node_diff[1])]
+        x_moves = [monster.speed * getSign(node_diff[0]) for _ in xrange(int(abs(math.floor(node_diff[0] / monster.speed))))]
+        y_moves = [monster.speed * getSign(node_diff[1]) for i in xrange(int(abs(math.floor(node_diff[1] / monster.speed))))]
+        if getSign(node_diff[1]) < 0:
+            y_moves.pop()
+        x_moves.append(remainders[0])
+        y_moves.append(remainders[1])
+        while len(x_moves) < len(y_moves):
+            x_moves.append(0)
+        while len(x_moves) > len(y_moves):
+            y_moves.append(0)
+        monster.node_progress = zip(x_moves, y_moves)
+        monster.path_progress += monster.node_progress
+        last_node = next_node
+    monster.path_progress.reverse()
 
 def astar(m, startp, endp):
     width, height = 90, 65

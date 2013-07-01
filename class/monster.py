@@ -19,10 +19,9 @@ class Monster():
         self.movements = 0
         self.moving = '' # 1, 2, 3, 4; up, left, down, right
         self.path_found = 0
-        self.path_again = 1
         self.player_place = self.game.Player.getNode()
         self.node = self.getNode()
-        self.next_node = 0
+        self.path_progress = []
         self.face = 'front'
         self.frameno = 1
         self.dead = 0
@@ -33,15 +32,17 @@ class Monster():
         self.maxhp = float(stats[1])
         self.attack = stats[2]
         self.defense = stats[3]
+        self.speed = stats[4]
         self.loot = 'Iron Ingot'
 
     def getStats(self, difficulty):
-        # stat format [level, health, attack, defense]
-        return [difficulty, difficulty * 5, difficulty, difficulty]
+        # stat format [level, health, attack, defense, speed]
+        return [difficulty, difficulty * 5, difficulty, difficulty, 3]
 
     def getNode(self):
         # gets the map node that the monster is in
-        return self.pos[0] / 10, self.pos[1] / 10
+        self.node = self.rect.x / 10, self.rect.y / 10
+        return self.node
 
     def setNode(self, node):
         self.node = self.getNode()
