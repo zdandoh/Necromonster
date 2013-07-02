@@ -71,6 +71,16 @@ def aggressive(monster, game):
         move = monster.path_progress.pop()
         monster.rect.x += move[0]
         monster.rect.y += move[1]
+        
+        if not move[0] and move[1] <= 0:
+            monster.face = 'back'
+        elif move[0] <= 0 and not move[1]:
+            monster.face = 'left'
+        elif not move[0] and move[1] >= 0:
+            monster.face = 'front'
+        elif move[0] >= 0 and not move[1]:
+            monster.face = 'right'
+            
         if onMove(monster.rect, game):
             monster.rect.x -= move[0]
             monster.rect.y -= move[1]
