@@ -11,12 +11,12 @@ class EntityHandler():
         for index, entity in enumerate(self.all_entities):
             entity.blit()
 
-    def updateAll(self):
-        self.game.Player.update()
+    def updateAll(self, ttime):
+        self.game.Player.update(ttime)
         self.all_entities = self.world_items + self.monsters + self.projectiles
         for lst in [self.world_items, self.monsters, self.projectiles]:
             for index, entity in enumerate(lst):
-                if entity.update(index):
+                if entity.update(index, ttime):
                     del lst[index]
 
     def clear(self):

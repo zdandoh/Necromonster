@@ -26,7 +26,7 @@ class Item():
         name = name.lower().replace(' ', '_') + '.png'
         return load(join(self.game.main_path, 'rec', 'items', name))
 
-    def update(self, index):
+    def update(self, index, ttime):
         if self.dead:
             return 1
         self.pos[0] += self.vector[0]

@@ -11,6 +11,7 @@ class Editor():
     def __init__(self):
         self.bg = ''
         self.bg_path = ''
+        self.bounds = [1000, 1000]
         self.hitbox = 0
         self.link = 0
         self.moving = 0
@@ -45,23 +46,27 @@ class Editor():
         if self.bg:
             self.screen.blit(self.bg, [0, 0])
         for item in self.surface_list:
-            self.screen.blit(item[0], item[1])
+            self.screen.blit(item[0], self.off(item[1]))
         if self.hitbox:
-            mpos = pygame.mouse.get_pos()
-            pygame.draw.rect(self.screen, (255, 0, 0), pygame.Rect(self.hitbox[0], self.hitbox[1], mpos[0] - self.hitbox[0], mpos[1] - self.hitbox[1]), 3)
+            pygame.draw.rect(self.screen, (255, 0, 0), pygame.Rect(self.hitbox, [pygame.mouse.get_pos()[0] - self.hitbox[0], pygame.mouse.get_pos()[1] - self.hitbox[1]]), 3)
         if self.link:
-            mpos = pygame.mouse.get_pos()
-            pygame.draw.rect(self.screen, (0, 0, 255), pygame.Rect(self.link[0], self.link[1], mpos[0] - self.link[0], mpos[1] - self.link[1]), 3)
+            pygame.draw.rect(self.screen, (0, 0, 255), pygame.Rect(self.off(self.link), self.poff([pygame.mouse.get_pos()[0] - self.link[0], pygame.mouse.get_pos()[1] - self.link[1]])), 3)
+
         if self.moving:
-            self.screen.blit(self.surface_list[self.moving - 1][0], pygame.mouse.get_pos())
+            self.screen.blit(self.surface_list[self.moving - 1][0], self.off(pygame.mouse.get_pos()))
         for item in self.hitbox_list:
             rectloc = [item[0][0], item[0][1]]
-            rectexten = [item[1][0] - item[0][0], item[1][1] - item[0][1]]
+            rectexten = [item[1][0], item[1][1]]
             pygame.draw.rect(self.screen, (255, 0, 0), pygame.Rect(rectloc, rectexten), 3)
         for item in self.link_list:
-            pygame.draw.rect(self.screen, (0, 0, 255), pygame.Rect(item[0][0], item[0][1], item[1][0] - item[0][0], item[1][1] - item[0][1]), 3)
-        coords = self.font.render(str(pygame.mouse.get_pos()), True, (255, 255, 255))
+            rectloc = self.off([item[0][0][0], item[0][0][1]])
+            rectexten = [item[0][1][0], item[0][1][1]]
+            pygame.draw.rect(self.screen, (0, 0, 255), pygame.Rect(rectloc, rectexten), 3)
+        mpos = self.font.render(str(pygame.mouse.get_pos()), True, (255, 255, 255))
+        coords = self.font.render(str(self.movebox), True, (255, 255, 255))
         self.screen.blit(coords, (0, 0))
+        self.screen.blit(mpos, (0, 15))
+        pygame.draw.rect(self.screen, (0, 255, 0), pygame.Rect(self.off([0, 0]), self.bounds), 2)
         pygame.draw.circle(self.screen, (0, 255, 0), self.off([0, 0]), 10)
 
         pygame.display.update()
@@ -94,13 +99,18 @@ class Editor():
 #LINK:(RECT):NEWMAP:PLAYERFACE:PLAYERCOORDS
 
 ''')
+        posfi.write('BOUNDS:%s\n' % self.bounds)
         for index, item in enumerate(self.surface_list):
             posfi.write('SURFACE:%s:%s:ground%s\n' % (self.surface_paths[index], item[1], item[2]))
         for index, hitbox in enumerate(self.hitbox_list):
-            send_tuple = str(tuple(hitbox[0]) + tuple([hitbox[1][0] - hitbox[0][0], hitbox[1][1] - hitbox[0][1]]))
+            send_tuple = pygame.Rect(tuple(hitbox[0]) + tuple([hitbox[1][0] - hitbox[0][0], hitbox[1][1] - hitbox[0][1]]))
+            #send_tuple.x -= self.movebox[0]
+            #send_tuple.y -= self.movebox[1]
             posfi.write('SOLID:%s\n' % send_tuple)
         for index, link in enumerate(self.link_list):
-            send_tuple = str(tuple(link[0]) + tuple([link[1][0] - link[0][0], link[1][1] - link[0][1]]))
+            send_tuple = pygame.Rect(tuple(link[0]) + tuple([link[1][0] - link[0][0], link[1][1] - link[0][1]]))
+            #send_tuple.x -= self.movebox[0]
+            #send_tuple.y -= self.movebox[1]
             posfi.write('LINK:%s:%s:%s:%s\n' % (send_tuple, link[2], link[3], link[4]))
         print 'Export done'
 
@@ -141,8 +151,8 @@ class Editor():
                                 self.moving = index + 1
                 elif event.key == K_h:
                     if self.hitbox:
-                        print self.hitbox, pygame.mouse.get_pos()
-                        self.hitbox_list.append([list(self.hitbox), pygame.mouse.get_pos()])
+                        self.off(self.hitbox), self.poff([pygame.mouse.get_pos()[0] - self.hitbox[0], pygame.mouse.get_pos()[1] - self.hitbox[1]])
+                        self.hitbox_list.append([self.off(self.hitbox), self.poff([pygame.mouse.get_pos()[0] - self.hitbox[0], pygame.mouse.get_pos()[1] - self.hitbox[1]])])
                         self.hitbox = 0
                     else:
                         self.hitbox = pygame.mouse.get_pos()
@@ -152,14 +162,27 @@ class Editor():
                         map = inputbox.ask(self.screen, 'Map to link')
                         ppos = inputbox.ask(self.screen, 'New player pos')
                         pface = inputbox.ask(self.screen, 'New player face')
-                        self.link_list.append([list(self.link), mpos, map, ppos, pface])
+                        lol = ([self.off(self.link), self.poff([pygame.mouse.get_pos()[0] - self.link[0], pygame.mouse.get_pos()[1] - self.link[1]])])
+                        self.hitbox = 0
+                        self.link_list.append([lol, mpos, map, ppos, pface])
                         self.link = 0
                     else:
                         self.link = pygame.mouse.get_pos()
+                elif event.key == K_s:
+                    # set boundaries
+                    bx = inputbox.ask(self.screen, 'Border Length: ')
+                    by = inputbox.ask(self.screen, 'Border Height: ')
+                    self.bounds = [int(bx), int(by)]
+                    print self.bounds
 
     def off(self, coords):
         newx = coords[0] - self.movebox[0]
         newy = coords[1] - self.movebox[1]
+        return [newx, newy]
+
+    def poff(self, coords):
+        newx = coords[0] + self.movebox[0]
+        newy = coords[1] + self.movebox[1]
         return [newx, newy]
 
 Editor()

@@ -2,11 +2,13 @@ import pygame
 import numpy
 
 import os
+import time
 from ast import literal_eval
 
 class Grid():
-    def __init__(self, game):
+    def __init__(self, game, bounds):
         self.game = game
+        self.bounds = bounds
         screen = pygame.Surface(game.screen_res)
         for rect in game.solid_list:
             if rect != 'player' and rect != 'LINK':
@@ -16,6 +18,9 @@ class Grid():
         self.grid = pygame.surfarray.pixels2d(screen)
         self.compress()
 
+    def getPart(self, begin, dims):
+        return self.nodes[begin[1]:begin[1] + dims[1], begin[0]:begin[0] + dims[0]]
+
     def getPix(self, x, y):
         return self.grid[x][y]
 
@@ -23,8 +28,8 @@ class Grid():
         self.nodes[y][x] = val
 
     def compress(self):
-        self.nodes = [0 for x in xrange(self.game.screen_res[0] / 10)]
-        self.nodes = [list(self.nodes) for x in xrange(self.game.screen_res[1] / 10)]
+        self.nodes = numpy.zeros(self.bounds, dtype='uint8')
+
         for row_index, row in enumerate(self.nodes):
             for node_index, node in enumerate(row):
                 begin_x = node_index * 10
@@ -65,6 +70,9 @@ def load(map_name, game, new_pos = 0, face = 0):
         elif 'SOLID' in line:
             ln = line.split(':')
             game.solid_list.append(pygame.rect.Rect(literal_eval(ln[1])))
+        elif 'BOUNDS' in line:
+            ln = line.split(':')
+            borders = literal_eval(ln[1])
 
     # load all buildings
     tile = pygame.image.load(os.path.join(main_direc, 'tile.png')).convert()
@@ -79,5 +87,5 @@ def load(map_name, game, new_pos = 0, face = 0):
             surfaces.append('player')
     game.EntityHandler.clear()
     game.blit_list = surfaces
-    game.Grid = Grid(game)
+    game.Grid = Grid(game, borders)
     return surfaces

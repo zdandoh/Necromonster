@@ -25,7 +25,8 @@ class Player():
 
         self.player_frames = {}
         for fi in os.listdir(os.path.join(self.game.main_path, 'rec', 'char')):
-            self.player_frames[fi] = pygame.image.load(os.path.join(self.game.main_path, 'rec', 'char', fi)).convert_alpha()
+            if fi.endswith('.png'):
+                self.player_frames[fi] = pygame.image.load(os.path.join(self.game.main_path, 'rec', 'char', fi)).convert_alpha()
 
         self.player_r.x = 610
         self.player_r.y = 280
@@ -39,10 +40,12 @@ class Player():
         self.player_stats['pxp'] = 312
         self.player_stats['mxp'] = 654
         self.player_stats['attack'] = 5
+        self.speed = 250
 
 
-    def update(self):
+    def update(self, ttime):
         #Update player position based on keypresses
+        move = math.ceil(ttime / 1000. * self.speed)
         if 1 in self.game.keys_pressed:
             if self.game.keys_pressed[K_w]:
                 self.player_r.y += -2
@@ -71,6 +74,10 @@ class Player():
     def onMove(self, pos, offset, link_count = 0):
         #Collision detection run on movement
         m_rects = [x.rect for x in self.game.EntityHandler.monsters]
+        if self.player_r.x > self.game.Grid.bounds[0] or self.player_r.x <= 0:
+            self.player_r.x -= offset
+        if self.player_r.y > self.game.Grid.bounds[1] or self.player_r.y <= 0:
+            self.player_r.y -= offset
         for rect in self.game.solid_list + m_rects:
             link_active = 0
             if 'LINK' in rect:
@@ -140,7 +147,10 @@ class Player():
         return [self.player_r.x + offset[0], self.player_r.y + offset[1]]
 
     def getNode(self):
-        return self.player_r.x / 10, self.player_r.y / 10
+        return (self.player_r.x + 20) / 10, (self.player_r.y + 30) / 10
+
+    def getDistance(self, rect):
+        return math.hypot(self.player_r.x - rect.x, self.player_r.y - rect.y)
 
     def setFace(self, face, state=1):
         face = face.replace('\r', '')

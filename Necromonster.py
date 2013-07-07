@@ -1,5 +1,6 @@
 import sys
 import os
+import time
 sys.path.append('class')
 
 import pygame
@@ -49,9 +50,9 @@ class Necro():
         self.default_font = pygame.font.SysFont(None, 20)
 
         # get the map that you are on
-        self.blit_list = mapLoader.load('pathing', self)
+        self.blit_list = mapLoader.load('home', self)
 
-        self.EntityHandler.monsters.append(self.Monster(self, 'goop', [300, 300], 2, 'aggressive'))
+        self.Monster(self, 'goop', [300, 300], 3, 'aggressive')
 
         while 1:
             self.Loop()
@@ -83,9 +84,9 @@ class Necro():
 
     def Tick(self):
         # updates to player location and animation frame
+        ttime = self.clock.tick()
         self.keys_pressed = pygame.key.get_pressed()
-        self.clock.tick()
-        self.EntityHandler.updateAll()
+        self.EntityHandler.updateAll(ttime)
         self.Invent.update()
         for index, text in enumerate(self.text_list):
             if text[2] < time():

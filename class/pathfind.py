@@ -1,5 +1,6 @@
 import random
 import math
+import time
 from pygame.rect import Rect
 
 def getRandDirec():
@@ -86,9 +87,15 @@ def aggressive(monster, game):
             monster.rect.y -= move[1]
     else:
         #calculate a new path
+        if game.Player.getDistance(monster.rect) > 400:
+            return neutral(monster, game)
         monster.player_place = game.Player.getNode()
-        monster.path_found = astar(game.Grid.nodes, (monster.pos[0] / 10, monster.pos[1] / 10), monster.player_place)
+        s = time.time()
+        monster.path_found = astar(game.Grid.nodes, (monster.pos[0] / 10, monster.pos[1] / 10), monster.player_place, game)
+        monster.player_node_when_pathfound = game.Player.getNode()
+        print time.time() - s
         convertPath(monster)
+        return aggressive(monster, game)
     return monster
 
 def convertPath(monster):
@@ -113,8 +120,8 @@ def convertPath(monster):
         last_node = next_node
     monster.path_progress.reverse()
 
-def astar(m, startp, endp):
-    width, height = 90, 65
+def astar(m, startp, endp, game):
+    width, height = game.Grid.bounds
     start_x, start_y = startp
     end_x, end_y = endp
     node = [None, start_x, start_y, 0, abs(end_x - start_x) + abs(end_y - start_y)]

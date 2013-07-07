@@ -17,14 +17,17 @@ class Monster():
         self.rect.y = pos[1]
         self.pos = pos
         self.movements = 0
-        self.moving = '' # 1, 2, 3, 4; up, left, down, right
-        self.path_found = 0
-        self.player_place = self.game.Player.getNode()
-        self.node = self.getNode()
-        self.path_progress = []
         self.face = 'front'
         self.frameno = 1
         self.dead = 0
+
+        # pathfinding vars
+        self.movements = 0
+        self.moving = '' # 1, 2, 3, 4; up, left, down, right
+        self.path_found = 0
+        self.initial_path = 1
+        self.node = self.getNode()
+        self.path_progress = []
 
         stats = self.getStats(difficulty)
         self.level = stats[0]
@@ -34,6 +37,8 @@ class Monster():
         self.defense = stats[3]
         self.speed = stats[4]
         self.loot = 'Iron Ingot'
+
+        self.game.EntityHandler.monsters.append(self)
 
     def getStats(self, difficulty):
         # stat format [level, health, attack, defense, speed]
@@ -69,7 +74,7 @@ class Monster():
         if self.hp <= 0:
             self.onDeath(index)
 
-    def update(self, index):
+    def update(self, index, ttime):
         getattr(pathfind, self.path)(self, self.game)
         self.pos[0] = self.rect.x
         self.pos[1] = self.rect.y
