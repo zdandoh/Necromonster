@@ -28,13 +28,14 @@ class Grid():
         self.nodes[y][x] = val
 
     def compress(self):
-        self.nodes = numpy.zeros(self.bounds, dtype='uint8')
+        print [self.bounds[0] / 10 + 1, self.bounds[1] / 10 + 1]
+        self.nodes = numpy.zeros([self.bounds[0] / 10 + 10, self.bounds[1] / 10 + 10], dtype='uint8')
 
         for row_index, row in enumerate(self.nodes):
             for node_index, node in enumerate(row):
                 begin_x = node_index * 10
                 begin_y = row_index * 10
-                if numpy.count_nonzero(self.grid[begin_y:begin_y + 10, begin_x:begin_x + 10]):
+                if numpy.count_nonzero(self.grid[begin_y:begin_y + 10, begin_x:begin_x + 10]): # temp fix by adding 10 nodes of wiggle room
                     self.nodes[node_index][row_index] = 1
 
 def load(map_name, game, new_pos = 0, face = 0):

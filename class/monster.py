@@ -56,8 +56,8 @@ class Monster():
 
     def loadFrames(self, name):
         frames = {}
-        for fi in os.listdir(os.path.join(self.game.main_path, 'rec', 'enemy', name)):
-            frames[fi] = load(os.path.join(self.game.main_path, 'rec', 'enemy', name, fi)).convert_alpha()
+        for fi in os.listdir(os.path.join(self.game.main_path, 'rec', 'enemy', name, 'img')):
+            frames[fi] = load(os.path.join(self.game.main_path, 'rec', 'enemy', name, 'img', fi)).convert_alpha()
         return frames
 
     def onDeath(self, index, drop=1):
