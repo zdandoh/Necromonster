@@ -5,6 +5,7 @@ import mapLoader
 
 import math
 import os
+from random import randrange
 from time import time
 from ast import literal_eval
 
@@ -13,7 +14,8 @@ class Player():
         self.game = game
         self.player = pygame.image.load(os.path.join('rec', 'char', 'back1.png'))
         self.head_font = pygame.font.Font(os.path.join('rec', 'font', 'p_head.ttf'), 15)
-        self.light_beam = pygame.image.load(os.path.join(self.game.main_path, 'rec', 'misc', 'light_beam.png')).convert_alpha()
+        self.can_move = 1
+        self.knocked = 0
         self.player_face = 'back'  # this is the part of the player that you see
         self.player_state = 1.
         self.head_drawn = 0
@@ -40,13 +42,12 @@ class Player():
         self.player_stats['pxp'] = 312
         self.player_stats['mxp'] = 654
         self.player_stats['attack'] = 5
+        self.player_stats['defense'] = 3
         self.speed = 250
-
 
     def update(self, ttime):
         #Update player position based on keypresses
-        move = math.ceil(ttime / 1000. * self.speed)
-        if 1 in self.game.keys_pressed:
+        if 1 in self.game.keys_pressed and self.can_move:
             if self.game.keys_pressed[K_w]:
                 self.player_r.y += -2
                 self.onMove(1, -2)
@@ -67,7 +68,7 @@ class Player():
             self.player_state += 0.15
             if self.player_state >= 4:
                 self.player_state = 1
-        if not self.game.keys_pressed[K_w] and not self.game.keys_pressed[K_a] and not self.game.keys_pressed[K_s] and not self.game.keys_pressed[K_d]:
+        if not self.game.keys_pressed[K_w] and not self.game.keys_pressed[K_a] and not self.game.keys_pressed[K_s] and not self.game.keys_pressed[K_d] and self.can_move:
             self.player_state = 1
         self.player = self.player_frames['%s%s.png' % (self.player_face, int(self.player_state))]
 
@@ -154,7 +155,8 @@ class Player():
 
     def setFace(self, face, state=1):
         face = face.replace('\r', '')
-        self.player_face = face
+        if face:
+            self.player_face = face
 
     def attack(self, mpos):
         # (y - y) / (x - x)
@@ -175,6 +177,12 @@ class Player():
         bullet_vector = [direction[0] * speed, direction[1] * speed]
 
         self.game.EntityHandler.projectiles.append(self.game.Projectile(self.game, self.player_stats['attack'], self.getDegrees(mpos), self.getPos(offset=[20, 30]), bullet_vector, speed, range, os.path.join(self.game.main_path, 'rec', 'weapon', 'posess', 'arrow.png')))
+
+    def takeDamage(self, damage):
+        damage -= self.player_stats['defense']
+        if damage <= 0:
+            damage = 1
+        self.player_stats['hp'] -= damage
 
     def blitPlayer(self):
         #Draws player and head text if it exists

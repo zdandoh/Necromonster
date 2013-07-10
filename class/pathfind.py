@@ -2,6 +2,7 @@ import random
 import math
 import time
 from pygame.rect import Rect
+from pygame.time import get_ticks
 
 def getRandDirec():
     direc = random.randrange(1, 5)
@@ -80,7 +81,14 @@ def aggressive(monster, game):
             monster.face = 'front'
         elif move[0] >= 0 and not move[1]:
             monster.face = 'right'
-            
+
+        if get_ticks() - monster.last_attack > monster.aspeed and game.Player.collides(monster.rect):
+            game.Player.takeDamage(monster.attack)
+            game.Player.can_move = 0
+            game.Player.addPos(move)
+            game.Player.state = 2
+            game.Scheduler.add('self.game.Player.can_move = 1', 200)
+            monster.last_attack = get_ticks()
         if onMove(monster.rect, game):
             monster.rect.x -= move[0]
             monster.rect.y -= move[1]

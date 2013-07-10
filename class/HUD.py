@@ -9,7 +9,7 @@ class HUD():
 
     def blitHUD(self):
         #hp bar creation
-        blit_surface = pygame.Surface((392 * (float(self.game.Player.player_stats['hp']) / self.game.Player.player_stats['maxhp']), 24), pygame.SRCALPHA)
+        blit_surface = pygame.Surface((abs(392 * (float(self.game.Player.player_stats['hp']) / self.game.Player.player_stats['maxhp'])), 24), pygame.SRCALPHA)
         blit_surface.fill((234, 0, 0, 213))
         self.game.screen.blit(blit_surface, (254, 589))
 

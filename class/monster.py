@@ -3,6 +3,7 @@ import os
 from random import randrange
 from pygame.image import load
 from pygame.draw import rect
+from pygame.time import get_ticks
 
 
 class Monster():
@@ -20,6 +21,7 @@ class Monster():
         self.face = 'front'
         self.frameno = 1
         self.dead = 0
+        self.last_attack = get_ticks()
 
         # pathfinding vars
         self.movements = 0
@@ -36,13 +38,15 @@ class Monster():
         self.attack = stats[2]
         self.defense = stats[3]
         self.speed = stats[4]
+        self.aspeed = 1000. / stats[5]
+        self.knockback = stats[6]
         self.loot = 'Iron Ingot'
 
         self.game.EntityHandler.monsters.append(self)
 
     def getStats(self, difficulty):
-        # stat format [level, health, attack, defense, speed]
-        return [difficulty, difficulty * 5, difficulty, difficulty, 3]
+        # stat format [level, health, attack, defense, speed, attacks per second, knockback]
+        return [difficulty, difficulty * 5, difficulty, difficulty, 3, 2, 20]
 
     def getNode(self):
         # gets the map node that the monster is in

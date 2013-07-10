@@ -8,6 +8,7 @@ from pygame.locals import *
 
 import mapLoader
 from EntityHandler import EntityHandler
+from scheduler import Schedule
 from player import Player
 from monster import Monster
 from items import Item
@@ -34,6 +35,7 @@ class Necro():
 
         #Init custom game classes
         self.EntityHandler = EntityHandler(self)
+        self.Scheduler = Schedule(self)
         self.Projectile = Projectile
         self.Monster = Monster
         self.Item = Item
@@ -86,6 +88,7 @@ class Necro():
         # updates to player location and animation frame
         ttime = self.clock.tick()
         self.keys_pressed = pygame.key.get_pressed()
+        self.Scheduler.update()
         self.EntityHandler.updateAll(ttime)
         self.Invent.update()
         for index, text in enumerate(self.text_list):
