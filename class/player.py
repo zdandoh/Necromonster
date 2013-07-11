@@ -180,9 +180,10 @@ class Player():
 
     def takeDamage(self, damage):
         damage -= self.player_stats['defense']
-        if damage <= 0:
-            damage = 1
-        self.player_stats['hp'] -= damage
+        if self.player_stats['hp'] > 0:
+            if damage <= 0:
+                damage = 1
+            self.player_stats['hp'] -= damage
 
     def blitPlayer(self):
         #Draws player and head text if it exists
