@@ -28,7 +28,6 @@ class Grid():
         self.nodes[y][x] = val
 
     def compress(self):
-        print [self.bounds[0] / 10 + 1, self.bounds[1] / 10 + 1]
         self.nodes = numpy.zeros([self.bounds[0] / 10 + 10, self.bounds[1] / 10 + 10], dtype='uint8')
 
         for row_index, row in enumerate(self.nodes):

@@ -11,6 +11,7 @@ class Schedule():
         self.schedule.append([code, pygame.time.get_ticks() + time])
 
     def update(self):
-        for item in self.schedule:
-            if pygame.time.get_ticks() <= item[1]:
+        for index, item in enumerate(self.schedule):
+            if pygame.time.get_ticks() >= item[1]:
                 exec(item[0])
+                self.schedule.pop(index)

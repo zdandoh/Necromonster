@@ -60,6 +60,8 @@ def neutral(monster, game):
     return monster
 
 def getSign(num):
+    if not num:
+        return 0
     if num > 0:
         return 1
     elif num < 0:
@@ -68,11 +70,13 @@ def getSign(num):
         return 0
 
 def aggressive(monster, game):
+    if not game.Player.can_move:
+        return monster
     if monster.path_progress:
         move = monster.path_progress.pop()
         monster.rect.x += move[0]
         monster.rect.y += move[1]
-        
+
         if not move[0] and move[1] <= 0:
             monster.face = 'back'
         elif move[0] <= 0 and not move[1]:
@@ -83,11 +87,17 @@ def aggressive(monster, game):
             monster.face = 'right'
 
         if get_ticks() - monster.last_attack > monster.aspeed and game.Player.collides(monster.rect):
+            #knockback
             game.Player.takeDamage(monster.attack)
             game.Player.can_move = 0
             game.Player.addPos(move)
-            game.Player.state = 2
-            game.Scheduler.add('self.game.Player.can_move = 1', 200)
+            game.Player.player_state = 2.
+            n_move = [3 * getSign(move[0]), 3 * getSign(move[1])]
+            print n_move, move
+            for i in xrange(monster.knockback):
+                game.Scheduler.add('self.game.Player.addPos({}); self.game.Player.onMove({})'.format(n_move, n_move), i * 20)
+            game.Player.addPos([-n_move[0], -n_move[1]])
+            game.Scheduler.add('self.game.Player.can_move = 1', i * 20)
             monster.last_attack = get_ticks()
         if onMove(monster.rect, game):
             monster.rect.x -= move[0]
@@ -97,10 +107,8 @@ def aggressive(monster, game):
         if game.Player.getDistance(monster.rect) > 400:
             return neutral(monster, game)
         monster.player_place = game.Player.getNode()
-        s = time.time()
         monster.path_found = astar(game.Grid.nodes, (monster.pos[0] / 10, monster.pos[1] / 10), monster.player_place, game)
         monster.player_node_when_pathfound = game.Player.getNode()
-        print time.time() - s
         convertPath(monster)
         return aggressive(monster, game)
     return monster

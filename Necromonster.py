@@ -92,9 +92,8 @@ class Necro():
         self.EntityHandler.updateAll(ttime)
         self.Invent.update()
         for index, text in enumerate(self.text_list):
-            if text[2] < time():
-                self.text_list.pop(index)
-
+            if text[2]:
+                raise DeprecationWarning
         self.last_tick = pygame.time.get_ticks()
 
     def off(self, coords):

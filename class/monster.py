@@ -46,7 +46,7 @@ class Monster():
 
     def getStats(self, difficulty):
         # stat format [level, health, attack, defense, speed, attacks per second, knockback]
-        return [difficulty, difficulty * 5, difficulty, difficulty, 3, 2, 20]
+        return [difficulty, difficulty * 5, difficulty, difficulty, 3, 2, 10]
 
     def getNode(self):
         # gets the map node that the monster is in

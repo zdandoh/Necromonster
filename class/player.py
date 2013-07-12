@@ -5,8 +5,6 @@ import mapLoader
 
 import math
 import os
-from random import randrange
-from time import time
 from ast import literal_eval
 
 class Player():
@@ -23,7 +21,7 @@ class Player():
         self.player_dims = self.player.get_size()
 
         # setup attack vars
-        self.last_attack = time()
+        self.last_attack = pygame.time.get_ticks()
 
         self.player_frames = {}
         for fi in os.listdir(os.path.join(self.game.main_path, 'rec', 'char')):
@@ -50,35 +48,35 @@ class Player():
         if 1 in self.game.keys_pressed and self.can_move:
             if self.game.keys_pressed[K_w]:
                 self.player_r.y += -2
-                self.onMove(1, -2)
+                self.onMove([0, -2])
                 self.player_face = 'back'
             if self.game.keys_pressed[K_a]:
                 self.player_r.x += -2
-                self.onMove(0, -2)
+                self.onMove([-2, 0])
                 self.player_face = 'left'
             if self.game.keys_pressed[K_s]:
                 self.player_r.y += 2
-                self.onMove(1, 2)
+                self.onMove([0, 2])
                 self.player_face = 'front'
             if self.game.keys_pressed[K_d]:
                 self.player_r.x += 2
-                self.onMove(0, 2)
+                self.onMove([2, 0])
                 self.player_face = 'right'
 
             self.player_state += 0.15
-            if self.player_state >= 4:
-                self.player_state = 1
+            if self.player_state >= 4.:
+                self.player_state = 1.
         if not self.game.keys_pressed[K_w] and not self.game.keys_pressed[K_a] and not self.game.keys_pressed[K_s] and not self.game.keys_pressed[K_d] and self.can_move:
-            self.player_state = 1
+            self.player_state = 1.
         self.player = self.player_frames['%s%s.png' % (self.player_face, int(self.player_state))]
 
-    def onMove(self, pos, offset, link_count = 0):
+    def onMove(self, offset, link_count = 0):
         #Collision detection run on movement
         m_rects = [x.rect for x in self.game.EntityHandler.monsters]
         if self.player_r.x > self.game.Grid.bounds[0] or self.player_r.x <= 0:
-            self.player_r.x -= offset
+            self.player_r.x -= offset[0]
         if self.player_r.y > self.game.Grid.bounds[1] or self.player_r.y <= 0:
-            self.player_r.y -= offset
+            self.player_r.y -= offset[1]
         for rect in self.game.solid_list + m_rects:
             link_active = 0
             if 'LINK' in rect:
@@ -90,10 +88,8 @@ class Player():
                 if link_active:
                     self.game.blit_list = mapLoader.load(link[2], self.game, new_pos = link[3], face = link[4])
                 else:
-                    if pos:
-                        self.player_r.y -= offset
-                    elif not pos:
-                        self.player_r.x -= offset
+                    self.player_r.y -= offset[1]
+                    self.player_r.x -= offset[0]
 
     def getDegrees(self, mpos):
         ppos = self.game.center_point
@@ -128,11 +124,16 @@ class Player():
     def headDraw(self, text, dur=3):
         #Draw text at head of player
         font_render = self.head_font.render(text, True, (255, 255, 255))
-        self.head_drawn = [font_render, self.game.off([self.player_r.x - font_render.get_size()[0] / 2 + self.player_dims[0] / 2, self.player_r.y - 25]), time() + dur]
+        self.head_drawn = [font_render, self.game.off([self.player_r.x - font_render.get_size()[0] / 2 + self.player_dims[0] / 2, self.player_r.y - 25]), pygame.time.get_ticks() + dur]
+        self.game.Scheduler.add('self.game.Player.head_drawn = ""', dur * 1000)
 
     def addPos(self, move):
         self.player_r.x += move[0]
         self.player_r.y += move[1]
+
+    def move(self, change):
+        self.addPos(change)
+        self.onMove(change)
 
     def collides(self, rect):
         return self.player_r.colliderect(rect)
@@ -188,8 +189,5 @@ class Player():
     def blitPlayer(self):
         #Draws player and head text if it exists
         if self.head_drawn:
-            if self.head_drawn[2] < time():
-                self.head_drawn = 0
-            else:
-                self.game.screen.blit(self.head_drawn[0], self.head_drawn[1])
+            self.game.screen.blit(self.head_drawn[0], self.head_drawn[1])
         self.game.screen.blit(self.player, self.game.off([self.player_r.x, self.player_r.y]))
