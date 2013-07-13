@@ -28,8 +28,8 @@ class Player():
             if fi.endswith('.png'):
                 self.player_frames[fi] = pygame.image.load(os.path.join(self.game.main_path, 'rec', 'char', fi)).convert_alpha()
 
-        self.player_r.x = 610
-        self.player_r.y = 280
+        self.player_r.x = 450
+        self.player_r.y = 650
 
         # stats
         self.player_stats = {}
