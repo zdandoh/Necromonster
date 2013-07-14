@@ -55,7 +55,7 @@ class Editor():
         if self.moving:
             self.screen.blit(self.surface_list[self.moving - 1][0], self.off(pygame.mouse.get_pos()))
         for item in self.hitbox_list:
-            rectloc = [item[0][0], item[0][1]]
+            rectloc = self.off([item[0][0], item[0][1]])
             rectexten = [item[1][0], item[1][1]]
             pygame.draw.rect(self.screen, (255, 0, 0), pygame.Rect(rectloc, rectexten), 3)
         for item in self.link_list:
