@@ -1,4 +1,4 @@
-A 2D topdown 2x RPG. Requires the pygame package to run.
+A 2D topdown 2x RPG. Requires pygame and numpy to run.
 
 Pretty much it's one of those whole the kingdom is experiencing dark times things in medieval times. A bunch of monsters are attacking people in the towns and no one in the kingdom knows why, or can stop the attacks. Everyone looks to the court wizard to explain things, but he can't. As things get progressively worse, tensions build in the kingdom and the court wizard is banished for being unable to locate the source of the problem.
 He wanders the the land until he comes across a really old decrepit tower (stone).

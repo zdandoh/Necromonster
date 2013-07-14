@@ -171,13 +171,13 @@ class Player():
         else:
             self.setFace('back')
         speed = 4.
-        range = 2000
+        range = 200
         distance = [mpos[0] - self.game.center_point[0], mpos[1] - self.game.center_point[1]]
         norm = math.sqrt(distance[0] ** 2 + distance[1] ** 2)
         direction = [distance[0] / norm, distance[1 ] / norm]
         bullet_vector = [direction[0] * speed, direction[1] * speed]
 
-        self.game.EntityHandler.projectiles.append(self.game.Projectile(self.game, self.player_stats['attack'], self.getDegrees(mpos), self.getPos(offset=[20, 30]), bullet_vector, speed, range, os.path.join(self.game.main_path, 'rec', 'weapon', 'posess', 'arrow.png')))
+        self.game.Projectile(self.game, self.player_stats['attack'], self.getDegrees(mpos), self.getPos(offset=[20, 30]), bullet_vector, speed, range, os.path.join(self.game.main_path, 'rec', 'weapon', 'rusty_sword', '1.png'))
 
     def takeDamage(self, damage):
         damage -= self.player_stats['defense']
