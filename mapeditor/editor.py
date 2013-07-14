@@ -44,7 +44,7 @@ class Editor():
     def Draw(self):
         self.screen.fill((0, 0, 0))
         if self.bg:
-            self.screen.blit(self.bg, [0, 0])
+            self.screen.blit(self.bg, self.off([0, 0]))
         for item in self.surface_list:
             self.screen.blit(item[0], self.off(item[1]))
         if self.hitbox:
@@ -53,7 +53,7 @@ class Editor():
            pygame.draw.rect(self.screen, (0, 0, 255), pygame.Rect((self.link), ([pygame.mouse.get_pos()[0] - self.link[0], pygame.mouse.get_pos()[1] - self.link[1]])), 3)
 
         if self.moving:
-            self.screen.blit(self.surface_list[self.moving - 1][0], self.off(pygame.mouse.get_pos()))
+            self.screen.blit(self.surface_list[self.moving - 1][0], (pygame.mouse.get_pos()))
         for item in self.hitbox_list:
             rectloc = self.off([item[0][0], item[0][1]])
             rectexten = [item[1][0], item[1][1]]
@@ -140,14 +140,14 @@ class Editor():
                         pass
                 elif event.key == K_m:
                     if self.moving:
-                        self.surface_list[self.moving - 1][1] = list(pygame.mouse.get_pos())
+                        self.surface_list[self.moving - 1][1] = list(self.poff(pygame.mouse.get_pos()))
                         self.moving = 0
                     else:
                         for index, item in enumerate(self.surface_list):
                             surf = item[0].get_rect()
                             surf.x = item[1][0]
                             surf.y = item[1][1]
-                            if surf.collidepoint(pygame.mouse.get_pos()):
+                            if surf.collidepoint(self.poff(pygame.mouse.get_pos())):
                                 self.moving = index + 1
                 elif event.key == K_h:
                     if self.hitbox:
