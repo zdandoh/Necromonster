@@ -70,8 +70,6 @@ def getSign(num):
         return 0
 
 def aggressive(monster, game):
-    if not game.Player.can_move:
-        return monster
     if monster.path_progress:
         move = monster.path_progress.pop()
         monster.rect.x += move[0]
@@ -93,7 +91,6 @@ def aggressive(monster, game):
             game.Player.addPos(move)
             game.Player.player_state = 2.
             n_move = [3 * getSign(move[0]), 3 * getSign(move[1])]
-            print n_move, move
             for i in xrange(monster.knockback):
                 game.Scheduler.add('self.game.Player.addPos({}); self.game.Player.onMove({})'.format(n_move, n_move), i * 20)
             game.Player.addPos([-n_move[0], -n_move[1]])
