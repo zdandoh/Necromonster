@@ -14,6 +14,7 @@ class Editor():
         self.bounds = [1000, 1000]
         self.hitbox = 0
         self.link = 0
+        self.copying = 0
         self.moving = 0
         self.surface_list = []
         self.surface_paths = []
@@ -51,7 +52,8 @@ class Editor():
             pygame.draw.rect(self.screen, (255, 0, 0), pygame.Rect((self.hitbox),([pygame.mouse.get_pos()[0]-self.hitbox[0],pygame.mouse.get_pos()[1]-self.hitbox[1]])), 3)
         if self.link:
            pygame.draw.rect(self.screen, (0, 0, 255), pygame.Rect((self.link), ([pygame.mouse.get_pos()[0] - self.link[0], pygame.mouse.get_pos()[1] - self.link[1]])), 3)
-
+        if self.copying:
+            self.screen.blit(self.surface_list[self.copying - 1][0], (pygame.mouse.get_pos()))
         if self.moving:
             self.screen.blit(self.surface_list[self.moving - 1][0], (pygame.mouse.get_pos()))
         for item in self.hitbox_list:
@@ -138,6 +140,19 @@ class Editor():
                         self.bg = img
                     else:
                         pass
+                elif event.key == K_c:
+                    if self.copying:
+                        new_coords = list(self.poff(pygame.mouse.get_pos()))
+                        self.surface_list.append([self.surface_list[self.copying - 1][0], new_coords,self.surface_list[self.copying - 1][2]])
+                        self.surface_paths.append(self.surface_paths[self.copying-1])
+                        self.copying = 0
+                    else:
+                        for index, item in enumerate(self.surface_list):
+                            new = item[0].get_rect()
+                            new.x = item[1][0]
+                            new.y = item[1][1]
+                            if new.collidepoint(self.poff(pygame.mouse.get_pos())):
+                                self.copying = index + 1
                 elif event.key == K_m:
                     if self.moving:
                         self.surface_list[self.moving - 1][1] = list(self.poff(pygame.mouse.get_pos()))
