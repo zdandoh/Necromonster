@@ -15,6 +15,7 @@ from items import Item
 from inventory import Invent
 from HUD import HUD
 from projectile import Projectile
+from weapons import Weapon
 
 pygame.init()
 
@@ -39,6 +40,7 @@ class Necro():
         self.Projectile = Projectile
         self.Monster = Monster
         self.Item = Item
+        self.Weapon = Weapon
         self.Player = Player(self)
         self.Invent = Invent(self)
         self.HUD = HUD(self)

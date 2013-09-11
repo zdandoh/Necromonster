@@ -2,8 +2,8 @@ import pygame
 import numpy
 
 import os
-import time
 from ast import literal_eval
+
 
 class Grid():
     def __init__(self, game, bounds):

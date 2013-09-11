@@ -2,7 +2,7 @@ from pygame.image import load
 from pygame.transform import rotate
 
 class Projectile():
-    def __init__(self, game, damage, degrees, pos, vector, speed, range, surf_path, type='fixed'):
+    def __init__(self, game, damage, degrees, pos, vector, speed, range, surf_path, type='dagger'):
         # general vars
         self.game = game
         self.degrees = degrees
@@ -23,8 +23,7 @@ class Projectile():
 
         #ranged update vars
         self.collides_with_player = 1
-
-        #fixed update vars
+        #dagger update vars
         self.retracting = 0
         self.start_pos = self.pos
         
@@ -44,7 +43,7 @@ class Projectile():
             self.rect.y = self.pos[1]
 
     def turn(self):
-        if self.type == 'fixed':
+        if self.type == 'dagger':
             if 135 > self.degrees >= 45:
                 self.surf = rotate(self.surf, 90)
                 self.vector = [-self.speed, 0] # left
@@ -60,7 +59,7 @@ class Projectile():
         elif self.type == 'ranged':
             self.surf = rotate(self.surf, self.degrees)
         else:
-            raise TypeError
+            raise TypeError("Can't turn {}".format(self.type))
 
     def setDead(self):
         self.dead = 1
@@ -111,6 +110,7 @@ class Projectile():
             self.travelled += 1
         else:
             self.retracting = 1
+            self.sub()
         return self.dead
 
     def blit(self):

@@ -41,6 +41,7 @@ class Player():
         self.player_stats['mxp'] = 654
         self.player_stats['attack'] = 5
         self.player_stats['defense'] = 3
+        self.weapon = self.game.Weapon('wand', self.game)
         self.speed = 250
 
     def update(self, ttime):
@@ -177,7 +178,8 @@ class Player():
         direction = [distance[0] / norm, distance[1 ] / norm]
         bullet_vector = [direction[0] * speed, direction[1] * speed]
 
-        self.game.Projectile(self.game, self.player_stats['attack'], self.getDegrees(mpos), self.getPos(offset=[20, 30]), bullet_vector, speed, range, os.path.join(self.game.main_path, 'rec', 'weapon', 'rusty_sword', 'blade.png'))
+        #self.game.Projectile(self.game, self.player_stats['attack'], self.getDegrees(mpos), self.getPos(offset=[20, 30]), bullet_vector, speed, range, os.path.join(self.game.main_path, 'rec', 'weapon', 'rusty_sword', 'blade.png'))
+        self.weapon.create()
 
     def takeDamage(self, damage):
         damage -= self.player_stats['defense']
