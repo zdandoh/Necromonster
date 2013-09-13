@@ -1,22 +1,29 @@
-from pygame.image import load
+from pygame.image import load as img_load
 from pygame.transform import rotate
+import os
 
 class Projectile():
-    def __init__(self, game, damage, degrees, pos, vector, speed, range, surf_path, type='dagger'):
+    def __init__(self, game, name, vector, damage='def', pos='def', degrees=0):
         # general vars
+        #assign defaults to a player attack
+        if damage == 'def':
+            damage = game.Player.stats['attack']
+        if pos == 'def':
+            pos = game.Player.getPos(offset=[20, 30])
         self.game = game
         self.degrees = degrees
-        self.type = type
-        self.speed = speed
+        self.speed = 5
         self.vector = vector
-        self.surf = load(surf_path)
-        self.turn()
-        self.dims = list(self.surf.get_size())
-        self.rect = self.surf.get_bounding_rect()
+        self.frames = self.loadFrames(name)
+        self.turnFrames()
+        self.frame = 0
+        self.dims = list(self.frames[self.frame].get_size())
+        self.rect = self.frames[self.frame].get_bounding_rect()
         self.range = range
         self.damage = damage
         self.dead = 0
         self.travelled = 0
+
         self.pos = [float(pos[0]) - (self.surf.get_size()[0] / 2), float(pos[1]) - (self.surf.get_size()[1])]
         self.rect.x = pos[0]
         self.rect.y = pos[1]
@@ -26,7 +33,8 @@ class Projectile():
         #dagger update vars
         self.retracting = 0
         self.start_pos = self.pos
-        
+
+        self.load(name)
         self.game.EntityHandler.projectiles.append(self)
 
     def add(self):
@@ -35,6 +43,18 @@ class Projectile():
         self.rect.x = self.pos[0]
         self.rect.y = self.pos[1]
 
+    def loadFrames(self, name):
+        frames = []
+        for fi in os.listdir(os.path.join('rec', 'projectile', name)):
+            if '.png' in fi:
+                frames.append(img_load(os.path.join('rec', 'projectile', name, fi)))
+        return frames
+
+    def load(self, name):
+        config_file = open(os.path.join('rec', 'projectile', name, 'config.py')).read()
+        exec(config_file)
+        self.frames = self.loadFrames(name)
+
     def sub(self, reps=1):
         for _ in xrange(reps):
             self.pos[0] -= self.vector[0]
@@ -42,34 +62,15 @@ class Projectile():
             self.rect.x = self.pos[0]
             self.rect.y = self.pos[1]
 
-    def turn(self):
-        if self.type == 'dagger':
-            if 135 > self.degrees >= 45:
-                self.surf = rotate(self.surf, 90)
-                self.vector = [-self.speed, 0] # left
-            elif 225 > self.degrees >= 135:
-                self.surf = rotate(self.surf, 180)
-                self.vector = [0, self.speed] # back
-            elif 315 > self.degrees >= 225:
-                self.surf = rotate(self.surf, 270)
-                self.vector = [self.speed, 0] # right
-            else:
-                self.surf = rotate(self.surf, 0)
-                self.vector = [0, -self.speed] # up
-        elif self.type == 'ranged':
-            self.surf = rotate(self.surf, self.degrees)
-        else:
-            raise TypeError("Can't turn {}".format(self.type))
+    def turnFrames(self):
+        for frame in self.frames:
+            self.surf = rotate(frame, self.degrees)
 
     def setDead(self):
         self.dead = 1
         self.game.Player.can_move = 1
 
     def update(self, index, ttime):
-        if self.type == 'ranged':
-            self.dead = self.ranged_update(index, ttime)
-        elif self.type == 'fixed':
-            self.dead = self.fixed_update(index, ttime)
         for index, monster in enumerate(self.game.EntityHandler.monsters):
             if self.rect.colliderect(monster.rect):
                 self.game.EntityHandler.monsters[index].takeDamage(index, self.damage)
@@ -114,4 +115,4 @@ class Projectile():
         return self.dead
 
     def blit(self):
-        self.game.screen.blit(self.surf, self.game.off([self.pos[0], self.pos[1]]))
+        self.game.screen.blit(self.frames[self.frame], self.game.off([self.pos[0], self.pos[1]]))

@@ -7,6 +7,7 @@ class Weapon():
         self.game = game
         #setup base vars of all weapons
         self.type = None
+        self.shown = 0
         self.projectile = False
         self.range = 50
         self.dead = 0
@@ -22,11 +23,13 @@ class Weapon():
             self.update = swordUpdate
         elif self.type == 'ranged':
             self.update = rangedUpdate
+        elif self.type == 'staff':
+            self.update = staffUpdate
         else:
             raise ValueError('No weapon of type {}'.format(self.type))
 
     def load(self, name):
-        config_file = open(os.path.join('rec', 'weapon', name, '{}.py'.format(name))).read()
+        config_file = open(os.path.join('rec', 'weapon', name, 'config.py')).read()
         exec(config_file)
         self.frames = []
         for fi in os.listdir(os.path.join('rec', 'weapon', name)):
@@ -41,7 +44,13 @@ class Weapon():
         pass
 
     def blit(self):
-        self.game.screen.blit(self.frames[self.frame], self.game.off(self.pos))
+        if self.shown:
+            self.game.screen.blit(self.frames[self.frame], self.game.off([self.game.Player.player_r.x, self.game.Player.player_r.y]))
+        else:
+            self.game.screen.blit(self.frames[self.frame], self.game.off(self.pos))
+
+    def onClick(self, game, vector):
+        game.Projectile(game, self.projectile, vector)
 
     def create(self):
         self.pos = [self.game.Player.player_r.x, self.game.Player.player_r.y]
@@ -55,4 +64,7 @@ def swordUpdate(index, ttime):
     pass
 
 def rangedUpdate(index, ttime):
+    pass
+
+def staffUpdate(index, ttime):
     pass

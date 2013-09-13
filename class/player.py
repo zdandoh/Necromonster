@@ -32,15 +32,15 @@ class Player():
         self.player_r.y = 650
 
         # stats
-        self.player_stats = {}
-        self.player_stats['hp'] = 10
-        self.player_stats['maxhp'] = 10
-        self.player_stats['maxpxp'] = 1000
-        self.player_stats['maxmxp'] = 1000
-        self.player_stats['pxp'] = 312
-        self.player_stats['mxp'] = 654
-        self.player_stats['attack'] = 5
-        self.player_stats['defense'] = 3
+        self.stats = {}
+        self.stats['hp'] = 10
+        self.stats['maxhp'] = 10
+        self.stats['maxpxp'] = 1000
+        self.stats['maxmxp'] = 1000
+        self.stats['pxp'] = 312
+        self.stats['mxp'] = 654
+        self.stats['attack'] = 5
+        self.stats['defense'] = 3
         self.weapon = self.game.Weapon('wand', self.game)
         self.speed = 250
 
@@ -70,6 +70,9 @@ class Player():
         if not self.game.keys_pressed[K_w] and not self.game.keys_pressed[K_a] and not self.game.keys_pressed[K_s] and not self.game.keys_pressed[K_d] and self.can_move:
             self.player_state = 1.
         self.player = self.player_frames['%s%s.png' % (self.player_face, int(self.player_state))]
+
+        if self.weapon.shown == 1:
+            self.weapon.blit()
 
     def onMove(self, offset, link_count = 0):
         #Collision detection run on movement
@@ -178,15 +181,14 @@ class Player():
         direction = [distance[0] / norm, distance[1 ] / norm]
         bullet_vector = [direction[0] * speed, direction[1] * speed]
 
-        #self.game.Projectile(self.game, self.player_stats['attack'], self.getDegrees(mpos), self.getPos(offset=[20, 30]), bullet_vector, speed, range, os.path.join(self.game.main_path, 'rec', 'weapon', 'rusty_sword', 'blade.png'))
-        self.weapon.create()
+        self.weapon.onClick(self.game, bullet_vector)
 
     def takeDamage(self, damage):
-        damage -= self.player_stats['defense']
-        if self.player_stats['hp'] > 0:
+        damage -= self.stats['defense']
+        if self.stats['hp'] > 0:
             if damage <= 0:
                 damage = 1
-            self.player_stats['hp'] -= damage
+            self.stats['hp'] -= damage
 
     def blitPlayer(self):
         #Draws player and head text if it exists
