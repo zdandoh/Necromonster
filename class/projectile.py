@@ -70,11 +70,15 @@ class Projectile():
         self.dead = 1
         self.game.Player.can_move = 1
 
+    def onCollide(self, game):
+        self.setDead()
+
     def update(self, index, ttime):
         for index, monster in enumerate(self.game.EntityHandler.monsters):
             if self.rect.colliderect(monster.rect):
+                self.last_monster = monster
                 self.game.EntityHandler.monsters[index].takeDamage(index, self.damage)
-                self.setDead()
+                self.onCollide(self)
                 return self.dead
         for solid in self.game.solid_list:
             if solid == 'LINK':
