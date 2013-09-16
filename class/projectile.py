@@ -81,6 +81,8 @@ class Projectile():
                 pass
             elif self.rect.colliderect(solid):
                 self.setDead()
+        self.add()
+        self.travelled += self.speed
         return self.dead
 
     def ranged_update(self, index, ttime):
