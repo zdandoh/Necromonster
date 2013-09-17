@@ -125,14 +125,6 @@ class Player():
             raise Exception('Incalculable degrees %s' % degrees)
         return int(360 - degrees)
 
-    def takeOver(self, monster):
-        #replace all player stats and frames with monster
-        self.stats['hp'] = int(monster.hp)
-        self.stats['maxhp'] = int(monster.maxhp)
-        self.stats['attack'] = int(monster.attack)
-        self.stats['defense'] = int(monster.defense)
-        self.stats['speed'] = int(monster.speed)
-
     def headDraw(self, text, dur=3):
         #Draw text at head of player
         font_render = self.head_font.render(text, True, (255, 255, 255))
