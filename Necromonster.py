@@ -34,7 +34,7 @@ class Necro():
         self.screen = pygame.display.set_mode(self.screen_res, pygame.HWSURFACE, 32)
         self.DEBUG = 1
 
-        #Init custom game classes
+        #Init custom game classe(s)
         self.EntityHandler = EntityHandler(self)
         self.Scheduler = Schedule(self)
         self.Projectile = Projectile

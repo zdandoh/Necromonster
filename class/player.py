@@ -138,7 +138,7 @@ class Player():
         self.player_frames = monster.frames
 
     def headDraw(self, text, dur=3):
-        #Draw text at head of player
+        #Draw text at head of player(s)
         font_render = self.head_font.render(text, True, (255, 255, 255))
         self.head_drawn = [font_render, self.game.off([self.player_r.x - font_render.get_size()[0] / 2 + self.player_dims[0] / 2, self.player_r.y - 25]), pygame.time.get_ticks() + dur]
         self.game.Scheduler.add('self.game.Player.head_drawn = ""', dur * 1000)
