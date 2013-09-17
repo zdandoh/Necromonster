@@ -23,6 +23,10 @@ class Monster():
         self.dead = 0
         self.last_attack = get_ticks()
 
+        #parse info.txt file
+        info = open(os.path.join('rec', 'enemy', self.name, 'info.txt')).read()
+        exec(info)
+
         # pathfinding vars
         self.movements = 0
         self.moving = '' # 1, 2, 3, 4; up, left, down, right
@@ -62,7 +66,6 @@ class Monster():
         frames = {}
         for fi in os.listdir(os.path.join(self.game.main_path, 'rec', 'enemy', name, 'img')):
             if '.png' in fi:
-                print fi
                 frames[fi] = load(os.path.join(self.game.main_path, 'rec', 'enemy', name, 'img', fi)).convert_alpha()
         return frames
 

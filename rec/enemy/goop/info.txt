@@ -1,1 +1,1 @@
-WEAPON:fist
+self.weapon = 'slime'
