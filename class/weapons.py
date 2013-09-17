@@ -5,7 +5,7 @@ from pygame.image import load as img_load
 class Weapon():
     def __init__(self, name, game):
         self.game = game
-        #setup base vars of all weapons
+        #setup base vars of all weapon(s)
         self.type = None
         self.shown = 0
         self.projectile = False

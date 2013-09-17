@@ -23,4 +23,4 @@ Controls:
 - Press m while hovering over a surface to move it. Press m again to place.
 - Press h to start drawing a new hitbox. Press h again to complete it.
 - Press l to start drawing a new link. Press l again to complete it.
-- Press e to export the map.
+- Press E to export the map.

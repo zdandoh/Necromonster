@@ -3,7 +3,7 @@ import pygame
 from math import ceil
 from os.path import join
 '''
-Class for managing invent
+Class for managing invent(s)
 Item storage format: Name:count:slotno;
 '''
 

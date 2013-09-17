@@ -27,7 +27,7 @@ def onMove(rect, game):
     return 0
 
 def neutral(monster, game):
-    # 1, 2, 3, 4; up, left, down, right
+    # 1, 2, 3, 4; up, left, down, right(s)
     if monster.moving:
         change = [0, 0]
         if monster.movements > 20:

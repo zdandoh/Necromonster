@@ -7,7 +7,7 @@ class Schedule():
         self.time = pygame.time.get_ticks()
 
     def add(self, code, time):
-        #don't forget to write code in the context of the scheduler class!
+        #don't forget to write code in the context of the scheduler class(s)!
         self.schedule.append([code, pygame.time.get_ticks() + time])
 
     def update(self):

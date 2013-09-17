@@ -40,7 +40,7 @@ def display_box(screen, message):
   pygame.display.flip()
 
 def ask(screen, question):
-  "ask(screen, question) -> answer"
+  "ask(screen, question) -> answers"
   pygame.font.init()
   current_string = []
   display_box(screen, question + ": " + string.join(current_string,""))

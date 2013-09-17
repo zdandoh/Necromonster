@@ -25,6 +25,7 @@ class Grid():
         return self.grid[x][y]
 
     def setNode(self, x, y, val):
+        #sets a node
         self.nodes[y][x] = val
 
     def compress(self):

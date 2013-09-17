@@ -74,7 +74,7 @@ class Editor():
         pygame.display.update()
 
     def Export(self):
-        print 'Exporting...'
+        print 'Exporting..'
         mapname = inputbox.ask(self.screen, 'Map Name')
         try:
             shutil.rmtree(mapname)

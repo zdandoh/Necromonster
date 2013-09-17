@@ -8,5 +8,5 @@ that lets him control one of the monsters that wander around in the night. He al
 Having no better place to stay, he decides to stay here and try to earn his role in the kingdom back by defeating the monster source.
 Pretty much the main game mechanic is that you control a monster which goes into dungeons and gets loot for you.
 There are 2 xp bars, the fast filling monster bar, and slow filling wizard bar.
-The monster levels like you'd expect, but when it dies, it's a permadeath. The wizard goes on to summon more monsters, who bring back loot from dungeons that make him stronger. Instead of getting classic pre-made weapons and armor in dungeons, you get materials for creating new 
-weapons, tools, and armor. These materials can then be used to create new items at a blacksmith. Tools will also be enchantable to give them interesting, unique, and special effects.
+The monster levels like you'd expect, but when it dies, it's a permadeath. The wizard goes on to summon more monsters, who bring back loot from dungeons that make him stronger. Instead of getting classic pre-made weapons and armor in dungeons, you get material(s) for creating new 
+weapons, tools, and armor. These materials can then be used to create new items at a blacksmith. Tools will also be enchantable to give them interesting, unique, and special effect(s).

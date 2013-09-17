@@ -13,6 +13,7 @@ class EntityHandler():
         self.game.Player.blitPlayer()
 
     def updateAll(self, ttime):
+        #call default update function of all entities
         self.all_entities = self.world_items + self.monsters + self.projectiles + self.misc
         for lst in [self.world_items, self.monsters, self.projectiles, self.misc]:
             for index, entity in enumerate(lst):
