@@ -21,6 +21,7 @@ class Monster():
         self.face = 'front'
         self.frameno = 1
         self.dead = 0
+        self.index = None
         self.last_attack = get_ticks()
 
         #parse info.txt file
@@ -30,6 +31,7 @@ class Monster():
         # pathfinding vars
         self.movements = 0
         self.moving = '' # 1, 2, 3, 4; up, left, down, right
+        self.can_move = 1
         self.path_found = 0
         self.initial_path = 1
         self.node = self.getNode()
@@ -84,7 +86,9 @@ class Monster():
             self.onDeath(index)
 
     def update(self, index, ttime):
-        getattr(pathfind, self.path)(self, self.game)
+        self.index = index
+        if self.can_move == 1:
+            getattr(pathfind, self.path)(self, self.game)
         self.pos[0] = self.rect.x
         self.pos[1] = self.rect.y
         if self.dead:
