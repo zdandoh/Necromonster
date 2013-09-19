@@ -15,6 +15,7 @@ class Player():
         self.head_font = pygame.font.Font(os.path.join('rec', 'font', 'p_head.ttf'), 15)
         self.can_move = 1
         self.knocked = 0
+        self.takeover_finished = 1
         self.player_face = 'back'  # this is the part of the player that you see
         self.player_state = 1.
         self.head_drawn = 0
@@ -132,47 +133,49 @@ class Player():
         return int(360 - degrees)
 
     def takeOver(self, monster):
-        #replace all player stats and frames with monster
-        self.stats['hp'] = int(monster.hp)
-        self.stats['maxhp'] = int(monster.maxhp)
-        self.stats['attack'] = int(monster.attack)
-        self.stats['defense'] = int(monster.defense)
-        self.stats['speed'] = int(monster.speed)
+        if self.takeover_finished:
+            self.takeover_finished = 0
+            #replace all player stats and frames with monster
+            self.stats['hp'] = int(monster.hp)
+            self.stats['maxhp'] = int(monster.maxhp)
+            self.stats['attack'] = int(monster.attack)
+            self.stats['defense'] = int(monster.defense)
+            self.stats['speed'] = int(monster.speed)
 
-        def preUpdate():
-            print time.time() - self.takeover_time
-            if time.time() - self.takeover_time > 0.20 - self.takeover_cycles:
-                if self.takeover_cycles > 0.20:
-                    self.preUpdate = self.old_preUpdate
-                    self.can_move = 1
-                    self.game.EntityHandler.monsters[self.takeover.index].dead = 1
-                self.takeover_cycles += 0.01
-                if self.frame_type == 0:
-                    self.game.EntityHandler.monsters[self.takeover.index].frames = self.takeover_pframes
-                    self.player_frames = self.takeover_mframes
-                    self.frame_type = 1
-                elif self.frame_type == 1:
-                    self.game.EntityHandler.monsters[self.takeover.index].frames = self.takeover_mframes
-                    self.player_frames = self.takeover_pframes
-                    self.frame_type = 0
-                else:
-                    raise ValueError('Frame type of {} is invalid'.format(self.frame_type))
-                self.takeover_time = time.time()
+            def preUpdate():
+                if time.time() - self.takeover_time > 0.20 - self.takeover_cycles:
+                    if self.takeover_cycles > 0.20:
+                        self.preUpdate = self.old_preUpdate
+                        self.can_move = 1
+                        self.takeover_finished = 1
+                        self.game.EntityHandler.monsters[self.takeover.index].dead = 1
+                    self.takeover_cycles += 0.01
+                    if self.frame_type == 0:
+                        self.game.EntityHandler.monsters[self.takeover.index].frames = self.takeover_pframes
+                        self.player_frames = self.takeover_mframes
+                        self.frame_type = 1
+                    elif self.frame_type == 1:
+                        self.game.EntityHandler.monsters[self.takeover.index].frames = self.takeover_mframes
+                        self.player_frames = self.takeover_pframes
+                        self.frame_type = 0
+                    else:
+                        raise ValueError('Frame type of {} is invalid'.format(self.frame_type))
+                    self.takeover_time = time.time()
 
-        self.weapon = self.game.Weapon(monster.weapon, self.game)
-        self.player = monster.frames['front1.png']
-        self.can_move = 0
-        self.game.EntityHandler.monsters[monster.index].can_move = 0
+            self.weapon = self.game.Weapon(monster.weapon, self.game)
+            self.player = monster.frames['front1.png']
+            self.can_move = 0
+            self.game.EntityHandler.monsters[monster.index].can_move = 0
 
-        #setup all the vars used in the preupdate function
-        self.takeover = monster
-        self.takeover_time = time.time()
-        self.takeover_cycles = 0
-        self.frame_type = 0
-        self.takeover_pframes = self.player_frames
-        self.takeover_mframes = monster.frames
-        self.old_preUpdate = self.preUpdate
-        self.preUpdate = preUpdate
+            #setup all the vars used in the preupdate function
+            self.takeover = monster
+            self.takeover_time = time.time()
+            self.takeover_cycles = 0
+            self.frame_type = 0
+            self.takeover_pframes = self.player_frames
+            self.takeover_mframes = monster.frames
+            self.old_preUpdate = self.preUpdate
+            self.preUpdate = preUpdate
 
     def headDraw(self, text, dur=3):
         #Draw text at head of player(s)
