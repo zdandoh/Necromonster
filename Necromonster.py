@@ -76,8 +76,21 @@ class Necro():
                 pygame.quit()
                 sys.exit()
             elif event.type == KEYDOWN:
-                if event.key == K_e:
-                    self.Invent.toggleView()
+                if not self.HUD.chat_active:
+                    if event.key == K_e:
+                        self.Invent.toggleView()
+                    if event.key == K_t:
+                        #activate the chat bar
+                        self.HUD.chat_active = 1
+                        self.Player.can_move = 0
+                        return 0
+                if event.key == K_ESCAPE or event.key == K_RETURN:
+                    self.HUD.chat_active = 0
+                    self.Player.can_move = 1
+                elif event.key == K_BACKSPACE:
+                    self.HUD.chat_message = self.HUD.chat_message[:-1]
+                elif event.key <= 255:
+                    self.HUD.chat_message += chr(event.key)
             elif event.type == MOUSEBUTTONDOWN:
                 if self.Invent.in_hand:
                     self.Invent.testThrow(pygame.mouse.get_pos())
