@@ -143,12 +143,14 @@ class Player():
             self.stats['speed'] = int(monster.speed)
 
             def preUpdate():
+                self.can_move = 0
                 if time.time() - self.takeover_time > 0.20 - self.takeover_cycles:
                     if self.takeover_cycles > 0.20:
                         self.preUpdate = self.old_preUpdate
                         self.can_move = 1
                         self.takeover_finished = 1
                         self.game.EntityHandler.monsters[self.takeover.index].dead = 1
+                        self.weapon = self.game.Weapon(self.game.EntityHandler.monsters[self.takeover.index].weapon, self.game)
                     self.takeover_cycles += 0.01
                     if self.frame_type == 0:
                         self.game.EntityHandler.monsters[self.takeover.index].frames = self.takeover_pframes
@@ -162,7 +164,6 @@ class Player():
                         raise ValueError('Frame type of {} is invalid'.format(self.frame_type))
                     self.takeover_time = time.time()
 
-            self.weapon = self.game.Weapon(monster.weapon, self.game)
             self.player = monster.frames['front1.png']
             self.can_move = 0
             self.game.EntityHandler.monsters[monster.index].can_move = 0

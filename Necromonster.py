@@ -19,6 +19,7 @@ from weapons import Weapon
 
 pygame.init()
 
+
 class Necro():
     def __init__(self):
         #window setup
@@ -81,12 +82,14 @@ class Necro():
                         self.Invent.toggleView()
                     if event.key == K_t:
                         #activate the chat bar
+                        self.HUD.chat_message = ''
                         self.HUD.chat_active = 1
                         self.Player.can_move = 0
                         return 0
                 if event.key == K_ESCAPE or event.key == K_RETURN:
                     self.HUD.chat_active = 0
                     self.Player.can_move = 1
+                    self.HUD.chat_message = ''
                 elif event.key == K_BACKSPACE:
                     self.HUD.chat_message = self.HUD.chat_message[:-1]
                 elif event.key <= 255:
