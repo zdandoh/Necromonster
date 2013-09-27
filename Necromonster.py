@@ -33,7 +33,10 @@ class Necro():
         self.screen_res = [900, 650]
         self.center_point = [470., 350.]
         self.screen = pygame.display.set_mode(self.screen_res, pygame.HWSURFACE, 32)
+
+        #DEBUG values
         self.DEBUG = 1
+        self.RECT_DEBUG = 0
 
         #Init custom game classe(s)
         self.EntityHandler = EntityHandler(self)
@@ -144,5 +147,9 @@ class Necro():
             self.screen.blit(self.default_font.render(str(round(self.clock.get_fps())), True, (255, 255, 255)), [0, 0])
             self.screen.blit(self.default_font.render(str('%s, %s' % (self.Player.player_r.x, self.Player.player_r.y)), True, (255, 255, 255)), [0, 12])
             self.screen.blit(self.default_font.render(str(pygame.mouse.get_pos()), True, (255, 255, 255)), [0, 24])
+        if self.RECT_DEBUG:
+            ps = pygame.Surface(self.Player.player_dims)
+            ps.fill([255, 0, 0])
+            self.screen.blit(ps, self.off([self.Player.player_r.x, self.Player.player_r.y]))
         self.HUD.blitHUD()
 Necro()

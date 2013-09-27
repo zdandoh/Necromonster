@@ -49,6 +49,8 @@ class Player():
     def update(self, ttime):
         #Update player position based on keypresses
         self.preUpdate()
+        if self.player_dims != (40, 50):
+            print self.player_dims
         if 1 in self.game.keys_pressed and self.can_move:
             if self.game.keys_pressed[K_w]:
                 self.player_r.y += -2
@@ -141,11 +143,19 @@ class Player():
             self.stats['attack'] = int(monster.attack)
             self.stats['defense'] = int(monster.defense)
             self.stats['speed'] = int(monster.speed)
+            mframe = monster.frames[monster.frames.keys()[0]]
+            px = self.player_r.x
+            py = self.player_r.y
+            self.player_r = mframe.get_rect()
+            self.player_dims = mframe.get_size()
+            self.player_r.x = px
+            self.player_r.y = py
 
             def preUpdate():
                 self.can_move = 0
                 if time.time() - self.takeover_time > 0.20 - self.takeover_cycles:
                     if self.takeover_cycles > 0.20:
+                        #finish the cycle
                         self.preUpdate = self.old_preUpdate
                         self.can_move = 1
                         self.takeover_finished = 1
