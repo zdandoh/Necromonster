@@ -49,8 +49,6 @@ class Player():
     def update(self, ttime):
         #Update player position based on keypresses
         self.preUpdate()
-        if self.player_dims != (40, 50):
-            print self.player_dims
         if 1 in self.game.keys_pressed and self.can_move:
             if self.game.keys_pressed[K_w]:
                 self.player_r.y += -2

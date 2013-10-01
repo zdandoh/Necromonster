@@ -96,7 +96,10 @@ class Necro():
                 elif event.key == K_BACKSPACE:
                     self.HUD.chat_message = self.HUD.chat_message[:-1]
                 elif event.key <= 255:
-                    self.HUD.chat_message += chr(event.key)
+                    char = chr(event.key)
+                    if self.keys_pressed[K_LSHIFT] or self.keys_pressed[K_RSHIFT]:
+                        char = char.upper()
+                    self.HUD.chat_message += char
             elif event.type == MOUSEBUTTONDOWN:
                 if self.Invent.in_hand:
                     self.Invent.testThrow(pygame.mouse.get_pos())
