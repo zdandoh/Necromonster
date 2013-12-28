@@ -2,6 +2,7 @@ import pygame
 from os.path import join
 from itertools import cycle
 
+
 class HUD():
     def __init__(self, game):
         self.game = game

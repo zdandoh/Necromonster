@@ -8,6 +8,7 @@ import os
 import time
 from ast import literal_eval
 
+
 class Player():
     def __init__(self, game):
         self.game = game
@@ -19,6 +20,7 @@ class Player():
         self.player_face = 'back'  # this is the part of the player that you see
         self.player_state = 1.
         self.head_drawn = 0
+        self.player_masks = {}
         self.player_r = self.player.get_rect()
         self.player_dims = self.player.get_size()
 
@@ -29,6 +31,7 @@ class Player():
         for fi in os.listdir(os.path.join(self.game.main_path, 'rec', 'char')):
             if fi.endswith('.png'):
                 self.player_frames[fi] = pygame.image.load(os.path.join(self.game.main_path, 'rec', 'char', fi)).convert_alpha()
+        self.getMasks(self.player_frames.keys(), self.player_frames.values())
 
         self.player_r.x = 450
         self.player_r.y = 650
@@ -83,6 +86,7 @@ class Player():
 
     def onMove(self, offset, link_count = 0):
         #Collision detection run on movement
+        fr = 1
         m_rects = [x.rect for x in self.game.EntityHandler.monsters]
         if self.player_r.x > self.game.Grid.bounds[0] or self.player_r.x <= 0:
             self.player_r.x -= offset[0]
@@ -99,8 +103,17 @@ class Player():
                 if link_active:
                     self.game.blit_list = mapLoader.load(link[2], self.game, new_pos = link[3], face = link[4])
                 else:
-                    self.player_r.y -= offset[1]
-                    self.player_r.x -= offset[0]
+                    #bring on mask collision
+                    mask = pygame.mask.Mask((rect.width, rect.height))
+                    mask.fill()
+                    player_mask = self.player_masks[self.player_face + str(int(self.player_state)) + '.png']
+                    ppos = self.getPos()
+                    offset_x =  self.player_r.x - rect.x
+                    offset_y =  self.player_r.y - rect.y
+
+                    if mask.overlap(player_mask, (offset_x, offset_y)):
+                        self.player_r.y -= offset[1]
+                        self.player_r.x -= offset[0]
 
     def getDegrees(self, mpos):
         ppos = self.game.center_point
@@ -173,6 +186,7 @@ class Player():
                     self.takeover_time = time.time()
 
             self.player = monster.frames['front1.png']
+            self.getMasks(monster.frames.keys(), monster.frames.values())
             self.can_move = 0
             self.game.EntityHandler.monsters[monster.index].can_move = 0
 
@@ -185,6 +199,11 @@ class Player():
             self.takeover_mframes = monster.frames
             self.old_preUpdate = self.preUpdate
             self.preUpdate = preUpdate
+
+    def getMasks(self, names, frames):
+        self.player_masks = {}
+        for name, frame in zip(names, frames):
+            self.player_masks[name] = pygame.mask.from_surface(frame)
 
     def headDraw(self, text, dur=3):
         #Draw text at head of player(s)

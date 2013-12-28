@@ -2,6 +2,7 @@ from pygame.image import load as img_load
 from pygame.transform import rotate
 import os
 
+
 class Projectile():
     def __init__(self, game, name, vector, damage='def', pos='def', degrees=0):
         # general vars
