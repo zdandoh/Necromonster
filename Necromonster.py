@@ -61,6 +61,7 @@ class Necro():
         self.blit_list = mapLoader.load('home', self)
 
         self.Monster(self, 'goop', [300, 300], 3, 'aggressive')
+        self.Item(self, 'Mythril', [350, 400], world=1)
 
         while 1:
             self.Loop()
@@ -90,6 +91,12 @@ class Necro():
                         self.Player.can_move = 0
                         return 0
                 if event.key == K_ESCAPE or event.key == K_RETURN:
+                    message = self.HUD.chat_message.split()
+                    if len(message) >1:
+                        if len(message) > 2:
+                           self.HUD.command(message[0], message[1], message[2])
+                        else:
+                            self.HUD.command(message[0], message[1])
                     self.HUD.chat_active = 0
                     self.Player.can_move = 1
                     self.HUD.chat_message = ''
@@ -99,6 +106,10 @@ class Necro():
                     char = chr(event.key)
                     if self.keys_pressed[K_LSHIFT] or self.keys_pressed[K_RSHIFT]:
                         char = char.upper()
+                
+                    
+                        
+                    
                     self.HUD.chat_message += char
             elif event.type == MOUSEBUTTONDOWN:
                 if self.Invent.in_hand:

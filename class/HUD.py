@@ -1,6 +1,7 @@
 import pygame
 from os.path import join
 from itertools import cycle
+from ast import literal_eval
 
 
 class HUD():
@@ -18,6 +19,26 @@ class HUD():
         self.xpbar = pygame.image.load(join(self.game.main_path, 'rec', 'gui', 'xpbar.png')).convert_alpha()
         self.hpbar = pygame.image.load(join(self.game.main_path, 'rec', 'gui', 'hpbar.png')).convert_alpha()
 
+        self.items = ['adamantium', 'mythril', 'iron_ingot']
+        self.monsters = ['goop']
+
+
+    def command(self, obj, pos, amount=1):
+        position = literal_eval(pos)
+        try:
+            amnt = int(amount)
+        except:
+            pass
+        
+        if obj in self.items:
+            for _ in xrange(amnt):
+                self.game.Item(self.game, obj, [position[0], position[1]], world=1)
+        elif obj in self.monsters:
+            for _ in xrange(amnt):
+                self.game.Monster(self.game, obj, [position[0], position[1]], 3, 'aggressive')
+        else:
+            pass
+    
     def blitHUD(self):
         #hp bar creation
         blit_surface = pygame.Surface((abs(392 * (float(self.game.Player.stats['hp']) / self.game.Player.stats['maxhp'])), 24), pygame.SRCALPHA)
