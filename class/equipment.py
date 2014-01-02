@@ -1,10 +1,13 @@
 import os
 
 from pygame.image import load as img_load
+from items import Item
 
-class Weapon():
-    def __init__(self, name, game):
+
+class Weapon(Item):
+    def __init__(self, game, name):
         self.game = game
+        super(Weapon, self).__init__(game, name, world=0)
         #setup base vars of all weapon(s)
         self.type = None
         self.shown = 0
@@ -12,7 +15,7 @@ class Weapon():
         self.range = 50
         self.dead = 0
         self.frame = 0
-        self.load(name)
+        self.loadWeapon(name)
 
     def changeUpdate(self):
         if not self.type:
@@ -28,7 +31,7 @@ class Weapon():
         else:
             raise ValueError('No weapon of type {}'.format(self.type))
 
-    def load(self, name):
+    def loadWeapon(self, name):
         config_file = open(os.path.join('rec', 'weapon', name, 'config.py')).read()
         exec(config_file)
         self.frames = []
@@ -37,10 +40,14 @@ class Weapon():
                 self.frames.append(img_load(os.path.join('rec', 'weapon', name, fi)))
         self.changeUpdate()
 
+    def getSurface(self, name):
+        fi_name = name.lower().replace(' ', '_') + '.png'
+        return img_load(os.path.join(self.game.main_path, 'rec', 'weapon', name, fi_name))
+
     def preUpdate(self, index, ttime):
         self.update(index, ttime)
 
-    def update(self, index, ttime):
+    def updateWeapon(self, index, ttime):
         pass
 
     def blit(self):
@@ -56,6 +63,14 @@ class Weapon():
         self.pos = [self.game.Player.player_r.x, self.game.Player.player_r.y]
         self.game.EntityHandler.misc.append(self)
 
+
+class Garment(Item):
+    def __init__(self, game, name):
+        super(Garment, self).__init__(game, name, world=0)
+
+    def getSurface(self, name):
+        fi_name = name.lower().replace(' ', '_') + '.png'
+        return img_load(os.path.join(self.game.main_path, 'rec', 'equip', name, fi_name))
 
 def daggerUpdate(index, ttime):
     pass

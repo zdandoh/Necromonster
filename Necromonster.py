@@ -15,7 +15,7 @@ from items import Item
 from inventory import Invent
 from HUD import HUD
 from projectile import Projectile
-from weapons import Weapon
+from equipment import Weapon
 
 pygame.init()
 
@@ -44,14 +44,13 @@ class Necro():
         self.Projectile = Projectile
         self.Monster = Monster
         self.Item = Item
+        self.Invent = Invent(self)
         self.Weapon = Weapon
         self.Player = Player(self)
-        self.Invent = Invent(self)
         self.HUD = HUD(self)
 
         # Init entity manager vars
         self.entities = []
-
 
         # load fonts, create font list
         self.text_list = []
@@ -60,7 +59,6 @@ class Necro():
         # get the map that you are on
         self.blit_list = mapLoader.load('home', self)
 
-        self.Monster(self, 'goop', [300, 300], 3, 'aggressive')
         self.Item(self, 'Mythril', [350, 400], world=1)
 
         while 1:

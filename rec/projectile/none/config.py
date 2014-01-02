@@ -1,0 +1,1 @@
+self.speed = 0

@@ -46,7 +46,16 @@ class Player():
         self.stats['mxp'] = 654
         self.stats['attack'] = 5
         self.stats['defense'] = 3
-        self.weapon = self.game.Weapon('wand', self.game)
+
+        # equipment
+        self.equipment = {}
+        self.loadEquip(25)
+        self.loadEquip(26)
+        self.loadEquip(27)
+        self.loadEquip(28)
+        self.loadEquip(29)
+        self.loadEquip(30)
+
         self.speed = 250
 
     def update(self, ttime):
@@ -77,12 +86,36 @@ class Player():
             self.player_state = 1.
         self.player = self.player_frames['%s%s.png' % (self.player_face, int(self.player_state))]
 
-        if self.weapon.shown == 1:
-            self.weapon.blit()
+        if self.equipment['weapon'].shown == 1:
+            self.equipment['weapon'].blit()
 
     def preUpdate(self):
         # an overwritable function to add temp player functionality
         pass
+
+    def loadEquip(self, slot):
+        if slot == 25:
+            slice = 'weapon'
+        elif slot == 26:
+            slice = 'head'
+        elif slot == 27:
+            slice = 'chest'
+        elif slot == 28:
+            slice = 'legs'
+        elif slot == 29:
+            slice = 'a1'
+        elif slot == 30:
+            slice = 'a2'
+        else:
+            #not an equipment slot
+            #raise ValueError('Slot # {} is not a valid equipment slot'.format(slot))
+            return -1
+        if self.game.Invent.slots[slot]:
+            name = self.game.Invent.slots[slot][0]
+            self.equipment[slice] = self.game.Weapon(self.game, name)
+        else:
+            self.equipment[slice] = self.game.Weapon(self.game, 'nothing')
+
 
     def onMove(self, offset, link_count = 0):
         #Collision detection run on movement
@@ -171,7 +204,7 @@ class Player():
                         self.can_move = 1
                         self.takeover_finished = 1
                         self.game.EntityHandler.monsters[self.takeover.index].dead = 1
-                        self.weapon = self.game.Weapon(self.game.EntityHandler.monsters[self.takeover.index].weapon, self.game)
+                        self.weapon = self.game.Weapon(self.game, self.game.EntityHandler.monsters[self.takeover.index].weapon)
                     self.takeover_cycles += 0.01
                     if self.frame_type == 0:
                         self.game.EntityHandler.monsters[self.takeover.index].frames = self.takeover_pframes
@@ -261,7 +294,7 @@ class Player():
         direction = [distance[0] / norm, distance[1 ] / norm]
         bullet_vector = [direction[0] * speed, direction[1] * speed]
 
-        self.weapon.onClick(self.game, bullet_vector)
+        self.equipment['weapon'].onClick(self.game, bullet_vector)
 
     def takeDamage(self, damage):
         damage -= self.stats['defense']

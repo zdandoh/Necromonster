@@ -2,7 +2,8 @@ from uuid import uuid4
 from pygame.image import load
 from os.path import join
 
-class Item():
+
+class Item(object):
     def __init__(self, game, name, pos=[0, 0], spin=0, world=1):
         self.game = game
         self.name = name
@@ -10,7 +11,7 @@ class Item():
         self.pos = pos
         self.dead = 0
         self.id = uuid4()
-        self.image = load(join(self.game.main_path, 'rec', 'items', self.file))
+        self.image = self.getSurface(name)
         self.rect = self.image.get_rect()
         self.rect.x = self.pos[0]
         self.rect.y = self.pos[1]

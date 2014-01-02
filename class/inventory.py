@@ -2,6 +2,7 @@ import pygame
 
 from math import ceil
 from os.path import join
+from os.path import exists
 '''
 Class for managing invent(s)
 Item storage format: Name:count:slotno;
@@ -11,12 +12,13 @@ class Invent():
     def __init__(self, game):
         self.game = game
         self.shown = 0
+        self.SLOTS = 31
         self.blit_items = []
         self.item_surfaces = []
         self.item_rects = []
         self.item_dummy_names = []
         self.in_hand = []
-        self.slots = [[] for x in xrange(24)]
+        self.slots = [[] for x in xrange(self.SLOTS)]
         self.inv_corner = [20, 0]
         self.inv_surf = pygame.image.load(join(game.main_path, 'rec', 'gui', 'inventory.png')).convert_alpha()
         self.inv_rect = self.inv_surf.get_rect()
@@ -24,6 +26,11 @@ class Invent():
         self.inv_rect.y = self.inv_corner[1]
         self.item_bg = pygame.image.load(join(game.main_path, 'rec', 'gui', 'item_bg.png')).convert_alpha()
         self.bg_rects = []
+
+        # setup equipment slots (25-31)
+        if not exists(join('rec', 'user', 'invent.dat')):
+            self.add('wand', 25)  # weapon
+            #self.add()
         self.reload()
 
     def reload(self):
@@ -93,7 +100,7 @@ class Invent():
             return cont
 
     def parse(self, cont):
-        slot_list = [[] for x in xrange(24)]
+        slot_list = [[] for x in xrange(self.SLOTS)]
         items = cont.split(';')
         for item in items:
             if item:
@@ -109,7 +116,6 @@ class Invent():
     def getSurface(self, name):
         name = name.lower().replace(' ', '_') + '.png'
         return pygame.image.load(join(self.game.main_path, 'rec', 'items', name))
-
 
     def loadInventSurfaces(self):
         self.item_surfaces = []
@@ -128,6 +134,12 @@ class Invent():
             self.loadInventSurfaces()
         else:
             self.shown = 0
+            self.game.Player.loadEquip(25)
+            self.game.Player.loadEquip(26)
+            self.game.Player.loadEquip(27)
+            self.game.Player.loadEquip(28)
+            self.game.Player.loadEquip(29)
+            self.game.Player.loadEquip(30)
             if self.in_hand:
                 self.add(self.in_hand[0])
                 self.in_hand = []
@@ -159,6 +171,9 @@ class Invent():
                         # item already in slot, add it to the hand and remove
                         new_hand = [self.slots[index][0], self.getSurface(self.slots[index][0]), self.slots[index][1]]
                         self.rem(index)
+                        # update equipment
+                        if index > 24 and self.slots[index]:
+                            self.game.Player.loadEquip(index, self.slots[index][0])
                     for _ in xrange(self.in_hand[2]):
                         self.add(self.in_hand[0], slotno=index)
                     self.in_hand = []
@@ -178,17 +193,50 @@ class Invent():
         items_blitted = 0
         self.bg_rects = []
         for index, slot in enumerate(self.slots):
-            if not blit_count or blit_count == ceil(invent_dims[0] / (float(item_dim) + padding * 2.)):
+            if index >= 24:
+                # equipment blits
+                if index == 25:
+                    # weapon at 16, 89
+                    x = 19 + self.inv_corner[0]
+                    y = 92 + self.inv_corner[1]
+                elif index == 26:
+                    # helmet
+                    x = 57 + self.inv_corner[0]
+                    y = 47 + self.inv_corner[1]
+                elif index == 27:
+                    # chestplace
+                    x = 57 + self.inv_corner[0]
+                    y = 89 + self.inv_corner[1]
+                elif index == 28:
+                    # plants
+                    x = 57 + self.inv_corner[0]
+                    y = 133 + self.inv_corner[1]
+                elif index == 29:
+                    # accessory 1
+                    x = 104 + self.inv_corner[0]
+                    y = 70 + self.inv_corner[1]
+                elif index == 30:
+                    # accessory 2
+                    x = 104 + self.inv_corner[0]
+                    y = 113 + self.inv_corner[1]
+                else:
+                    # shove them off really far
+                    x = 1000
+                    y = 1000
+            elif not blit_count or blit_count == ceil(invent_dims[0] / (float(item_dim) + padding * 2.)):
                 blit_count = 0
                 y += item_dim + padding
                 x = invent_corner[0] - item_dim + 5
-            x += padding + item_dim
-            self.bg_rects.append(self.game.screen.blit(self.item_bg, [x, y]))
+            if index < 24:
+                x += padding + item_dim
+            bg_rect = self.game.screen.blit(self.item_bg, [x, y])
+            self.bg_rects.append(bg_rect)
             if slot:
                 item_surf = self.item_surfaces[items_blitted]
                 self.item_rects[items_blitted] = self.game.screen.blit(item_surf, [x, y])
-                item_count = self.game.default_font.render(str(self.slots[index][1]), True, (255, 255, 255))
-                self.game.screen.blit(item_count, [x + 19, y + 19])
+                if index < 24:
+                    item_count = self.game.default_font.render(str(self.slots[index][1]), True, (255, 255, 255))
+                    self.game.screen.blit(item_count, [x + 19, y + 19])
                 items_blitted += 1
             blit_count += 1
         if self.in_hand:
