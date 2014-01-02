@@ -197,28 +197,28 @@ class Invent():
                 # equipment blits
                 if index == 25:
                     # weapon at 16, 89
-                    x = 19 + self.inv_corner[0]
-                    y = 92 + self.inv_corner[1]
+                    x = 17 + self.inv_corner[0]
+                    y = 97 + self.inv_corner[1]
                 elif index == 26:
                     # helmet
-                    x = 57 + self.inv_corner[0]
-                    y = 47 + self.inv_corner[1]
+                    x = 61 + self.inv_corner[0]
+                    y = 51 + self.inv_corner[1]
                 elif index == 27:
                     # chestplace
-                    x = 57 + self.inv_corner[0]
-                    y = 89 + self.inv_corner[1]
+                    x = 61 + self.inv_corner[0]
+                    y = 96 + self.inv_corner[1]
                 elif index == 28:
-                    # plants
-                    x = 57 + self.inv_corner[0]
-                    y = 133 + self.inv_corner[1]
+                    # pants
+                    x = 61 + self.inv_corner[0]
+                    y = 144 + self.inv_corner[1]
                 elif index == 29:
                     # accessory 1
-                    x = 104 + self.inv_corner[0]
-                    y = 70 + self.inv_corner[1]
+                    x = 111 + self.inv_corner[0]
+                    y = 72 + self.inv_corner[1]
                 elif index == 30:
                     # accessory 2
-                    x = 104 + self.inv_corner[0]
-                    y = 113 + self.inv_corner[1]
+                    x = 111 + self.inv_corner[0]
+                    y = 122 + self.inv_corner[1]
                 else:
                     # shove them off really far
                     x = 1000
