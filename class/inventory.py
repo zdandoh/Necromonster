@@ -29,7 +29,8 @@ class Invent():
 
         # setup equipment slots (25-31)
         if not exists(join('rec', 'user', 'invent.dat')):
-            self.add('wand', 25)  # weapon
+            self.add('wand', 25)
+            self.add('leather_shirt', 2)
             #self.add()
         self.reload()
 

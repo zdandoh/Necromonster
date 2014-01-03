@@ -45,10 +45,16 @@ class Player():
         self.stats['pxp'] = 312
         self.stats['mxp'] = 654
         self.stats['attack'] = 5
-        self.stats['defense'] = 3
+        self.stats['defense'] = 0
 
         # equipment
+        self.game.Player = self
         self.equipment = {}
+        self.equipment['head'] = self.game.Garment(self.game, 'nothing')
+        self.equipment['chest'] = self.game.Garment(self.game, 'nothing')
+        self.equipment['legs'] = self.game.Garment(self.game, 'nothing')
+        self.equipment['a1'] = self.game.Garment(self.game, 'nothing')
+        self.equipment['a2'] = self.game.Garment(self.game, 'nothing')
         self.loadEquip(25)
         self.loadEquip(26)
         self.loadEquip(27)
@@ -94,8 +100,10 @@ class Player():
         pass
 
     def loadEquip(self, slot):
+        type = self.game.Garment
         if slot == 25:
             slice = 'weapon'
+            type = self.game.Weapon
         elif slot == 26:
             slice = 'head'
         elif slot == 27:
@@ -112,10 +120,15 @@ class Player():
             return -1
         if self.game.Invent.slots[slot]:
             name = self.game.Invent.slots[slot][0]
-            self.equipment[slice] = self.game.Weapon(self.game, name)
+            self.equipment[slice] = type(self.game, name)
         else:
-            self.equipment[slice] = self.game.Weapon(self.game, 'nothing')
+            self.removeGarment(slice)
+            self.equipment[slice] = type(self.game, 'nothing')
 
+    def removeGarment(self, name):
+        if name == 'weapon':
+            return 0
+        self.stats['defense'] -= self.equipment[name].getDefense()
 
     def onMove(self, offset, link_count = 0):
         #Collision detection run on movement

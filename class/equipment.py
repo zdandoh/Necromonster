@@ -65,12 +65,40 @@ class Weapon(Item):
 
 
 class Garment(Item):
+    # class for armor
     def __init__(self, game, name):
         super(Garment, self).__init__(game, name, world=0)
+        # the following few lines of code are a waste of memory. Too bad I don't have the STATIC keyword.
+        head = {'leather_hat': 1}
+        chest = {'leather_shirt': 2}
+        pants = {'leather_pants': 1}
+        self.all_garments = dict(head.items() + chest.items() + pants.items())
+        self.name = name
+        self.type = None
+        self.defense = self.getDefense()
+        self.apply()
 
-    def getSurface(self, name):
-        fi_name = name.lower().replace(' ', '_') + '.png'
-        return img_load(os.path.join(self.game.main_path, 'rec', 'equip', name, fi_name))
+    def getDefense(self):
+        #returns defense of Garment based on name
+        defense = 0
+        try:
+            defense = self.all_garments[self.name]
+        except KeyError:
+            # no garment of that name
+            if self.name == 'nothing':
+                pass
+            else:
+                raise
+        return defense
+
+    def apply(self):
+        # add effects to the player
+        self.game.Player.stats['defense'] += self.defense
+
+    def remove(self):
+        #called when player takes off garment
+        self.game.Player.stats['defense'] -= self.defense
+
 
 def daggerUpdate(index, ttime):
     pass
