@@ -69,10 +69,10 @@ class Garment(Item):
     def __init__(self, game, name):
         super(Garment, self).__init__(game, name, world=0)
         # the following few lines of code are a waste of memory. Too bad I don't have the STATIC keyword.
-        head = {'leather_hat': 1}
-        chest = {'leather_shirt': 2}
-        pants = {'leather_pants': 1}
-        self.all_garments = dict(head.items() + chest.items() + pants.items())
+        self.head = {'leather_hat': 1}
+        self.chest = {'leather_shirt': 2}
+        self.pants = {'leather_pants': 1}
+        self.all_garments = dict(self.head.items() + self.chest.items() + self.pants.items())
         self.name = name
         self.type = None
         self.defense = self.getDefense()
@@ -85,10 +85,7 @@ class Garment(Item):
             defense = self.all_garments[self.name]
         except KeyError:
             # no garment of that name
-            if self.name == 'nothing':
-                pass
-            else:
-                raise
+            self.belongs = False
         return defense
 
     def apply(self):

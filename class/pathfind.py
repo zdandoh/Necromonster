@@ -26,6 +26,16 @@ def onMove(rect, game):
                 return 1
     return 0
 
+def getSign(num):
+    if not num:
+        return 0
+    if num > 0:
+        return 1
+    elif num < 0:
+        return -1
+    else:
+        return 0
+
 def neutral(monster, game):
     # 1, 2, 3, 4; up, left, down, right(s)
     if monster.moving:
@@ -59,15 +69,8 @@ def neutral(monster, game):
             monster.moving = direc
     return monster
 
-def getSign(num):
-    if not num:
-        return 0
-    if num > 0:
-        return 1
-    elif num < 0:
-        return -1
-    else:
-        return 0
+def still(monster, game):
+    return monster
 
 def aggressive(monster, game):
     if monster.path_progress:

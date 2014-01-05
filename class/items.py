@@ -10,6 +10,7 @@ class Item(object):
         self.file = name.lower().replace(' ', '_') + '.png'
         self.pos = pos
         self.dead = 0
+        self.belongs = True
         self.id = uuid4()
         self.image = self.getSurface(name)
         self.rect = self.image.get_rect()

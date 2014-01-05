@@ -11,6 +11,8 @@ from EntityHandler import EntityHandler
 from scheduler import Schedule
 from player import Player
 from monster import Monster
+from npc import NPC
+from npc import NPCText
 from items import Item
 from inventory import Invent
 from HUD import HUD
@@ -44,6 +46,8 @@ class Necro():
         self.Scheduler = Schedule(self)
         self.Projectile = Projectile
         self.Monster = Monster
+        self.NPC = NPC
+        self.NPCText = NPCText
         self.Item = Item
         self.Invent = Invent(self)
         self.Weapon = Weapon
@@ -62,6 +66,7 @@ class Necro():
         self.blit_list = mapLoader.load('home', self)
 
         self.Item(self, 'Mythril', [350, 400], world=1)
+        self.NPC(self, "blacksmith", [400, 400], 100, 'still')
 
         while 1:
             self.Loop()
@@ -106,16 +111,13 @@ class Necro():
                     char = chr(event.key)
                     if self.keys_pressed[K_LSHIFT] or self.keys_pressed[K_RSHIFT]:
                         char = char.upper()
-                
-                    
-                        
-                    
                     self.HUD.chat_message += char
             elif event.type == MOUSEBUTTONDOWN:
+                self.Invent.last_click = pygame.mouse.get_pos()
                 if self.Invent.in_hand:
-                    self.Invent.testThrow(pygame.mouse.get_pos())
+                    self.Invent.testThrow(self.Invent.last_click)
                 if self.Invent.shown:
-                    self.Invent.inventClick(pygame.mouse.get_pos())
+                    self.Invent.inventClick(self.Invent.last_click)
                 elif pygame.mouse.get_pressed()[0]:
                     self.Player.attack(pygame.mouse.get_pos())
 

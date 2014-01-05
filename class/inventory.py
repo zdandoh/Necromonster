@@ -20,6 +20,7 @@ class Invent():
         self.in_hand = []
         self.slots = [[] for x in xrange(self.SLOTS)]
         self.inv_corner = [20, 0]
+        self.last_click = [0, 0]
         self.inv_surf = pygame.image.load(join(game.main_path, 'rec', 'gui', 'inventory.png')).convert_alpha()
         self.inv_rect = self.inv_surf.get_rect()
         self.inv_rect.x = self.inv_corner[0]
@@ -82,6 +83,28 @@ class Invent():
             if not slot:
                 return index
         return -1
+
+    def belongsIn(self, slot, name):
+        # tests if an item belongs somewhere. Pretty slow and dirty
+        belongs = True
+        if slot <= 24:
+            belongs = True
+        elif slot == 25:
+            try:
+                self.game.Weapon(self.game, name)
+            except Exception:
+                belongs = False
+        elif 25 < slot < 29:
+            belongs = False
+            test_garment = self.game.Garment(self.game, name)
+            for dict_no, garment_dict in enumerate([test_garment.head, test_garment.chest, test_garment.pants]):
+                if name in garment_dict and slot == dict_no + 26:
+                    belongs = True
+        elif 28 < slot < 31:
+            belongs = True
+        else:
+            raise IndexError("Slot {} does not exist".format(slot))
+        return belongs
 
     def sync(self):
         to_write = ''
@@ -151,9 +174,6 @@ class Invent():
     def inventClick(self, mouse):
         for index, rect in enumerate(self.item_rects):
             if rect.collidepoint(mouse):
-                if self.in_hand:
-                    self.add(self.in_hand[0])
-                    self.in_hand = []
                 clicked_name = self.item_dummy_names[index]
                 self.in_hand = [clicked_name, self.item_surfaces[index], self.slots[self.getSlot(clicked_name)][1]]
                 self.rem(self.getSlot(clicked_name))
@@ -175,9 +195,11 @@ class Invent():
                         # update equipment
                         if index > 24 and self.slots[index]:
                             self.game.Player.loadEquip(index, self.slots[index][0])
-                    for _ in xrange(self.in_hand[2]):
-                        self.add(self.in_hand[0], slotno=index)
-                    self.in_hand = []
+                    # check if item belongs in slot
+                    if self.belongsIn(index, self.in_hand[0]):
+                        for _ in xrange(self.in_hand[2]):
+                            self.add(self.in_hand[0], slotno=index)
+                        self.in_hand = []
                     break
             if new_hand:
                 self.in_hand = new_hand

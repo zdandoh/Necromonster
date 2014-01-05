@@ -6,10 +6,11 @@ from pygame.draw import rect
 from pygame.time import get_ticks
 
 
-class Monster():
+class Monster(object):
     def __init__(self, game, name, pos, difficulty, pathfinding):
         self.game = game
         self.name = name
+        self.NPC = False
         self.frames = self.loadFrames(name)
         self.path = pathfinding
         self.rect = self.frames.values()[0].get_rect()
@@ -25,8 +26,7 @@ class Monster():
         self.last_attack = get_ticks()
 
         #parse info.txt file
-        info = open(os.path.join('rec', 'enemy', self.name, 'info.txt')).read()
-        exec(info)
+        self.execInfo()
 
         # pathfinding vars
         self.movements = 0
@@ -53,6 +53,10 @@ class Monster():
     def getStats(self, difficulty):
         # stat format [level, health, attack, defense, speed, attacks per second, knockback]
         return [difficulty, difficulty * 5, difficulty, difficulty, 3, 2, 10]
+
+    def execInfo(self):
+        info = open(os.path.join('rec', 'enemy', self.name, 'info.txt')).read()
+        exec(info)
 
     def getNode(self):
         # gets the map node that the monster is in
@@ -100,3 +104,4 @@ class Monster():
             rect(self.game.screen, (200, 50, 0), (self.game.off(pos), (self.size[0], 5)))
             rect(self.game.screen, (0, 200, 50), (self.game.off(pos), (self.size[0] * (self.hp / self.maxhp), 5)))
         self.game.screen.blit(self.frames['%s%s.png' % (self.face, self.frameno)], self.game.off([self.rect.x, self.rect.y]))
+
