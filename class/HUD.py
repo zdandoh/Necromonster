@@ -1,5 +1,6 @@
 import pygame
 from os.path import join
+import os
 from itertools import cycle
 from ast import literal_eval
 
@@ -19,25 +20,24 @@ class HUD():
         self.xpbar = pygame.image.load(join(self.game.main_path, 'rec', 'gui', 'xpbar.png')).convert_alpha()
         self.hpbar = pygame.image.load(join(self.game.main_path, 'rec', 'gui', 'hpbar.png')).convert_alpha()
 
-        self.items = ['adamantium', 'mythril', 'iron_ingot']
-        self.monsters = ['goop']
-
+        self.items = [f.split('.')[0] for f in os.listdir(join(self.game.main_path, 'rec', 'items'))]
+        self.monsters = os.listdir(join(self.game.main_path, 'rec', 'enemy'))
 
     def command(self, obj, pos, amount=1):
-        position = literal_eval(pos)
         try:
+            position = literal_eval(pos)
             amnt = int(amount)
+            
+            if obj in self.items:
+                for _ in xrange(amnt):
+                    self.game.Item(self.game, obj, [position[0], position[1]], world=1)
+            elif obj in self.monsters:
+                for _ in xrange(amnt):
+                    self.game.Monster(self.game, obj, [position[0], position[1]], 3, 'aggressive')
+            else:
+                pass
         except:
-            pass
-        
-        if obj in self.items:
-            for _ in xrange(amnt):
-                self.game.Item(self.game, obj, [position[0], position[1]], world=1)
-        elif obj in self.monsters:
-            for _ in xrange(amnt):
-                self.game.Monster(self.game, obj, [position[0], position[1]], 3, 'aggressive')
-        else:
-            pass
+            print "Invalid Command!"
     
     def blitHUD(self):
         #hp bar creation

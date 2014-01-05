@@ -11,14 +11,12 @@ from EntityHandler import EntityHandler
 from scheduler import Schedule
 from player import Player
 from monster import Monster
-from npc import NPC
-from npc import NPCText
+from npc import NPC, NPCText
 from items import Item
 from inventory import Invent
 from HUD import HUD
 from projectile import Projectile
-from equipment import Weapon
-from equipment import Garment
+from equipment import Weapon, Garment
 
 pygame.init()
 
