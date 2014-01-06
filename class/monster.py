@@ -68,6 +68,12 @@ class Monster(object):
         self.rect.x = node[0] * 10
         self.rect.y = node[1] * 10
 
+    def getPos(self):
+        return [self.rect.x, self.rect.y]
+
+    def getDims(self):
+        return [self.rect.w, self.rect.h]  # this is the proper return order
+
     def loadFrames(self, name):
         frames = {}
         for fi in os.listdir(os.path.join(self.game.main_path, 'rec', 'enemy', name, 'img')):

@@ -1,17 +1,24 @@
 import os.path
 import xml.etree.ElementTree as ET
+from math import sqrt
 from pygame.image import load
 from monster import Monster
 
 
 class NPC(Monster):
     def __init__(self, game, name, pos, difficulty, pathfinding):
+        self.greeting = '...'
+        self.text = NPCText(self, 'blacksmith')
         super(NPC, self).__init__(game, name, pos, difficulty, pathfinding)
+        self.text.setGreeting(self.greeting)
         self.NPC = True
         self.head_icon = None
 
     def execInfo(self):
-        pass
+        # obtains greeting
+        fi_path = os.path.join(self.game.main_path, 'rec', 'npc', self.name, 'generate_xml.py')
+        fi = open(fi_path, 'r').read()
+        exec(fi)
 
     def loadFrames(self, name):
         frames = {}
@@ -20,10 +27,24 @@ class NPC(Monster):
                 frames[fi] = load(os.path.join(self.game.main_path, 'rec', 'npc', name, 'img', fi)).convert_alpha()
         return frames
 
+    def isPlayerClose(self, rng):
+        close = False
+        ppos = self.game.Player.getPos()
+        npcpos = self.getPos()
+        distance = sqrt(abs((ppos[0] - npcpos[0])**2 + (ppos[1] - npcpos[1])**2))
+        if distance <= rng:
+            close = True
+        return close
+
+    def update(self, index, ttime):
+        if self.isPlayerClose(75) and not self.game.Player.head_drawn:
+            self.game.Player.headDraw(self.text.getGreeting(), self.rect, off=False)
+
 
 class NPCText(object):
-    def __init__(self, name):
+    def __init__(self, npc, name):
         self.name = name
+        self.npc = npc
         self.root = self.load()
         self.current_branch = self.root
         self.terminated = False
@@ -45,6 +66,11 @@ class NPCText(object):
 
     def setText(self, branch, text):
         branch.text = text
+
+    def setGreeting(self, text):
+        child = ET.SubElement(self.root, "greeting")
+        child.text = text
+        return child
 
     def addOption(self, branch, label, text):
         options_used = self.getOptions(branch)
@@ -68,6 +94,13 @@ class NPCText(object):
 
     def getLabel(self, branch):
         return branch.attrib['label']
+
+    def getGreeting(self):
+        greeting = 'not set'
+        child = self.root.find('greeting')
+        if child is not None:  # can't just use if: child, apparently
+            greeting = child.text
+        return greeting
 
     def load(self):
         root = ET.Element('data')

@@ -254,11 +254,14 @@ class Player():
         for name, frame in zip(names, frames):
             self.player_masks[name] = pygame.mask.from_surface(frame)
 
-    def headDraw(self, text, dur=3):
-        #Draw text at head of player(s)
+    def headDraw(self, text, rect, dur=3, off=True):
+        #Draw text at head of rects
         text = text.replace('_', ' ')
         font_render = self.head_font.render(text, True, (255, 255, 255))
-        self.head_drawn = [font_render, self.game.off([self.player_r.x - font_render.get_size()[0] / 2 + self.player_dims[0] / 2, self.player_r.y - 25]), pygame.time.get_ticks() + dur]
+        render_pos = [rect.x - font_render.get_size()[0] / 2 + rect.w / 2, rect.y - 25]
+        if off:
+            render_pos = self.game.off(render_pos)
+        self.head_drawn = [font_render, render_pos, pygame.time.get_ticks() + dur, off]
         self.game.Scheduler.add('self.game.Player.head_drawn = ""', dur * 1000)
 
     def addPos(self, move):
@@ -321,7 +324,4 @@ class Player():
             self.stats['hp'] -= damage
 
     def blitPlayer(self):
-        #Draws player and head text if it exists
-        if self.head_drawn:
-            self.game.screen.blit(self.head_drawn[0], self.head_drawn[1])
         self.game.screen.blit(self.player, self.game.off([self.player_r.x, self.player_r.y]))

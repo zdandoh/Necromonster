@@ -165,5 +165,11 @@ class Necro():
             ps = pygame.Surface(self.Player.player_dims)
             ps.fill([255, 0, 0])
             self.screen.blit(ps, self.off([self.Player.player_r.x, self.Player.player_r.y]))
+        #Draws player and head text if it exists
+        if self.Player.head_drawn:
+            if self.Player.head_drawn[3]:
+                self.screen.blit(self.Player.head_drawn[0], self.Player.head_drawn[1])
+            else:
+                self.Player.game.screen.blit(self.Player.head_drawn[0], self.off(self.Player.head_drawn[1]))
         self.HUD.blitHUD()
 Necro()

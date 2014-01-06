@@ -46,7 +46,7 @@ class Item(object):
                 self.vector[1] -= 1
         if self.game.Player.collides(self.rect) and not sum(self.vector):
             self.game.Invent.add(self.name)
-            self.game.Player.headDraw(self.name)
+            self.game.Player.headDraw(self.name, self.game.Player.player_r)
             self.dead = 1
 
     def blit(self):

@@ -1,6 +1,7 @@
-npc = NPCText()
-npc.setText(npc.root, 'ARE YOU SCREWING THE SHEEP?')
-op2 = npc.addOption(npc.root, "No", "Oh, okay")
-op1 = npc.addOption(npc.root, "Yes", "YOU'RE GOING TO DIE")
-npc.setAction(op1, "self.terminated = True")
-npc.setAction(op2, "self.terminated = True")
+self.greeting = "All your blacksmithing needs!"
+
+self.text.setText(self.text.root, 'ARE YOU SCREWING THE SHEEP?')
+op2 = self.text.addOption(self.text.root, "No", "Oh, okay")
+op1 = self.text.addOption(self.text.root, "Yes", "YOU'RE GOING TO DIE")
+self.text.setAction(op1, "self.terminated = True")
+self.text.setAction(op2, "self.terminated = True")
