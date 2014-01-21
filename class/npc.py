@@ -1,13 +1,16 @@
 import os.path
 import xml.etree.ElementTree as ET
 from math import sqrt
+from time import sleep
 from pygame.image import load
+from pygame.locals import *
 from monster import Monster
 
 
 class NPC(Monster):
     def __init__(self, game, name, pos, difficulty, pathfinding):
         self.greeting = '...'
+        self.interacting = False
         self.text = NPCText(self, 'blacksmith')
         super(NPC, self).__init__(game, name, pos, difficulty, pathfinding)
         self.text.setGreeting(self.greeting)

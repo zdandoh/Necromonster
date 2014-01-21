@@ -110,6 +110,13 @@ class Necro():
                     if self.keys_pressed[K_LSHIFT] or self.keys_pressed[K_RSHIFT]:
                         char = char.upper()
                     self.HUD.chat_message += char
+                if event.key == K_SPACE:
+                    for monster in self.EntityHandler.monsters:
+                        if monster.NPC == True:
+                            if monster.isPlayerClose(75) and monster.interacting == False:
+                                monster.interacting = True
+                            elif not monster.isPlayerClose(75) or monster.interacting == True:
+                                monster.interacting = False
             elif event.type == MOUSEBUTTONDOWN:
                 self.Invent.last_click = pygame.mouse.get_pos()
                 if self.Invent.in_hand:
