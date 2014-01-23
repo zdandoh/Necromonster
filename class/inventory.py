@@ -9,10 +9,11 @@ Item storage format: Name:count:slotno;
 '''
 
 class Invent():
-    def __init__(self, game):
+    def __init__(self, game, fi='invent.dat'):
         self.game = game
         self.shown = 0
         self.SLOTS = 31
+        self.dat_file = fi
         self.blit_items = []
         self.item_surfaces = []
         self.item_rects = []
@@ -29,10 +30,9 @@ class Invent():
         self.bg_rects = []
 
         # setup equipment slots (25-31)
-        if not exists(join('rec', 'user', 'invent.dat')):
+        if not exists(join('rec', 'user', self.dat_file)):
             self.add('wand', 25)
             self.add('leather_shirt', 2)
-            #self.add()
         self.reload()
 
     def reload(self):
@@ -111,13 +111,13 @@ class Invent():
         for index, slot in enumerate(self.slots):
             if slot:
                 to_write += ('%s:%s:%s;') % (slot[0], slot[1], index)
-        open(join(self.game.main_path, 'rec', 'user', 'invent.dat'), 'w').write(to_write)
+        open(join(self.game.main_path, 'rec', 'user', self.dat_file), 'w').write(to_write)
 
     def readInvent(self):
         try:
-            cont = open(join(self.game.main_path, 'rec', 'user', 'invent.dat'), 'r').read()
+            cont = open(join(self.game.main_path, 'rec', 'user', self.dat_file), 'r').read()
         except IOError:
-            fi = open(join(self.game.main_path, 'rec', 'user', 'invent.dat'), 'w')
+            fi = open(join(self.game.main_path, 'rec', 'user', self.dat_file), 'w')
             fi.close()
             self.readInvent()
         else:

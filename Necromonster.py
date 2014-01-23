@@ -47,7 +47,8 @@ class Necro():
         self.NPC = NPC
         self.NPCText = NPCText
         self.Item = Item
-        self.Invent = Invent(self)
+        self.Inventory = Invent
+        self.Invent = self.Inventory(self)
         self.Weapon = Weapon
         self.Garment = Garment
         self.Player = Player(self)

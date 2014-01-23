@@ -40,6 +40,8 @@ class NPC(Monster):
         return close
 
     def update(self, index, ttime):
+        if self.interacting:
+            self.text.interact()
         if self.isPlayerClose(75) and not self.game.Player.head_drawn:
             self.game.Player.headDraw(self.text.getGreeting(), self.rect, off=False)
 
@@ -57,7 +59,8 @@ class NPCText(object):
         exec(self.getAction(self.current_branch))
         options = self.getOptions(self.current_branch)
         for op_no, option in enumerate(options):
-            print str(op_no + 1) + ': ' + self.getLabel(option)
+            if self.getLabel(option):
+                print str(op_no + 1) + ': ' + self.getLabel(option)
         if not self.terminated:
             result = input('Choice: ')
             self.current_branch = self.current_branch.find("op" + str(result))
@@ -96,7 +99,10 @@ class NPCText(object):
         return children
 
     def getLabel(self, branch):
-        return branch.attrib['label']
+        try:
+            return branch.attrib['label']
+        except KeyError:
+            return None
 
     def getGreeting(self):
         greeting = 'not set'

@@ -244,6 +244,7 @@ class Player():
             self.takeover_time = time.time()
             self.takeover_cycles = 0
             self.frame_type = 0
+            self.game.Invent = self.game.Inventory(self.game, fi=monster.name)
             self.takeover_pframes = self.player_frames
             self.takeover_mframes = monster.frames
             self.old_preUpdate = self.preUpdate

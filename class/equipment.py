@@ -57,7 +57,8 @@ class Weapon(Item):
             self.game.screen.blit(self.frames[self.frame], self.game.off(self.pos))
 
     def onClick(self, game, vector):
-        game.Projectile(game, self.projectile, vector)
+        if self.projectile:
+            game.Projectile(game, self.projectile, vector)
 
     def create(self):
         self.pos = [self.game.Player.player_r.x, self.game.Player.player_r.y]
