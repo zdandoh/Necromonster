@@ -96,7 +96,7 @@ class Necro():
                         return 0
                 if event.key == K_ESCAPE or event.key == K_RETURN:
                     message = self.HUD.chat_message.split()
-                    if len(message) >1:
+                    if len(message) > 1:
                         if len(message) > 2:
                            self.HUD.command(message[0], message[1], message[2])
                         else:

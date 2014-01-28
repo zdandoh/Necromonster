@@ -11,7 +11,7 @@ class NPC(Monster):
     def __init__(self, game, name, pos, difficulty, pathfinding):
         self.greeting = '...'
         self.interacting = False
-        self.text = NPCText(self, 'blacksmith')
+        self.text = NPCText(game, self, 'blacksmith')
         super(NPC, self).__init__(game, name, pos, difficulty, pathfinding)
         self.text.setGreeting(self.greeting)
         self.NPC = True
@@ -44,12 +44,15 @@ class NPC(Monster):
             self.text.interact()
         if self.isPlayerClose(75) and not self.game.Player.head_drawn:
             self.game.Player.headDraw(self.text.getGreeting(), self.rect, off=False)
+        if not self.isPlayerClose(75):
+            self.interacting = False
 
 
 class NPCText(object):
-    def __init__(self, npc, name):
+    def __init__(self, game, npc, name):
         self.name = name
         self.npc = npc
+        self.game = game
         self.root = self.load()
         self.current_branch = self.root
         self.terminated = False
