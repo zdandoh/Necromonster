@@ -60,6 +60,7 @@ class Necro():
         # load fonts, create font list
         self.text_list = []
         self.default_font = pygame.font.SysFont(None, 20)
+        self.speak_font = pygame.font.SysFont(None, 40)
 
         # get the map that you are on
         self.blit_list = mapLoader.load('home', self)

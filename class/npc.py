@@ -58,17 +58,13 @@ class NPCText(object):
         self.terminated = False
 
     def interact(self):
-        print self.getText(self.current_branch)
         exec(self.getAction(self.current_branch))
         options = self.getOptions(self.current_branch)
-        for op_no, option in enumerate(options):
-            if self.getLabel(option):
-                print str(op_no + 1) + ': ' + self.getLabel(option)
-        if not self.terminated:
-            result = input('Choice: ')
-            self.current_branch = self.current_branch.find("op" + str(result))
-        if not self.terminated:
-            self.interact()
+        self.game.HUD.makePrompt(self)
+        if not self.terminated and self.game.HUD.prompt_result:
+            self.current_branch = self.current_branch.find("op" + str(self.game.HUD.prompt_result))
+        #if not self.terminated:
+        #    self.interact()
 
     def setAction(self, branch, code):
         branch.attrib['action'] = code

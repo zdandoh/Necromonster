@@ -1,6 +1,7 @@
 class EntityHandler():
     def __init__(self, game):
         self.game = game
+        self.active = True
         self.world_items = []
         self.monsters = []
         self.projectiles = []
