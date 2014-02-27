@@ -60,11 +60,11 @@ class NPCText(object):
     def interact(self):
         exec(self.getAction(self.current_branch))
         options = self.getOptions(self.current_branch)
-        self.game.HUD.makePrompt(self)
+        if not self.game.HUD.text_active:
+            self.game.HUD.makePrompt(self)
         if not self.terminated and self.game.HUD.prompt_result:
             self.current_branch = self.current_branch.find("op" + str(self.game.HUD.prompt_result))
-        #if not self.terminated:
-        #    self.interact()
+        self.interacting = False
 
     def setAction(self, branch, code):
         branch.attrib['action'] = code

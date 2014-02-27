@@ -44,6 +44,7 @@ class HUD():
 
     def makePrompt(self, npc_text):
         self.text_active = []
+        self.text_rects = []
         main_text = npc_text.getText(npc_text.current_branch)
         main_render = self.game.speak_font.render(main_text, True, (0, 0, 0))
         self.text_active.append(main_render)
@@ -52,17 +53,23 @@ class HUD():
             if npc_text.getLabel(option):
                 option_text = str(op_no + 1) + ': ' + npc_text.getLabel(option)
                 option_render = self.game.speak_font.render(option_text, True, (0, 0, 0))
+                self.text_rects.append(option_render.get_rect())
                 self.text_active.append(option_render)
 
     def showPrompt(self):
         text_pos = [210, 120]
-        first_text = self.text_active.pop(0)
-        self.game.screen.blit(first_text, text_pos)
-        for text in self.text_active:
-            text_pos[1] += first_text.get_rect().height 
-            self.game.screen.blit(text, text_pos)
+        first_text = self.text_active[0]
+        for index, text in enumerate(self.text_active):
+            text_pos[1] += first_text.get_rect().height
+            self.text_rects[index - 1] = self.game.screen.blit(text, text_pos)
+        self.promptCollide()
 
-    
+    def promptCollide(self):
+        mpos = pygame.mouse.get_pos()
+        for index, text_rect in enumerate(self.text_rects):
+            if text_rect.collidepoint(mpos):
+                self.text_active[index + 1] = self.game.speak_font.render("newtext", True, (255, 255, 255))
+
     def blitHUD(self):
         #hp bar creation
         blit_surface = pygame.Surface((abs(392 * (float(self.game.Player.stats['hp']) / self.game.Player.stats['maxhp'])), 24), pygame.SRCALPHA)
