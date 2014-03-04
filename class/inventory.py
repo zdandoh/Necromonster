@@ -10,6 +10,9 @@ Item storage format: Name:count:slotno;
 
 class Invent():
     def __init__(self, game, fi='invent.dat'):
+        """
+        Used for inventory management. Initialized with an inventory.dat file name.
+        """
         self.game = game
         self.shown = 0
         self.SLOTS = 31
@@ -36,6 +39,9 @@ class Invent():
         self.reload()
 
     def reload(self):
+        """
+        Updates the inventory stored in memory based on file content
+        """
         self.blit_items = []
         raw_cont = self.readInvent()
         if raw_cont:
@@ -47,6 +53,9 @@ class Invent():
                     self.blit_items.append(self.game.Item(self.game, slot[0], world=0))
 
     def add(self, item_name, slotno=-1):
+        """
+        Adds an item to the inventory in memory and .dat file.
+        """
         if self.hasItem(item_name):
             slot = self.getSlot(item_name)
             self.slots[slot][1] += 1
@@ -61,10 +70,16 @@ class Invent():
             self.loadInventSurfaces()
 
     def rem(self, slotindex):
+        """
+        Removes an item from memory and stores it in the file.
+        """
         self.slots[slotindex] = []
         self.sync()
 
     def hasItem(self, name):
+        """
+        Returns true if the player has an item (by name) false otherwise.
+        """
         for slot in self.slots:
             if slot:
                 if slot[0] == name:
@@ -72,6 +87,9 @@ class Invent():
         return False
 
     def getSlot(self, name):
+        """
+        Returns the slot that an item is in (by name) if the item is not possessed, returns False.
+        """
         for index, slot in enumerate(self.slots):
             if slot:
                 if slot[0] == name:
@@ -79,13 +97,18 @@ class Invent():
         return False
 
     def nextFreeSlot(self):
+        """
+        Iterates through all slots and returns the index of the first empty slot.
+        """
         for index, slot in enumerate(self.slots):
             if not slot:
                 return index
         return -1
 
     def belongsIn(self, slot, name):
-        # tests if an item belongs somewhere. Pretty slow and dirty
+        """
+        Tests if an item blongs in a certain slot. Unoptimized and ugly.
+        """
         belongs = True
         if slot <= 24:
             belongs = True
@@ -107,6 +130,9 @@ class Invent():
         return belongs
 
     def sync(self):
+        """
+        Syncs the inventory in memory with the .dat file
+        """
         to_write = ''
         for index, slot in enumerate(self.slots):
             if slot:
@@ -114,6 +140,9 @@ class Invent():
         open(join(self.game.main_path, 'rec', 'user', self.dat_file), 'w').write(to_write)
 
     def readInvent(self):
+        """
+        Reads the invent .dat file. No parsing is done.
+        """
         try:
             cont = open(join(self.game.main_path, 'rec', 'user', self.dat_file), 'r').read()
         except IOError:
@@ -124,6 +153,9 @@ class Invent():
             return cont
 
     def parse(self, cont):
+        """
+        Parses the raw data that can be obtained from readInvent() into a list of slots and their contents.
+        """
         slot_list = [[] for x in xrange(self.SLOTS)]
         items = cont.split(';')
         for item in items:
@@ -133,15 +165,24 @@ class Invent():
         return slot_list
 
     def draw(self):
+        """
+        Initializes the drawing of the inventory.
+        """
         self.game.screen.blit(self.inv_surf, self.inv_corner)
         if self.shown:
             self.blitInvent()
 
     def getSurface(self, name):
+        """
+        Returns the surface of an item.
+        """
         name = name.lower().replace(' ', '_') + '.png'
         return pygame.image.load(join(self.game.main_path, 'rec', 'items', name))
 
     def loadInventSurfaces(self):
+        """
+        Loads surfaces of every slot based off the names of items in each slot
+        """
         self.item_surfaces = []
         self.item_dummy_names = []
         self.item_rects = []
@@ -153,6 +194,9 @@ class Invent():
                 self.item_dummy_names.append(slot[0])
 
     def toggleView(self):
+        """
+        Opens and closes the inventory. Reloads player equipment.
+        """
         if self.shown == 0:
             self.shown = 1
             self.loadInventSurfaces()
@@ -172,6 +216,9 @@ class Invent():
         pass
 
     def inventClick(self, mouse):
+        """
+        Called when the player clicks on an area inside the inventory screen.
+        """
         for index, rect in enumerate(self.item_rects):
             if rect.collidepoint(mouse):
                 clicked_name = self.item_dummy_names[index]
@@ -180,6 +227,10 @@ class Invent():
                 self.loadInventSurfaces()
 
     def testThrow(self, mpos):
+        """
+        Checks to see if the player has clicked outside the inventory with an item in their hand.
+        Throws the item(s) in the world.
+        """
         if not self.inv_rect.collidepoint(mpos):
             for _ in xrange(self.in_hand[2]):
                 self.game.Item(self.game, self.in_hand[0], pos=self.game.Player.getPos(offset=[-1, -1]), spin=1, world=1)
@@ -205,6 +256,10 @@ class Invent():
                 self.in_hand = new_hand
 
     def blitInvent(self):
+        """
+        Formats all inventory surfaces for blitting (items, item backgrounds)
+        Includes special math for armor and accessory slots.
+        """
         #define formatting vars
         invent_dims = [224, 157]
         invent_corner = [182, 31]

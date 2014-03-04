@@ -6,6 +6,10 @@ from items import Item
 
 class Weapon(Item):
     def __init__(self, game, name):
+        """
+        Slightly depreciated weapon class. Will need major rewriting.
+        Used for loading and applying weapon characteristics to the player.
+        """
         self.game = game
         super(Weapon, self).__init__(game, name, world=0)
         #setup base vars of all weapon(s)
@@ -18,6 +22,9 @@ class Weapon(Item):
         self.loadWeapon(name)
 
     def changeUpdate(self):
+        """
+        Overrides an update type based on weapon type attribute.
+        """
         if not self.type:
             raise ValueError('No weapon type specified')
         elif self.type == 'dagger':
@@ -32,6 +39,9 @@ class Weapon(Item):
             raise ValueError('No weapon of type {}'.format(self.type))
 
     def loadWeapon(self, name):
+        """
+        Uses the weapon config file to load all weapon characteristics.
+        """
         config_file = open(os.path.join('rec', 'weapon', name, 'config.py')).read()
         exec(config_file)
         self.frames = []
@@ -45,29 +55,46 @@ class Weapon(Item):
         return img_load(os.path.join(self.game.main_path, 'rec', 'weapon', name, fi_name))
 
     def preUpdate(self, index, ttime):
+        """
+        Called before the update function, can be overriden for new functionality.
+        """
         self.update(index, ttime)
 
     def updateWeapon(self, index, ttime):
+        """
+        Dummy method for updating a weapon. Always overriden.
+        """
         pass
 
     def blit(self):
+        """
+        Displays the weapon on screen. Really broken, I believe.
+        """
         if self.shown:
             self.game.screen.blit(self.frames[self.frame], self.game.off([self.game.Player.player_r.x, self.game.Player.player_r.y]))
         else:
             self.game.screen.blit(self.frames[self.frame], self.game.off(self.pos))
 
     def onClick(self, game, vector):
+        """
+        Called when the world is clicked. Activates the weapon.
+        """
         if self.projectile:
             game.Projectile(game, self.projectile, vector)
 
     def create(self):
+        """
+        Creates the weapon object and adds it to the EntityHandler.
+        """
         self.pos = [self.game.Player.player_r.x, self.game.Player.player_r.y]
         self.game.EntityHandler.misc.append(self)
 
 
 class Garment(Item):
-    # class for armor
     def __init__(self, game, name):
+        """
+        Class for armor and accessories. New armor must be registered here when added.
+        """
         super(Garment, self).__init__(game, name, world=0)
         # the following few lines of code are a waste of memory. Too bad I don't have the STATIC keyword.
         self.head = {'leather_hat': 1}
@@ -80,6 +107,9 @@ class Garment(Item):
         self.apply()
 
     def getDefense(self):
+        """
+        Returns an int. The defense of a Garment.
+        """
         #returns defense of Garment based on name
         defense = 0
         try:
@@ -90,10 +120,18 @@ class Garment(Item):
         return defense
 
     def apply(self):
+        """
+        Used to apply the effects of a garment to the player.
+        Can be overriden for additional effects.
+        """
         # add effects to the player
         self.game.Player.stats['defense'] += self.defense
 
     def remove(self):
+        """
+        Called when the garment is removed.
+        Must be properly modified along with apply() if additional effects need to be removed.
+        """
         #called when player takes off garment
         self.game.Player.stats['defense'] -= self.defense
 

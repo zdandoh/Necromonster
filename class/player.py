@@ -11,6 +11,9 @@ from ast import literal_eval
 
 class Player():
     def __init__(self, game):
+        """
+        Main player class. Controls all player movement, updates, and state data.
+        """
         self.game = game
         self.player = pygame.image.load(os.path.join('rec', 'char', 'back1.png'))
         self.head_font = pygame.font.Font(os.path.join('rec', 'font', 'p_head.ttf'), 15)
@@ -65,7 +68,10 @@ class Player():
         self.speed = 250
 
     def update(self, ttime):
-        #Update player position based on keypresses
+        """
+        Update player position based on keypresses. Tests for collision against buildings.
+        Updates frames as the player walks.
+        """
         self.preUpdate()
         if 1 in self.game.keys_pressed and self.can_move:
             if self.game.keys_pressed[K_w]:
@@ -96,10 +102,15 @@ class Player():
             self.equipment['weapon'].blit()
 
     def preUpdate(self):
-        # an overwritable function to add temp player functionality
+        """
+        An overwritable function to add temp player functionality
+        """
         pass
 
     def loadEquip(self, slot):
+        """
+        Checks a slot for equipment and adds its effects to the player.
+        """
         type = self.game.Garment
         if slot == 25:
             slice = 'weapon'
@@ -126,12 +137,18 @@ class Player():
             self.equipment[slice] = type(self.game, 'nothing')
 
     def removeGarment(self, name):
+        """
+        Called when a Garment object is remove from the player.
+        """
         if name == 'weapon':
             return 0
         self.stats['defense'] -= self.equipment[name].getDefense()
 
     def onMove(self, offset, link_count = 0):
-        #Collision detection run on movement
+        """
+        Called when the player moves. Used to make sure new positions are valid.
+        Returns player to old location if not valid.
+        """
         fr = 1
         m_rects = [x.rect for x in self.game.EntityHandler.monsters]
         if self.player_r.x > self.game.Grid.bounds[0] or self.player_r.x <= 0:
@@ -163,6 +180,9 @@ class Player():
                         self.player_r.x -= offset[0]
 
     def getDegrees(self, mpos):
+        """
+        If the screen is a circle and the player is at the center, this function is used to get the degree that the mouse pointer lies on.
+        """
         ppos = self.game.center_point
         mpos = pygame.mouse.get_pos()
         try:
@@ -193,6 +213,10 @@ class Player():
         return int(360 - degrees)
 
     def takeOver(self, monster):
+        """
+        Called when the player attempts to take over a monster.
+        Applies all new equipment, attributes, and inventory.
+        """
         if monster.NPC:
             return False
         if self.takeover_finished:
@@ -251,12 +275,17 @@ class Player():
             self.preUpdate = preUpdate
 
     def getMasks(self, names, frames):
+        """
+        Get the pixel masks of all player/monster frames.
+        """
         self.player_masks = {}
         for name, frame in zip(names, frames):
             self.player_masks[name] = pygame.mask.from_surface(frame)
 
     def headDraw(self, text, rect, dur=3, off=True):
-        #Draw text at head of rects
+        """
+        Draw the text at the head of the player rect. Default duration of 3 seconds.
+        """
         text = text.replace('_', ' ')
         font_render = self.head_font.render(text, True, (255, 255, 255))
         render_pos = [rect.x - font_render.get_size()[0] / 2 + rect.w / 2, rect.y - 25]
@@ -274,6 +303,9 @@ class Player():
         self.onMove(change)
 
     def collides(self, rect):
+        """
+        Mostly unused function to save typing. ?(Depreciated)?
+        """
         return self.player_r.colliderect(rect)
 
     def setPos(self, new):
@@ -290,14 +322,23 @@ class Player():
         return (self.player_r.x + 20) / 10, (self.player_r.y + 30) / 10
 
     def getDistance(self, rect):
+        """
+        Gets the distance that the player is from a certain rect.
+        """
         return math.hypot(self.player_r.x - rect.x, self.player_r.y - rect.y)
 
     def setFace(self, face, state=1):
+        """
+        Set the face of the player that is shown.
+        """
         face = face.replace('\r', '')
         if face:
             self.player_face = face
 
     def attack(self, mpos):
+        """
+        Called when the player attacks. Currently unused with few weapon types added.
+        """
         # (y - y) / (x - x)
         degrees = 360 - self.getDegrees(mpos)
         if 135 > degrees >= 45:
@@ -318,6 +359,9 @@ class Player():
         self.equipment['weapon'].onClick(self.game, bullet_vector)
 
     def takeDamage(self, damage):
+        """
+        Called when the player takes damage.
+        """
         damage -= self.stats['defense']
         if self.stats['hp'] > 0:
             if damage <= 0:
@@ -325,4 +369,7 @@ class Player():
             self.stats['hp'] -= damage
 
     def blitPlayer(self):
+        """
+        Draws the player on the screen object.
+        """
         self.game.screen.blit(self.player, self.game.off([self.player_r.x, self.player_r.y]))
