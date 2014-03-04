@@ -6,6 +6,7 @@ sys.path.append('class')
 import pygame
 from pygame.locals import *
 
+# class imports from rec\class
 import mapLoader
 from EntityHandler import EntityHandler
 from scheduler import Schedule
@@ -23,12 +24,15 @@ pygame.init()
 
 class Necro():
     def __init__(self):
-        #window setup
+        """
+        Main game class initialization. All other class references point to this class as "game"
+        """
+        # window setup
         pygame.display.set_caption('Necromonster')
         pygame.display.set_icon(pygame.image.load(os.path.join('rec', 'misc', 'icon.png')))
         self.main_path = os.getcwd()
 
-        # initiate the clock and screen
+        # initiate the clock and screen object
         self.clock = pygame.time.Clock()
         self.last_tick = pygame.time.get_ticks()
         self.screen_res = [900, 650]
@@ -39,7 +43,7 @@ class Necro():
         self.DEBUG = 1
         self.RECT_DEBUG = 0
 
-        #Init custom game classe(s)
+        #Init and assign custom game class(es)
         self.EntityHandler = EntityHandler(self)
         self.Scheduler = Schedule(self)
         self.Projectile = Projectile
@@ -62,17 +66,22 @@ class Necro():
         self.default_font = pygame.font.SysFont(None, 20)
         self.speak_font = pygame.font.SysFont(None, 40)
 
-        # get the map that you are on
+        # load the map that player is on
         self.blit_list = mapLoader.load('home', self)
 
+        # spawn initial map items/entities
         self.Item(self, 'Mythril', [350, 400], world=1)
         self.NPC(self, "blacksmith", [400, 400], 100, 'still')
 
+        # begin main game loop
         while 1:
             self.Loop()
 
     def Loop(self):
-        # main game loop
+        """
+        Main loop of the game. Calls tick, draw, and event processing
+        functions. Tick and draw are only called every 20 milliseconds
+        """
         self.eventLoop()
         if pygame.time.get_ticks() - self.last_tick > 20:
             self.Tick()
@@ -80,12 +89,16 @@ class Necro():
         pygame.display.update()
 
     def eventLoop(self):
-        # the main event loop, detects keypresses
+        """
+        Uses pygame event handling to process keypresses and mouse clicks.
+        Used for chat, interacting with objects, and inventory management
+        """
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
             elif event.type == KEYDOWN:
+                # toggle chat bar active
                 if not self.HUD.chat_active:
                     if event.key == K_e:
                         self.Invent.toggleView()
@@ -95,6 +108,7 @@ class Necro():
                         self.HUD.chat_active = 1
                         self.Player.can_move = 0
                         return 0
+                # process chat messages. Remove or add characters while chat box is open
                 if event.key == K_ESCAPE or event.key == K_RETURN:
                     message = self.HUD.chat_message.split()
                     if len(message) > 1:
@@ -112,6 +126,7 @@ class Necro():
                     if self.keys_pressed[K_LSHIFT] or self.keys_pressed[K_RSHIFT]:
                         char = char.upper()
                     self.HUD.chat_message += char
+                # interaction with entities on space bar press
                 if event.key == K_SPACE:
                     for monster in self.EntityHandler.monsters:
                         if monster.NPC == True:
@@ -119,6 +134,7 @@ class Necro():
                                 monster.interacting = True
                             elif not monster.isPlayerClose(75) or monster.interacting == True:
                                 monster.interacting = False
+            # inventory management, checks for item throws, and placement in slots.
             elif event.type == MOUSEBUTTONDOWN:
                 self.Invent.last_click = pygame.mouse.get_pos()
                 if self.Invent.in_hand:
@@ -129,7 +145,9 @@ class Necro():
                     self.Player.attack(pygame.mouse.get_pos())
 
     def Tick(self):
-        # updates to player location and animation frame
+        """
+        Updates all game math and entity states. No drawing is done.
+        """
         ttime = self.clock.tick()
         self.keys_pressed = pygame.key.get_pressed()
         self.Scheduler.update()
@@ -141,12 +159,18 @@ class Necro():
         self.last_tick = pygame.time.get_ticks()
 
     def off(self, coords):
+        """
+        Offsets image coordinates to appear correct from the view of the player.
+        Should be called on all surface coordinates before blitting.
+        """
         newx = coords[0] - self.Player.player_r.x + 450
         newy = coords[1] - self.Player.player_r.y + 325
         return [newx, newy]
 
     def Draw(self):
-        #Responsible for calling all functions that draw to the screen
+        """
+        Completes all blitting to the screen object, includes HUD updates.
+        """
         tile_width = self.tile[1][0]
         tile_height = self.tile[1][1]
         tile_extrax = self.Player.player_r.x % tile_width

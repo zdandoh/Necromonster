@@ -7,6 +7,10 @@ from ast import literal_eval
 
 class Grid():
     def __init__(self, game, bounds):
+        """
+        Class used for pathfinding. Keeps track of filled and empty 10x10 pixel nodes.
+        Compresses the map into 10x10 nodes on loading.
+        """
         self.game = game
         self.bounds = bounds
         screen = pygame.Surface(game.screen_res)
@@ -19,16 +23,28 @@ class Grid():
         self.compress()
 
     def getPart(self, begin, dims):
+        """
+        Gets a slice of the nodes. Used for reducing load while pathfinding.
+        """
         return self.nodes[begin[1]:begin[1] + dims[1], begin[0]:begin[0] + dims[0]]
 
     def getPix(self, x, y):
+        """
+        Return specific pixel from map surfarray
+        """
         return self.grid[x][y]
 
     def setNode(self, x, y, val):
-        #sets a node
+        """
+        Sets a node in the pathfinding node map
+        """
         self.nodes[y][x] = val
 
     def compress(self):
+        """
+        Compresses the map surfarray into nodes that represent 10x10 pixel areas
+        Pretty optimized with numpy.
+        """
         self.nodes = numpy.zeros([self.bounds[0] / 10 + 10, self.bounds[1] / 10 + 10], dtype='uint8')
 
         for row_index, row in enumerate(self.nodes):
@@ -39,6 +55,11 @@ class Grid():
                     self.nodes[node_index][row_index] = 1
 
 def load(map_name, game, new_pos = 0, face = 0):
+    """
+    Load a map from a map folder. Returns a list of surfaces that are on the map.
+    Parses the custom map format.
+    Kinda messy.
+    """
     surfaces = []
     game.links = []
     game.solid_list = []

@@ -5,6 +5,9 @@ from os.path import join
 
 class Item(object):
     def __init__(self, game, name, pos=[0, 0], spin=0, world=1):
+        """
+        Basic item class. Sets all default values and might render them in the world if world=1
+        """
         self.game = game
         self.name = name
         self.file = name.lower().replace(' ', '_') + '.png'
@@ -25,10 +28,17 @@ class Item(object):
             self.game.EntityHandler.world_items.append(self)
 
     def getSurface(self, name):
+        """
+        Returns the surface of the item via pygame.image.load()
+        Is overridden by functions that specify a different path
+        """
         name = name.lower().replace(' ', '_') + '.png'
         return load(join(self.game.main_path, 'rec', 'items', name))
 
     def update(self, index, ttime):
+        """
+        Updates items in the world.
+        """
         if self.dead:
             return 1
         self.pos[0] += self.vector[0]
@@ -50,8 +60,13 @@ class Item(object):
             self.dead = 1
 
     def blit(self):
+        """
+        Draws items to the screen object
+        """
         self.game.screen.blit(self.image, self.game.off(self.pos))
 
     def clear(self):
-        '''Used for moving to new maps'''
+        """
+        Used for moving to new maps
+        """
         self.world_items = []

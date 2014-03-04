@@ -7,6 +7,9 @@ from ast import literal_eval
 
 class HUD():
     def __init__(self, game):
+        """
+        Initializes HUD. Sets default values and loads images for blitting.
+        """
         self.game = game
 
         #chat bar setup
@@ -27,6 +30,9 @@ class HUD():
         self.monsters = os.listdir(join(self.game.main_path, 'rec', 'enemy'))
 
     def command(self, obj, pos, amount=1):
+        """
+        Processes a chat command and spawns an item or monster accordingly.
+        """
         try:
             position = literal_eval(pos)
             amnt = int(amount)
@@ -43,6 +49,9 @@ class HUD():
             print "Invalid Command!"
 
     def makePrompt(self, npc_text):
+        """
+        Create a text prompt. Used when talking to NPCs.
+        """
         self.text_active = []
         self.text_rects = []
         main_text = npc_text.getText(npc_text.current_branch)
@@ -57,6 +66,9 @@ class HUD():
                 self.text_active.append(option_render)
 
     def showPrompt(self):
+        """
+        Shows prompts created by makePrompt()
+        """
         text_pos = [210, 120]
         first_text = self.text_active[0]
         for index, text in enumerate(self.text_active):
@@ -65,12 +77,18 @@ class HUD():
         self.promptCollide()
 
     def promptCollide(self):
+        """
+        Tests for mouse collisions with prompt text.
+        """
         mpos = pygame.mouse.get_pos()
         for index, text_rect in enumerate(self.text_rects):
             if text_rect.collidepoint(mpos):
                 self.text_active[index + 1] = self.game.speak_font.render("newtext", True, (255, 255, 255))
 
     def blitHUD(self):
+        """
+        Blits all HUD elements to the screen object
+        """
         #hp bar creation
         blit_surface = pygame.Surface((abs(392 * (float(self.game.Player.stats['hp']) / self.game.Player.stats['maxhp'])), 24), pygame.SRCALPHA)
         blit_surface.fill((234, 0, 0, 213))
