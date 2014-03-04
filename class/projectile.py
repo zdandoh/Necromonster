@@ -5,6 +5,10 @@ import os
 
 class Projectile():
     def __init__(self, game, name, vector, damage='def', pos='def', degrees=0):
+        """
+        Partially depreciated class for spawning and controlling projectile movement.
+        Problematic because it takes too much control over weapons/projectiles.
+        """
         # general vars
         #assign defaults to a player attack
         if damage == 'def':
@@ -45,6 +49,9 @@ class Projectile():
         self.rect.y = self.pos[1]
 
     def loadFrames(self, name):
+        """
+        Loads all projectile frames ending in .png.
+        """
         frames = []
         for fi in os.listdir(os.path.join('rec', 'projectile', name)):
             if '.png' in fi:
@@ -52,6 +59,9 @@ class Projectile():
         return frames
 
     def load(self, name):
+        """
+        Loads and executes the config file of a projectile.
+        """
         config_file = open(os.path.join('rec', 'projectile', name, 'config.py')).read()
         exec(config_file)
         self.frames = self.loadFrames(name)
@@ -64,17 +74,29 @@ class Projectile():
             self.rect.y = self.pos[1]
 
     def turnFrames(self):
+        """
+        Applies the pygame rotate function to each of the projectile frames.
+        """
         for frame in self.frames:
             self.surf = rotate(frame, self.degrees)
 
     def setDead(self):
+        """
+        Sets the projectile as dead. Will be removed in next EntityHandler update cycle.
+        """
         self.dead = 1
         self.game.Player.can_move = 1
 
     def onCollide(self, game):
+        """
+        Called when the projectile hits a building or object.
+        """
         self.setDead()
 
     def update(self, index, ttime):
+        """
+        Updates the porjectile in space. Checks for collisions.
+        """
         for index, monster in enumerate(self.game.EntityHandler.monsters):
             if self.rect.colliderect(monster.rect):
                 self.monster_index = index
@@ -91,7 +113,9 @@ class Projectile():
         return self.dead
 
     def ranged_update(self, index, ttime):
-        # used for ranged weapons, ex bows
+        """
+        Used for ranged weapons (bows or spells.)
+        """
         while self.collides_with_player:
             if self.rect.colliderect(self.game.Player.getRect()):
                 self.add()
@@ -105,7 +129,9 @@ class Projectile():
         return self.dead
 
     def fixed_update(self, index, ttime):
-        # used for fixed position weapons, ex swords
+        """
+        Used for fixed position weapons (swords, spears, ect)
+        """
         if self.retracting:
             if self.travelled <= 1:
                 self.setDead()
