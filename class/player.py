@@ -179,38 +179,20 @@ class Player():
                         self.player_r.y -= offset[1]
                         self.player_r.x -= offset[0]
 
-    def getDegrees(self, mpos):
+    def getDegrees(self):
         """
-        If the screen is a circle and the player is at the center, this function is used to get the degree that the mouse pointer lies on.
+        If the screen is a circle and the player is at the center, 
+        this function is used to get the degree that the mouse pointer lies on,
+        the easy, and also very smart way.
         """
         ppos = self.game.center_point
         mpos = pygame.mouse.get_pos()
-        try:
-            degrees = math.degrees(math.atan((mpos[0] - ppos[0]) / (mpos[1] - ppos[1])))
-        except ZeroDivisionError:
-            degrees = 0
-        if not degrees:
-            if mpos[1] == ppos[1] or mpos[0] == ppos[0]:
-                if mpos[0] > ppos[0]:
-                    degrees = 90
-                elif mpos[0] < ppos[0]:
-                    degrees = 270
-                elif mpos[1] > ppos[1]:
-                    degrees = 180
-                elif mpos[1] > ppos[1]:
-                    degrees = 0
 
-        elif mpos[0] > ppos[0] and mpos[1] < ppos[1]:
-            degrees = abs(degrees)
-        elif mpos[0] > ppos[0] and mpos[1] > ppos[1]:
-            degrees = 90 - degrees + 90
-        elif mpos[0] < ppos[0] and mpos[1] > ppos[1]:
-            degrees = abs(degrees) + 180
-        elif mpos[0] < ppos[0] and mpos[1] < ppos[1]:
-            degrees = 90 - degrees + 270
-        else:
-            raise Exception('Incalculable degrees %s' % degrees)
-        return int(360 - degrees)
+        angle = math.degrees(math.atan2(ppos[0]-mpos[0], ppos[1]-mpos[1]))
+        if angle < 0:
+            angle += 360
+
+        return angle
 
     def takeOver(self, monster):
         """
@@ -340,13 +322,14 @@ class Player():
         Called when the player attacks. Currently unused with few weapon types added.
         """
         # (y - y) / (x - x)
-        degrees = 360 - self.getDegrees(mpos)
+        degrees = self.getDegrees()
+        print degrees
         if 135 > degrees >= 45:
-            self.setFace('right')
+            self.setFace('left')
         elif 225 > degrees >= 135:
             self.setFace('front')
         elif 315 > degrees >= 225:
-            self.setFace('left')
+            self.setFace('right')
         else:
             self.setFace('back')
         speed = 4.
