@@ -182,8 +182,7 @@ class Player():
     def getDegrees(self):
         """
         If the screen is a circle and the player is at the center, 
-        this function is used to get the degree that the mouse pointer lies on,
-        the easy, and also very smart way.
+        this function is used to get the degree that the mouse pointer lies on.
         """
         ppos = self.game.center_point
         mpos = pygame.mouse.get_pos()
@@ -323,7 +322,6 @@ class Player():
         """
         # (y - y) / (x - x)
         degrees = self.getDegrees()
-        print degrees
         if 135 > degrees >= 45:
             self.setFace('left')
         elif 225 > degrees >= 135:
