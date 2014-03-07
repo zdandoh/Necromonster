@@ -58,6 +58,7 @@ class HUD():
         main_render = self.game.speak_font.render(main_text, True, (0, 0, 0))
         self.text_active.append(main_render)
         options = npc_text.getOptions(npc_text.current_branch)
+        self.thumb = npc_text.npc.thumbnail
         for op_no, option in enumerate(options):
             if npc_text.getLabel(option):
                 option_text = str(op_no + 1) + ': ' + npc_text.getLabel(option)
@@ -69,7 +70,7 @@ class HUD():
         """
         Shows prompts created by makePrompt()
         """
-        text_pos = [210, 120]
+        text_pos = [150, 400]
         first_text = self.text_active[0]
         for index, text in enumerate(self.text_active):
             text_pos[1] += first_text.get_rect().height
@@ -96,7 +97,8 @@ class HUD():
 
         for monster in self.game.EntityHandler.monsters:
             if monster.NPC == True and monster.interacting == True:
-                self.game.screen.blit(self.text_box, [170, 75])
+                self.game.screen.blit(self.text_box, [30, 350])
+                self.game.screen.blit(self.thumb,[40, 360])
 
         #xp bar(s)
         blit_surface = pygame.Surface((497 * (float(self.game.Player.stats['mxp']) / self.game.Player.stats['maxmxp']), 12), pygame.SRCALPHA)

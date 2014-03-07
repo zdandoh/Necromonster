@@ -19,6 +19,7 @@ class NPC(Monster):
         self.text.setGreeting(self.greeting)
         self.NPC = True
         self.head_icon = None
+        self.thumbnail = load(os.path.join(self.game.main_path, 'rec', 'npc', name, 'img', 'thumb.png')).convert_alpha()
 
     def execInfo(self):
         """
@@ -34,6 +35,7 @@ class NPC(Monster):
         Loads all NPC frames that end in .png.
         Overrides a function in the monster class.
         """
+
         frames = {}
         for fi in os.listdir(os.path.join(self.game.main_path, 'rec', 'npc', name, 'img')):
             if '.png' in fi:
@@ -63,6 +65,13 @@ class NPC(Monster):
             self.game.Player.headDraw(self.text.getGreeting(), self.rect, off=False)
         if not self.isPlayerClose(75):
             self.interacting = False
+
+    def blit(self):
+        """
+        overrides the blit method in the monster class to get rid of the uneeded health bar
+        """
+        self.game.screen.blit(self.frames['%s%s.png' % (self.face, self.frameno)], self.game.off([self.rect.x, self.rect.y]))
+
 
 
 class NPCText(object):
