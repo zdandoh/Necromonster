@@ -61,6 +61,8 @@ class NPC(Monster):
         """
         if self.interacting:
             self.text.interact()
+        if not self.interacting:
+            self.game.HUD.text_active = False
         if self.isPlayerClose(75) and not self.game.Player.head_drawn:
             self.game.Player.headDraw(self.text.getGreeting(), self.rect, off=False)
         if not self.isPlayerClose(75):
@@ -91,12 +93,17 @@ class NPCText(object):
         Called when the player should be speaking to the NPC
         """
         exec(self.getAction(self.current_branch))
-        options = self.getOptions(self.current_branch)
         if not self.game.HUD.text_active:
             self.game.HUD.makePrompt(self)
         if not self.terminated and self.game.HUD.prompt_result:
             self.current_branch = self.current_branch.find("op" + str(self.game.HUD.prompt_result))
         self.interacting = False
+
+    def pickOption(self, index):
+        options = self.getOptions(self.current_branch)
+        new_branch = options[index]
+        self.current_branch = new_branch
+        self.game.HUD.makePrompt(self)
 
     def setAction(self, branch, code):
         """

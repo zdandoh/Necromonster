@@ -63,8 +63,8 @@ class Necro():
 
         # load fonts, create font list
         self.text_list = []
-        self.default_font = pygame.font.SysFont(None, 20)
-        self.speak_font = pygame.font.SysFont(None, 40)
+        self.default_font = pygame.font.Font(os.path.join('rec', 'font', 'freesansbold.ttf'), 15)
+        self.speak_font = pygame.font.Font(os.path.join('rec', 'font', 'freesansbold.ttf'), 30)
 
         # load the map that player is on
         self.blit_list = mapLoader.load('home', self)
@@ -129,11 +129,12 @@ class Necro():
                 # interaction with entities on space bar press
                 if event.key == K_SPACE:
                     for monster in self.EntityHandler.monsters:
-                        if monster.NPC == True:
+                        if monster.NPC:
                             if monster.isPlayerClose(75) and monster.interacting == False:
                                 monster.interacting = True
                             elif not monster.isPlayerClose(75) or monster.interacting == True:
                                 monster.interacting = False
+                                self.HUD.delPrompt()
             # inventory management, checks for item throws, and placement in slots.
             elif event.type == MOUSEBUTTONDOWN:
                 self.Invent.last_click = pygame.mouse.get_pos()

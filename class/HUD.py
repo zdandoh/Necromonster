@@ -15,6 +15,7 @@ class HUD():
         #chat bar setup
         self.chat_active = 0
         self.text_active = False
+        self.body_text = [False, False, False]
         self.prompt_result = 0
         self.chat_message = ''
         self.chat_toggle = cycle(reversed(range(2)))
@@ -52,30 +53,45 @@ class HUD():
         """
         Create a text prompt. Used when talking to NPCs.
         """
+        self.npc_text = npc_text
         self.text_active = []
+        self.body_text = [False, False, False]
         self.text_rects = []
-        main_text = npc_text.getText(npc_text.current_branch)
-        main_render = self.game.speak_font.render(main_text, True, (0, 0, 0))
-        self.text_active.append(main_render)
+        self.text_content = []
+
+        body_text = npc_text.getText(npc_text.current_branch)
+        body_render = self.game.speak_font.render(body_text, True, (255, 255, 255))
+        self.body_text[0] = body_render
+        self.body_text[1] = body_text
+        self.body_text[2] = pygame.Rect(body_render.get_rect())
+        self.body_text[2].x = 150
+        self.body_text[2].y = 400
+
         options = npc_text.getOptions(npc_text.current_branch)
         self.thumb = npc_text.npc.thumbnail
         for op_no, option in enumerate(options):
             if npc_text.getLabel(option):
                 option_text = str(op_no + 1) + ': ' + npc_text.getLabel(option)
-                option_render = self.game.speak_font.render(option_text, True, (0, 0, 0))
+                option_render = self.game.speak_font.render(option_text, True, (255, 255, 255))
                 self.text_rects.append(option_render.get_rect())
                 self.text_active.append(option_render)
+                self.text_content.append(option_text)
 
     def showPrompt(self):
         """
         Shows prompts created by makePrompt()
         """
         text_pos = [150, 400]
-        first_text = self.text_active[0]
+        self.game.screen.blit(self.body_text[0], text_pos)
+        text_pos[1] += self.body_text[0].get_rect().height
         for index, text in enumerate(self.text_active):
-            text_pos[1] += first_text.get_rect().height
-            self.text_rects[index - 1] = self.game.screen.blit(text, text_pos)
+            text_pos[1] += self.text_active[0].get_rect().height
+            self.text_rects[index] = self.game.screen.blit(text, text_pos)
         self.promptCollide()
+
+    def delPrompt(self):
+        self.text_active = False
+        self.body_text = [False, False, False]
 
     def promptCollide(self):
         """
@@ -84,7 +100,12 @@ class HUD():
         mpos = pygame.mouse.get_pos()
         for index, text_rect in enumerate(self.text_rects):
             if text_rect.collidepoint(mpos):
-                self.text_active[index + 1] = self.game.speak_font.render("newtext", True, (255, 255, 255))
+                self.text_active[index] = self.game.speak_font.render(self.text_content[index], True, (75, 90, 210))
+                if pygame.mouse.get_pressed()[0]:
+                    self.npc_text.pickOption(index)
+                    break
+            else:
+                self.text_active[index] = self.game.speak_font.render(self.text_content[index], True, (255, 255, 255))
 
     def blitHUD(self):
         """
@@ -117,5 +138,5 @@ class HUD():
             self.game.screen.blit(self.chat_bar, (25, 625))
             self.game.screen.blit(self.game.default_font.render(self.chat_message, True, (255, 255, 255)), [30, 628])
 
-        if self.text_active:
+        if self.text_active or self.body_text[0]:
             self.showPrompt()
