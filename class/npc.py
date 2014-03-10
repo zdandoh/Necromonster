@@ -75,7 +75,6 @@ class NPC(Monster):
         self.game.screen.blit(self.frames['%s%s.png' % (self.face, self.frameno)], self.game.off([self.rect.x, self.rect.y]))
 
 
-
 class NPCText(object):
     def __init__(self, game, npc, name):
         """
@@ -93,17 +92,28 @@ class NPCText(object):
         Called when the player should be speaking to the NPC
         """
         exec(self.getAction(self.current_branch))
-        if not self.game.HUD.text_active:
+        if not self.game.HUD.text_active and not self.game.HUD.body_text[0]:
             self.game.HUD.makePrompt(self)
         if not self.terminated and self.game.HUD.prompt_result:
             self.current_branch = self.current_branch.find("op" + str(self.game.HUD.prompt_result))
         self.interacting = False
 
     def pickOption(self, index):
+        """
+        Called when the player clicks an option from the NPC
+        """
         options = self.getOptions(self.current_branch)
         new_branch = options[index]
         self.current_branch = new_branch
         self.game.HUD.makePrompt(self)
+        if len(self.getOptions(new_branch)) <= 0:
+            self.reset()
+
+    def reset(self):
+        """
+        Set the NPC text current branch back to the root to begin conversation anew
+        """
+        self.current_branch = self.root
 
     def setAction(self, branch, code):
         """

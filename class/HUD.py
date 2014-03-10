@@ -90,6 +90,9 @@ class HUD():
         self.promptCollide()
 
     def delPrompt(self):
+        """
+        Takes all steps necessary to remove the prompt
+        """
         self.text_active = False
         self.body_text = [False, False, False]
 

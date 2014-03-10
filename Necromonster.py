@@ -62,6 +62,7 @@ class Necro():
         self.entities = []
 
         # load fonts, create font list
+        # do not use pygame.font.SysFont!
         self.text_list = []
         self.default_font = pygame.font.Font(os.path.join('rec', 'font', 'freesansbold.ttf'), 15)
         self.speak_font = pygame.font.Font(os.path.join('rec', 'font', 'freesansbold.ttf'), 30)
