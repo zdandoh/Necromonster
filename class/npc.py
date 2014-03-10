@@ -67,6 +67,7 @@ class NPC(Monster):
             self.game.Player.headDraw(self.text.getGreeting(), self.rect, off=False)
         if not self.isPlayerClose(75):
             self.interacting = False
+            self.game.HUD.delPrompt()
 
     def blit(self):
         """

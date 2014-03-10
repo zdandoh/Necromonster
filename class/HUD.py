@@ -14,7 +14,7 @@ class HUD():
 
         #chat bar setup
         self.chat_active = 0
-        self.text_active = False
+        self.text_active = []
         self.body_text = [False, False, False]
         self.prompt_result = 0
         self.chat_message = ''
@@ -93,7 +93,7 @@ class HUD():
         """
         Takes all steps necessary to remove the prompt
         """
-        self.text_active = False
+        self.text_active = []
         self.body_text = [False, False, False]
 
     def promptCollide(self):
