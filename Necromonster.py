@@ -73,6 +73,8 @@ class Necro():
         # spawn initial map items/entities
         self.Item(self, 'Mythril', [350, 400], world=1)
         self.NPC(self, "blacksmith", [400, 400], 100, 'still')
+        for i in xrange(4):
+            self.Monster(self, 'chicken', [200+(i*50),650], 1, 'neutral')
 
         # begin main game loop
         while 1:

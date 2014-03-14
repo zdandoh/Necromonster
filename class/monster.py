@@ -15,6 +15,7 @@ class Monster(object):
         self.name = name
         self.NPC = False
         self.frames = self.loadFrames(name)
+        self.state = 1.
         self.path = pathfinding
         self.rect = self.frames.values()[0].get_rect()
         self.size = [self.rect.w, self.rect.h]
@@ -23,6 +24,7 @@ class Monster(object):
         self.pos = pos
         self.movements = 0
         self.face = 'front'
+        self.image = 0
         self.frameno = 1
         self.dead = 0
         self.index = None
@@ -128,6 +130,14 @@ class Monster(object):
         """
         Updates the state of the monster. Pathfinds and updates position, mainly.
         """
+
+        self.state += 0.15
+        if self.state >= 5.:
+                self.player_state = 1.
+        if not self.moving:
+            self.state = 1.
+        self.image = self.frames['%s%s.png' % (self.face, int(self.state))]
+
         self.index = index
         if self.can_move == 1:
             getattr(pathfind, self.path)(self, self.game)
@@ -144,5 +154,6 @@ class Monster(object):
             pos = [self.pos[0], self.pos[1] - self.size[1] / 2]
             rect(self.game.screen, (200, 50, 0), (self.game.off(pos), (self.size[0], 5)))
             rect(self.game.screen, (0, 200, 50), (self.game.off(pos), (self.size[0] * (self.hp / self.maxhp), 5)))
-        self.game.screen.blit(self.frames['%s%s.png' % (self.face, self.frameno)], self.game.off([self.rect.x, self.rect.y]))
+
+        self.game.screen.blit(self.image, self.game.off([self.rect.x, self.rect.y]))
 
