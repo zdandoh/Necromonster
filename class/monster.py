@@ -118,7 +118,11 @@ class Monster(object):
         """
         Does monster damage calculations. Takes into account defense.
         """
-        damage += randrange(0, damage / 3)
+        try:
+            damage += randrange(0, damage / 3)
+        except ValueError:
+            # empty randrange
+            damage = 1
         damage -= self.defense
         if damage <= 0:
             damage = 1
