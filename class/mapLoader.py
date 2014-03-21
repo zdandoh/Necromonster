@@ -61,6 +61,7 @@ def load(map_name, game, new_pos = 0, face = 0):
     Parses the custom map format.
     Kinda messy.
     """
+    game.EntityHandler.clear()
     surfaces = []
     game.links = []
     game.solid_list = []
@@ -112,11 +113,9 @@ def load(map_name, game, new_pos = 0, face = 0):
         if 'player' in surf:
             pass
         else:
-            print surf
             shad = Shadow(game, surf[0], surf[1])
             game.shadows.append(shad)
 
-    game.EntityHandler.clear()
     game.blit_list = surfaces
     game.Grid = Grid(game, borders)
     return surfaces

@@ -38,4 +38,5 @@ class EntityHandler():
         self.monsters = []
         self.projectiles = []
         self.world_items = []
+        self.game.shadows = []
         self.misc = []

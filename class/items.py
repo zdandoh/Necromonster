@@ -64,9 +64,3 @@ class Item(object):
         Draws items to the screen object
         """
         self.game.screen.blit(self.image, self.game.off(self.pos))
-
-    def clear(self):
-        """
-        Used for moving to new maps
-        """
-        self.world_items = []
