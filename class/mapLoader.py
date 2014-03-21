@@ -3,6 +3,7 @@ import numpy
 
 import os
 from ast import literal_eval
+from shadow import Shadow
 
 
 class Grid():
@@ -107,6 +108,14 @@ def load(map_name, game, new_pos = 0, face = 0):
                 surfaces.append([img.convert_alpha(), literal_eval(pos_dict[fi][2]), 3, pygame.mask.from_surface(img)])
         if time == 1:
             surfaces.append('player')
+    for surf in surfaces:
+        if 'player' in surf:
+            pass
+        else:
+            print surf
+            shad = Shadow(game, surf[0], surf[1])
+            game.shadows.append(shad)
+
     game.EntityHandler.clear()
     game.blit_list = surfaces
     game.Grid = Grid(game, borders)

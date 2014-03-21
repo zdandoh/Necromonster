@@ -8,52 +8,47 @@ class Shadow():
         self.game = game
         self.sun = [0, 650]
         self.center = self.game.center_point
-        self.image = self.renderShadow(surface)
-        self.og_image = self.image
+        self.image = surface
         self.rect = self.image.get_rect(topleft=pos)
-        self.og_rect = self.rect.copy()
-
-    def renderShadow(self, surface):
-        surface = surface.copy()
-        alphas = pygame.surfarray.pixels_alpha(surface)
-        pixels = pygame.PixelArray(surface)
-
-        for x in xrange(surface.get_width()):
-            for y in xrange(surface.get_height()):
-                if alphas[x, y] != 0:
-                    pixels[x, y] = (0,0,0,50)
-
-        sub = pixels.make_surface()
-        return sub
-
-    def rotate(self):
-        self.rect = self.og_rect
-        self.image = self.og_image
-
-        
-
-        angle = degrees(atan2(self.center[0]-self.sun[0], self.center[1]-self.sun[1]))
-        angle = 180 + angle
-
-        #dist = hypot(self.og_rect.midbottom[0] - self.rect.center[0] , self.og_rect.midbottom[1] - self.rect.center[1])
-        #x = dist * cos(angle);
-        #y = dist * sin(angle);
 
 
-        #self.rect.x, self.rect.y = x, y
-        self.image = rotate(self.image, angle)
+        self.shadow_strips = self.make_shadow()
 
+    def make_shadow(self):
+        shadow_strips = []
+        for j in range(self.rect.height):
+            strip = pygame.Surface((self.rect.width,1)).convert_alpha()
+            strip.fill((0,0,0,0))
+            for i in range(self.rect.width):
+                pixel = self.image.get_at((i,j))
+                if pixel != (0,0,0,0):
+                    #alpha = min(j*5, 255)
+                    strip.set_at((i,0), (0,0,0,50))
+            shadow_strips.append(strip)
+        return shadow_strips[::-1]
+ 
+    def draw_shadow(self, surface, sun):
+        slope = self.get_sun_slope(sun)
+        sign = 1 if sun[1] < self.rect.centery else -1
+        for i,strip in enumerate(self.shadow_strips):
+            pos = (self.rect.x+i*slope*sign, self.rect.bottom+i*sign)
+            surface.blit(strip, self.game.off(pos))
+ 
+    def get_sun_slope(self, sun):
+        rise = sun[0]-self.center[0]
+        run = sun[1]-self.center[1]
+        try:
+            return rise/float(run)
+        except ZeroDivisionError:
+            return 0
 
     def moveSun(self, mouse):
         self.sun[0] = mouse [0]
 
-    def Draw(self, screen):
-        screen.blit(self.image, (self.game.off(self.rect)))
-
     def update(self, screen):
         self.moveSun(pygame.mouse.get_pos())
-        self.rotate()
-        self.Draw(screen)
+
+        self.draw_shadow(screen, self.sun)
 
 
 
