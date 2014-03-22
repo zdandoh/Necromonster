@@ -65,8 +65,6 @@ class Player():
         self.loadEquip(29)
         self.loadEquip(30)
 
-        self.speed = 250
-
     def update(self, ttime):
         """
         Update player position based on keypresses. Tests for collision against buildings.
@@ -249,7 +247,7 @@ class Player():
             self.takeover_time = time.time()
             self.takeover_cycles = 0
             self.frame_type = 0
-            self.game.Invent = self.game.Inventory(self.game, fi=monster.name)
+            self.game.Invent = self.game.Inventory(self.game, fi=monster.name + '.dat')
             self.takeover_pframes = self.player_frames
             self.takeover_mframes = monster.frames
             self.old_preUpdate = self.preUpdate

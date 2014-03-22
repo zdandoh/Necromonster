@@ -34,6 +34,7 @@ class Necro():
 
         # initiate the clock and screen object
         self.clock = pygame.time.Clock()
+        self.FPS = 50
         self.last_tick = pygame.time.get_ticks()
         self.screen_res = [900, 650]
         self.center_point = [470., 350.]
@@ -87,9 +88,8 @@ class Necro():
         functions. Tick and draw are only called every 20 milliseconds
         """
         self.eventLoop()
-        if pygame.time.get_ticks() - self.last_tick > 20:
-            self.Tick()
-            self.Draw()
+        self.Tick()
+        self.Draw()
         pygame.display.update()
 
     def eventLoop(self):
@@ -153,11 +153,14 @@ class Necro():
         """
         Updates all game math and entity states. No drawing is done.
         """
-        ttime = self.clock.tick()
+        ttime = self.clock.tick(self.FPS)
         self.keys_pressed = pygame.key.get_pressed()
+        if self.keys_pressed[K_EQUALS]:
+            self.HUD.daytime_start -= 1
         self.Scheduler.update()
         self.EntityHandler.updateAll(ttime)
         self.Invent.update()
+        self.HUD.updateDay()
         for index, text in enumerate(self.text_list):
             if text[2]:
                 raise DeprecationWarning

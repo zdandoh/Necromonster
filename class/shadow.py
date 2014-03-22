@@ -11,7 +11,6 @@ class Shadow():
         self.image = surface
         self.rect = self.image.get_rect(topleft=pos)
 
-
         self.shadow_strips = self.make_shadow()
 
     def make_shadow(self):

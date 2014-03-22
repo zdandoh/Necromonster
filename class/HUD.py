@@ -1,6 +1,7 @@
 import pygame
 from os.path import join
 import os
+import time
 from itertools import cycle
 from ast import literal_eval
 
@@ -22,6 +23,12 @@ class HUD():
         self.chat_bar = pygame.Surface([850, 20])
         self.chat_bar.fill((32, 32, 32))
         self.chat_bar.set_alpha(201)
+
+        #daytime state
+        self.screen_cover = pygame.Surface(self.game.screen_res)
+        self.screen_cover.set_alpha(128)
+        self.screen_cover.fill((255, 255, 255))
+        self.daytime_start = time.time()
 
         self.xpbar = pygame.image.load(join(self.game.main_path, 'rec', 'gui', 'xpbar.png')).convert_alpha()
         self.hpbar = pygame.image.load(join(self.game.main_path, 'rec', 'gui', 'hpbar.png')).convert_alpha()
@@ -110,10 +117,32 @@ class HUD():
             else:
                 self.text_active[index] = self.game.speak_font.render(self.text_content[index], True, (255, 255, 255))
 
+    def updateDay(self):
+        daytime = time.time() - self.daytime_start
+
+        if daytime < 600:
+            self.screen_cover.set_alpha(0)
+            # full
+        elif daytime > 900:
+            self.screen_cover.set_alpha(180 - daytime + 900)
+            if daytime >= 1080:
+                self.daytime_start = time.time()
+            # decreasing
+        elif daytime > 780:
+            # night
+            pass
+        elif daytime >= 600:
+            # increasing
+            self.screen_cover.fill((0, 0, 0))
+            self.screen_cover.set_alpha(daytime - 600)
+
     def blitHUD(self):
         """
         Blits all HUD elements to the screen object
         """
+        #blit daytime cover
+        self.game.screen.blit(self.screen_cover, [0, 0])
+
         #hp bar creation
         blit_surface = pygame.Surface((abs(392 * (float(self.game.Player.stats['hp']) / self.game.Player.stats['maxhp'])), 24), pygame.SRCALPHA)
         blit_surface.fill((234, 0, 0, 213))
