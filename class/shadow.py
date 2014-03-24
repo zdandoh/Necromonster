@@ -10,6 +10,7 @@ class Shadow():
         self.center = self.game.center_point
         self.image = surface
         self.rect = self.image.get_rect(topleft=pos)
+        self.current_alpha = 50
 
         self.shadow_strips = self.make_shadow()
 
@@ -31,7 +32,8 @@ class Shadow():
         sign = 1 if sun[1] < self.rect.centery else -1
         for i,strip in enumerate(self.shadow_strips):
             pos = (self.rect.x+i*slope*sign, self.rect.bottom+i*sign)
-            surface.blit(strip, self.game.off(pos))
+            if not self.game.HUD.daytime > 780:
+                surface.blit(strip, self.game.off(pos))
  
     def get_sun_slope(self, sun):
         rise = sun[0]-self.center[0]
@@ -42,7 +44,14 @@ class Shadow():
             return 0
 
     def moveSun(self, mouse):
-        self.sun[0] = mouse [0]
+        self.sun[0] = 700 - self.game.HUD.daytime*0.5
+
+    def setAlpha(self, alpha):
+        for strip in self.strips:
+            strip.fill((0, 0, 0, alpha))
+
+    def getAlpha(self):
+        return self.strips[0].get_alpha()
 
     def update(self, screen):
         self.moveSun(pygame.mouse.get_pos())

@@ -29,6 +29,7 @@ class HUD():
         self.screen_cover.set_alpha(128)
         self.screen_cover.fill((255, 255, 255))
         self.daytime_start = time.time()
+        self.daytime = 0
 
         self.xpbar = pygame.image.load(join(self.game.main_path, 'rec', 'gui', 'xpbar.png')).convert_alpha()
         self.hpbar = pygame.image.load(join(self.game.main_path, 'rec', 'gui', 'hpbar.png')).convert_alpha()
@@ -118,29 +119,29 @@ class HUD():
                 self.text_active[index] = self.game.speak_font.render(self.text_content[index], True, (255, 255, 255))
 
     def updateDay(self):
-        daytime = time.time() - self.daytime_start
+        self.daytime = time.time() - self.daytime_start
 
-        if daytime < 600:
+        if self.daytime < 600:
             self.screen_cover.set_alpha(0)
             # full
-        elif daytime > 900:
-            self.screen_cover.set_alpha(180 - daytime + 900)
-            if daytime >= 1080:
+        elif self.daytime > 900:
+            self.screen_cover.set_alpha(180 - self.daytime + 900)
+            if self.daytime >= 1080:
                 self.daytime_start = time.time()
             # decreasing
-        elif daytime > 780:
+        elif self.daytime > 780:
             # night
             pass
-        elif daytime >= 600:
+        elif self.daytime >= 600:
             # increasing
             self.screen_cover.fill((0, 0, 0))
-            self.screen_cover.set_alpha(daytime - 600)
+            self.screen_cover.set_alpha(self.daytime - 600)
 
     def blitHUD(self):
         """
         Blits all HUD elements to the screen object
         """
-        #blit daytime cover
+        #blit self.daytime cover
         self.game.screen.blit(self.screen_cover, [0, 0])
 
         #hp bar creation
