@@ -120,22 +120,22 @@ class HUD():
 
     def updateDay(self):
         self.daytime = time.time() - self.daytime_start
-
-        if self.daytime < 600:
-            self.screen_cover.set_alpha(0)
+        if self.game.shadows:
+            if self.daytime < 600:
+                self.screen_cover.set_alpha(0)
             # full
-        elif self.daytime > 900:
-            self.screen_cover.set_alpha(180 - self.daytime + 900)
-            if self.daytime >= 1080:
-                self.daytime_start = time.time()
+            elif self.daytime > 900:
+                self.screen_cover.set_alpha(180 - self.daytime + 900)
+                if self.daytime >= 1080:
+                    self.daytime_start = time.time()
             # decreasing
-        elif self.daytime > 780:
+            elif self.daytime > 780:
             # night
-            pass
-        elif self.daytime >= 600:
+                 pass
+            elif self.daytime >= 600:
             # increasing
-            self.screen_cover.fill((0, 0, 0))
-            self.screen_cover.set_alpha(self.daytime - 600)
+                self.screen_cover.fill((0, 0, 0))
+                self.screen_cover.set_alpha(self.daytime - 600)
 
     def blitHUD(self):
         """

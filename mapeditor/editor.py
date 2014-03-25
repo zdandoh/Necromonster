@@ -102,7 +102,7 @@ class Editor():
 
 ''')
         posfi.write('BOUNDS:%s\n' % self.bounds)
-        posfi.write('SHADOW:%s\n' % self.shadow)
+        posfi.write('INSIDE:%s\n' % self.inside)
         for index, item in enumerate(self.surface_list):
             posfi.write('SURFACE:%s:%s:ground%s\n' % (self.surface_paths[index], item[1], item[2]))
         for index, hitbox in enumerate(self.hitbox_list):
@@ -191,7 +191,7 @@ class Editor():
                     self.bounds = [int(bx), int(by)]
                     print self.bounds
                 elif event.key == K_SPACE:
-                    self.shadows = inputbox.ask(self.screen, 'shadows (1 / 0):')
+                    self.inside = inputbox.ask(self.screen, 'Inside (1 / 0):')
 
 
     def off(self, coords):

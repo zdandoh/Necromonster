@@ -65,6 +65,7 @@ def load(map_name, game, new_pos = 0, face = 0):
     surfaces = []
     game.links = []
     game.solid_list = []
+    inside = 0
     l = os.path.abspath(__file__).replace('\\', '/').split('/')
     l.pop()
     main_direc = os.path.join(game.main_path, 'rec', 'maps', map_name)
@@ -97,7 +98,7 @@ def load(map_name, game, new_pos = 0, face = 0):
         elif 'BOUNDS' in line:
             ln = line.split(':')
             borders = literal_eval(ln[1])
-        elif "SHADOW" in line:
+        elif "INSIDE" in line:
             shadow_check = int(line.split(':')[1])
 
     # load all buildings
@@ -111,7 +112,7 @@ def load(map_name, game, new_pos = 0, face = 0):
                 surfaces.append([img.convert_alpha(), literal_eval(pos_dict[fi][2]), 3, pygame.mask.from_surface(img)])
         if time == 1:
             surfaces.append('player')
-    if shadow_check:
+    if not inside:
         for surf in surfaces:
             if 'player' in surf:
                 pass
