@@ -97,6 +97,8 @@ def load(map_name, game, new_pos = 0, face = 0):
         elif 'BOUNDS' in line:
             ln = line.split(':')
             borders = literal_eval(ln[1])
+        elif "SHADOW" in line:
+            shadow_check = int(line.split(':')[1])
 
     # load all buildings
     tile = pygame.image.load(os.path.join(main_direc, 'tile.png')).convert()
@@ -109,12 +111,13 @@ def load(map_name, game, new_pos = 0, face = 0):
                 surfaces.append([img.convert_alpha(), literal_eval(pos_dict[fi][2]), 3, pygame.mask.from_surface(img)])
         if time == 1:
             surfaces.append('player')
-    for surf in surfaces:
-        if 'player' in surf:
-            pass
-        else:
-            shad = Shadow(game, surf[0], surf[1])
-            game.shadows.append(shad)
+    if shadow_check:
+        for surf in surfaces:
+            if 'player' in surf:
+                pass
+            else:
+                shad = Shadow(game, surf[0], surf[1])
+                game.shadows.append(shad)
 
     game.blit_list = surfaces
     game.Grid = Grid(game, borders)

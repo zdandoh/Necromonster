@@ -191,8 +191,9 @@ class Necro():
             for i in xrange(self.screen_res[0] / tile_width + 3):
                 self.screen.blit(self.tile[0], [i * tile_width - tile_width - tile_extrax, y - tile_height - tile_extray])
             y += self.tile[1][1]
-        for s in self.shadows:
-            s.update(self.screen)
+        if self.shadows:
+            for s in self.shadows:
+                s.update(self.screen)
         for surf in self.blit_list:
             if 'player' in surf:
                 self.EntityHandler.blitAll()

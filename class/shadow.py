@@ -52,11 +52,11 @@ class Shadow():
             self.sun[0] = 700 - self.game.HUD.daytime*0.5
 
         if 900 > self.game.HUD.daytime > 625:
-            self.current_alpha -= self.game.HUD.daytime/1250
+            self.current_alpha = 675 - self.game.HUD.daytime
             if self.current_alpha <= 0:
                 self.current_alpha = 0
         elif self.game.HUD.daytime > 900:
-            self.current_alpha += self.game.HUD.daytime/1500
+            self.current_alpha = self.game.HUD.daytime - 900
             if self.current_alpha >= 50:
                 self.current_alpha = 50
         else:

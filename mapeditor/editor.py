@@ -102,6 +102,7 @@ class Editor():
 
 ''')
         posfi.write('BOUNDS:%s\n' % self.bounds)
+        posfi.write('SHADOW:%s\n' % self.shadow)
         for index, item in enumerate(self.surface_list):
             posfi.write('SURFACE:%s:%s:ground%s\n' % (self.surface_paths[index], item[1], item[2]))
         for index, hitbox in enumerate(self.hitbox_list):
@@ -114,6 +115,7 @@ class Editor():
             #send_tuple.x -= self.movebox[0]
             #send_tuple.y -= self.movebox[1]
             posfi.write('LINK:%s:%s:%s:%s\n' % (send_tuple, link[2], link[3], link[4]))
+
         print 'Export done'
 
     def eventLoop(self):
@@ -188,6 +190,9 @@ class Editor():
                     by = inputbox.ask(self.screen, 'Border Height: ')
                     self.bounds = [int(bx), int(by)]
                     print self.bounds
+                elif event.key == K_SPACE:
+                    self.shadows = inputbox.ask(self.screen, 'shadows (1 / 0):')
+
 
     def off(self, coords):
         newx = coords[0] - self.movebox[0]
