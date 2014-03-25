@@ -156,7 +156,9 @@ class Necro():
         ttime = self.clock.tick(self.FPS)
         self.keys_pressed = pygame.key.get_pressed()
         if self.keys_pressed[K_EQUALS]:
-            self.HUD.daytime_start -= 1
+            self.HUD.daytime_start -= 3
+        if self.keys_pressed[K_MINUS]:
+            self.HUD.daytime_start += 3
         self.Scheduler.update()
         self.EntityHandler.updateAll(ttime)
         self.Invent.update()

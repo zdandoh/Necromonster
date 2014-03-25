@@ -46,7 +46,10 @@ class Shadow():
             return 0
 
     def moveSun(self, mouse):
-        self.sun[0] = 700 - self.game.HUD.daytime*0.5
+        if self.game.HUD.daytime > 900:
+            self.sun[0] = 700 - self.game.HUD.daytime*0.5 + 540
+        else:
+            self.sun[0] = 700 - self.game.HUD.daytime*0.5
 
         if 900 > self.game.HUD.daytime > 625:
             self.current_alpha -= self.game.HUD.daytime/1250
