@@ -17,13 +17,16 @@ class Shadow():
     def make_shadow(self):
         shadow_strips = []
         for j in range(self.rect.height):
-            strip = pygame.Surface((self.rect.width,1)).convert_alpha()
+            strip = pygame.Surface((self.rect.width,1)).convert()
             strip.fill((0,0,0,0))
             for i in range(self.rect.width):
                 pixel = self.image.get_at((i,j))
                 if pixel != (0,0,0,0):
                     #alpha = min(j*5, 255)
                     strip.set_at((i,0), (0,0,0,50))
+                else:
+                    strip.set_at((i,0), (255,255,255,0))
+            strip.set_colorkey((255,255,255))
             shadow_strips.append(strip)
         return shadow_strips[::-1]
  
@@ -32,8 +35,7 @@ class Shadow():
         sign = 1 if sun[1] < self.rect.centery else -1
         for i,strip in enumerate(self.shadow_strips):
             pos = (self.rect.x+i*slope*sign, self.rect.bottom+i*sign)
-            if not self.game.HUD.daytime > 780:
-                surface.blit(strip, self.game.off(pos))
+            surface.blit(strip, self.game.off(pos))
  
     def get_sun_slope(self, sun):
         rise = sun[0]-self.center[0]
@@ -46,12 +48,23 @@ class Shadow():
     def moveSun(self, mouse):
         self.sun[0] = 700 - self.game.HUD.daytime*0.5
 
-    def setAlpha(self, alpha):
-        for strip in self.strips:
-            strip.fill((0, 0, 0, alpha))
+        if 900 > self.game.HUD.daytime > 625:
+            self.current_alpha -= self.game.HUD.daytime/1250
+            if self.current_alpha <= 0:
+                self.current_alpha = 0
+        elif self.game.HUD.daytime > 900:
+            self.current_alpha += self.game.HUD.daytime/1500
+            if self.current_alpha >= 50:
+                self.current_alpha = 50
+        else:
+            self.current_alpha = 50
 
-    def getAlpha(self):
-        return self.strips[0].get_alpha()
+        self.setAlpha(self.current_alpha)
+
+
+    def setAlpha(self, alpha):
+        for strip in self.shadow_strips:
+            strip.set_alpha(alpha)
 
     def update(self, screen):
         self.moveSun(pygame.mouse.get_pos())
