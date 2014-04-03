@@ -58,6 +58,7 @@ class Player():
         self.equipment['legs'] = self.game.Garment(self.game, 'nothing')
         self.equipment['a1'] = self.game.Garment(self.game, 'nothing')
         self.equipment['a2'] = self.game.Garment(self.game, 'nothing')
+        self.equipment['weapon'] = self.game.Weapon(self.game, 'nothing')
         self.loadEquip(25)
         self.loadEquip(26)
         self.loadEquip(27)
@@ -96,6 +97,7 @@ class Player():
             self.player_state = 1.
         self.player = self.player_frames['%s%s.png' % (self.player_face, int(self.player_state))]
 
+        self.equipment['weapon'].update(ttime)
         if self.equipment['weapon'].shown == 1:
             self.equipment['weapon'].blit()
 
@@ -351,4 +353,6 @@ class Player():
         """
         Draws the player on the screen object.
         """
+        self.equipment['weapon'].blit()
         self.game.screen.blit(self.player, self.game.off([self.player_r.x, self.player_r.y]))
+        self.equipment['weapon'].blitAfter()

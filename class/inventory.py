@@ -36,6 +36,7 @@ class Invent():
         if not exists(join('rec', 'user', self.dat_file)):
             self.add('wand', 25)
             self.add('leather_shirt', 2)
+            self.add('rusty_dagger', 5)
         self.reload()
 
     def reload(self):

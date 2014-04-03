@@ -71,8 +71,4 @@ class Shadow():
 
     def update(self, screen):
         self.moveSun(pygame.mouse.get_pos())
-
         self.draw_shadow(screen, self.sun)
-
-
-

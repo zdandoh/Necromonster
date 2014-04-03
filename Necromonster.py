@@ -37,7 +37,7 @@ class Necro():
         self.FPS = 50
         self.last_tick = pygame.time.get_ticks()
         self.screen_res = [900, 650]
-        self.center_point = [470., 350.]
+        self.center_point = [470, 350]
         self.screen = pygame.display.set_mode(self.screen_res, pygame.HWSURFACE, 32)
 
         #DEBUG values
@@ -70,6 +70,7 @@ class Necro():
         self.speak_font = pygame.font.Font(os.path.join('rec', 'font', 'freesansbold.ttf'), 30)
 
         # load the map that player is on
+        self.INSIDE = 0
         self.blit_list = mapLoader.load('home', self)
 
         # spawn initial map items/entities
@@ -175,6 +176,14 @@ class Necro():
         """
         newx = coords[0] - self.Player.player_r.x + 450
         newy = coords[1] - self.Player.player_r.y + 325
+        return [newx, newy]
+
+    def unoff(self, coords):
+        """
+        Removes the offset created by the off() function.
+        """
+        newx = coords[0] + self.Player.player_r.x - 450
+        newy = coords[1] + self.Player.player_r.y - 325
         return [newx, newy]
 
     def Draw(self):

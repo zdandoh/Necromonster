@@ -1,6 +1,10 @@
 import os
 
 from pygame.image import load as img_load
+from pygame import Surface
+from pygame import Rect
+from pygame.transform import rotate
+from pygame.draw import rect
 from items import Item
 
 
@@ -11,32 +15,18 @@ class Weapon(Item):
         Used for loading and applying weapon characteristics to the player.
         """
         self.game = game
-        super(Weapon, self).__init__(game, name, world=0)
         #setup base vars of all weapon(s)
         self.type = None
-        self.shown = 0
-        self.projectile = False
-        self.range = 50
-        self.dead = 0
-        self.frame = 0
+        self.shown = True
+        self.rigging = [0, 0]
+        self.range = 10
+        self.damage = 1
+        self.cooldown = 500 # in MS
+        self.projectile = None
         self.loadWeapon(name)
 
-    def changeUpdate(self):
-        """
-        Overrides an update type based on weapon type attribute.
-        """
-        if not self.type:
-            raise ValueError('No weapon type specified')
-        elif self.type == 'dagger':
-            self.update = daggerUpdate
-        elif self.type == 'sword':
-            self.update = swordUpdate
-        elif self.type == 'ranged':
-            self.update = rangedUpdate
-        elif self.type == 'staff':
-            self.update = staffUpdate
-        else:
-            raise ValueError('No weapon of type {}'.format(self.type))
+        # attack based vars
+        self.attacking = False
 
     def loadWeapon(self, name):
         """
@@ -44,36 +34,128 @@ class Weapon(Item):
         """
         config_file = open(os.path.join('rec', 'weapon', name, 'config.py')).read()
         exec(config_file)
-        self.frames = []
-        for fi in os.listdir(os.path.join('rec', 'weapon', name)):
-            if '.png' in fi:
-                self.frames.append(img_load(os.path.join('rec', 'weapon', name, fi)))
-        self.changeUpdate()
+        self.hold_image = img_load(os.path.join('rec', 'weapon', name, 'hold.png')).convert_alpha()
+        if os.path.exists(os.path.join('rec', 'weapon', name, 'attack.png')):
+            self.attack_image = img_load(os.path.join('rec', 'weapon', name, 'attack.png')).convert_alpha()
+        else:
+            self.attack_image = Surface([1, 1])
 
     def getSurface(self, name):
         fi_name = name.lower().replace(' ', '_') + '.png'
         return img_load(os.path.join(self.game.main_path, 'rec', 'weapon', name, fi_name))
 
-    def preUpdate(self, index, ttime):
+    def preUpdate(self, ttime):
         """
         Called before the update function, can be overriden for new functionality.
         """
-        self.update(index, ttime)
+        pass
 
-    def updateWeapon(self, index, ttime):
+    def update(self, ttime):
         """
-        Dummy method for updating a weapon. Always overriden.
+        Main weapon update, should not be overriden.
         """
+        self.preUpdate(ttime)
+        if self.type == 'short':
+            self.shortUpdate()
+        elif self.type == 'long':
+            self.longUpdate()
+        elif self.type == 'ranged':
+            self.rangedUpdate()
+        else:
+            pass
+
+    def shortUpdate(self):
+        if self.attacking:
+            self.blit_pos[0] += self.sub_vector[0]
+            self.blit_pos[1] += self.sub_vector[1]
+            if self.receding:
+                self.attack_ticks += 1
+            elif not self.receding:
+                self.attack_ticks -= 1
+            # check all monsters for touching weapon
+            for index, monster in enumerate(self.game.EntityHandler.monsters):
+                if monster.rect.colliderect(self.weapon_rect):
+                    if self.potent:
+                        monster.takeDamage(index, self.damage)
+                        self.potent = False
+
+        if self.attacking and self.attack_ticks == self.range and self.receding:
+            self.attacking = False
+            self.game.Player.can_move = True
+        elif self.attacking and self.attack_ticks <= 0 and not self.receding:
+            self.receding = True
+            self.sub_vector[0] *= -1
+            self.sub_vector[1] *= -1
+
+    def longUpdate(self):
+        pass
+
+    def rangedUpdate(self):
+        pass
+
+    def shortAttack(self):
+        self.attacking = True
+        if self.game.Player.player_face == 'front':
+            self.directional_attack_image = rotate(self.attack_image, 180)
+            self.sub_vector = [0, 2]
+        elif self.game.Player.player_face == 'left':
+            self.directional_attack_image = rotate(self.attack_image, 90)
+            self.sub_vector = [1, 0]
+        elif self.game.Player.player_face == 'back':
+            self.directional_attack_image = rotate(self.attack_image, 0)
+            self.sub_vector = [0, 1]
+        elif self.game.Player.player_face == 'right':
+            self.directional_attack_image = rotate(self.attack_image, 270)
+            self.sub_vector = [1, 0]
+
+        self.game.Player.can_move = False
+        self.receding = False
+        self.potent = True
+        self.weapon_rect = Rect(1, 1, 1, 1)
+        self.blit_pos = [self.game.Player.player_r.x + self.rigging[0], self.game.Player.player_r.y]
+        self.attack_ticks = self.range
+
+    def longAttack(self):
+        pass
+
+    def rangedAttack(self):
+        pass
+
+    def shortBlit(self):
+        if self.attacking:
+            height = self.directional_attack_image.get_rect().height
+            d_rect = Rect([0, height - (self.range - self.attack_ticks)], [100, 100])
+            self.weapon_rect = self.game.screen.blit(self.directional_attack_image, self.game.off([self.blit_pos[0], self.blit_pos[1] + height - (self.range - self.attack_ticks)*2]), d_rect)
+            unoff_pos = self.game.unoff([self.weapon_rect.x, self.weapon_rect.y])
+            self.weapon_rect.x = unoff_pos[0]
+            self.weapon_rect.y = unoff_pos[1]
+            #rect(self.game.screen, [255, 0, 0], d_rect)
+
+    def longBlit(self):
+        pass
+
+    def rangedBlit(self):
         pass
 
     def blit(self):
         """
-        Displays the weapon on screen. Really broken, I believe.
+        Called before the player is blitted
         """
-        if self.shown:
-            self.game.screen.blit(self.frames[self.frame], self.game.off([self.game.Player.player_r.x, self.game.Player.player_r.y]))
-        else:
-            self.game.screen.blit(self.frames[self.frame], self.game.off(self.pos))
+        if self.game.Player.player_face == 'back' and not self.attacking:
+            self.drawInHand()
+        if self.type == 'short':
+            self.shortBlit()
+        elif self.type == 'long':
+            self.longBlit()
+        elif self.type == 'ranged':
+            self.rangedBlit()
+
+    def blitAfter(self):
+        if self.game.Player.player_face == 'front' and not self.attacking:
+            self.drawInHand()
+
+    def drawInHand(self):
+        self.game.screen.blit(self.hold_image, [self.game.center_point[0] + self.rigging[0] - 20, self.game.center_point[1] + self.rigging[1] - 25])
 
     def onClick(self, game, vector):
         """
@@ -81,13 +163,12 @@ class Weapon(Item):
         """
         if self.projectile:
             game.Projectile(game, self.projectile, vector)
-
-    def create(self):
-        """
-        Creates the weapon object and adds it to the EntityHandler.
-        """
-        self.pos = [self.game.Player.player_r.x, self.game.Player.player_r.y]
-        self.game.EntityHandler.misc.append(self)
+        if self.type == 'short':
+            self.shortAttack()
+        elif self.type == 'long':
+            self.longAttack()
+        elif self.type == 'ranged':
+            self.rangedAttack()
 
 
 class Garment(Item):
@@ -124,7 +205,6 @@ class Garment(Item):
         Used to apply the effects of a garment to the player.
         Can be overriden for additional effects.
         """
-        # add effects to the player
         self.game.Player.stats['defense'] += self.defense
 
     def remove(self):
@@ -134,16 +214,3 @@ class Garment(Item):
         """
         #called when player takes off garment
         self.game.Player.stats['defense'] -= self.defense
-
-
-def daggerUpdate(index, ttime):
-    pass
-
-def swordUpdate(index, ttime):
-    pass
-
-def rangedUpdate(index, ttime):
-    pass
-
-def staffUpdate(index, ttime):
-    pass

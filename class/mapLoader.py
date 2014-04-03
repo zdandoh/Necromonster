@@ -63,6 +63,7 @@ def load(map_name, game, new_pos = 0, face = 0):
     """
     game.EntityHandler.clear()
     surfaces = []
+    shadow_check = 0
     game.links = []
     game.solid_list = []
     inside = 0
@@ -100,6 +101,7 @@ def load(map_name, game, new_pos = 0, face = 0):
             borders = literal_eval(ln[1])
         elif "INSIDE" in line:
             shadow_check = int(line.split(':')[1])
+            game.INSIDE = shadow_check
 
     # load all buildings
     tile = pygame.image.load(os.path.join(main_direc, 'tile.png')).convert()
@@ -112,7 +114,7 @@ def load(map_name, game, new_pos = 0, face = 0):
                 surfaces.append([img.convert_alpha(), literal_eval(pos_dict[fi][2]), 3, pygame.mask.from_surface(img)])
         if time == 1:
             surfaces.append('player')
-    if not inside:
+    if not shadow_check:
         for surf in surfaces:
             if 'player' in surf:
                 pass
