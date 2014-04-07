@@ -27,6 +27,7 @@ class Monster(object):
         self.image = 0
         self.frameno = 1
         self.dead = 0
+        self.riggings = {'front': [0, 0], 'back': [0, 0], 'left': [0, 0], 'right': [0, 0]}
         self.index = None
         self.last_attack = get_ticks()
 
@@ -65,7 +66,7 @@ class Monster(object):
         """
         Execute the file info found in a monster's info.txt file. Should be moved over to a config.py system or something.
         """
-        info = open(os.path.join('rec', 'enemy', self.name, 'info.txt')).read()
+        info = open(os.path.join('rec', 'entity', self.name, 'config.py')).read()
         exec(info)
 
     def getNode(self):
@@ -101,9 +102,9 @@ class Monster(object):
         Returns all frames as a list of surfaces.
         """
         frames = {}
-        for fi in os.listdir(os.path.join(self.game.main_path, 'rec', 'enemy', name, 'img')):
+        for fi in os.listdir(os.path.join(self.game.main_path, 'rec', 'entity', name, 'img')):
             if '.png' in fi:
-                frames[fi] = load(os.path.join(self.game.main_path, 'rec', 'enemy', name, 'img', fi)).convert_alpha()
+                frames[fi] = load(os.path.join(self.game.main_path, 'rec', 'entity', name, 'img', fi)).convert_alpha()
         return frames
 
     def onDeath(self, index, drop=1):
@@ -113,6 +114,15 @@ class Monster(object):
         if self.loot and drop == 1:
             self.game.Item(self.game, self.loot, pos=[self.rect.x, self.rect.y], spin=1, world=1)
         self.dead = 1
+
+    def setRigging(self, front, back, left, right):
+        """
+        Set the rigging for each part of the monster.
+        """
+        self.riggings['front'] = front
+        self.riggings['back'] = back
+        self.riggings['left'] = left
+        self.riggings['right'] = right
 
     def takeDamage(self, index, damage):
         """
@@ -134,13 +144,16 @@ class Monster(object):
         """
         Updates the state of the monster. Pathfinds and updates position, mainly.
         """
-
         self.state += 0.15
         if self.state >= 5.:
-                self.player_state = 1.
+            self.player_state = 1.
         if not self.moving:
             self.state = 1.
-        self.image = self.frames['%s%s.png' % (self.face, int(self.state))]
+        try:
+            self.image = self.frames['%s%s.png' % (self.face, int(self.state))]
+        except KeyError:
+            # fix for takeover frame bug
+            self.image = self.frames['%s%s.png' % (self.face, 3)]
 
         self.index = index
         if self.can_move == 1:

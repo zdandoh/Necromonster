@@ -15,7 +15,7 @@ class Player():
         Main player class. Controls all player movement, updates, and state data.
         """
         self.game = game
-        self.player = pygame.image.load(os.path.join('rec', 'char', 'back1.png'))
+        self.player = pygame.image.load(os.path.join('rec', 'entity', 'player', 'img', 'back1.png'))
         self.head_font = pygame.font.Font(os.path.join('rec', 'font', 'p_head.ttf'), 15)
         self.can_move = 1
         self.knocked = 0
@@ -31,9 +31,9 @@ class Player():
         self.last_attack = pygame.time.get_ticks()
 
         self.player_frames = {}
-        for fi in os.listdir(os.path.join(self.game.main_path, 'rec', 'char')):
+        for fi in os.listdir(os.path.join(self.game.main_path, 'rec', 'entity', 'player', 'img')):
             if fi.endswith('.png'):
-                self.player_frames[fi] = pygame.image.load(os.path.join(self.game.main_path, 'rec', 'char', fi)).convert_alpha()
+                self.player_frames[fi] = pygame.image.load(os.path.join(self.game.main_path, 'rec', 'entity', 'player', 'img', fi)).convert_alpha()
         self.getMasks(self.player_frames.keys(), self.player_frames.values())
 
         self.player_r.x = 450

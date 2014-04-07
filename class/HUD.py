@@ -36,7 +36,7 @@ class HUD():
         self.text_box = pygame.image.load(join(self.game.main_path, 'rec', 'gui', 'text_box.png')).convert_alpha()
 
         self.items = [f.split('.')[0] for f in os.listdir(join(self.game.main_path, 'rec', 'items'))]
-        self.monsters = os.listdir(join(self.game.main_path, 'rec', 'enemy'))
+        self.monsters = os.listdir(join(self.game.main_path, 'rec', 'entity'))
 
     def command(self, obj, pos, amount=1):
         """

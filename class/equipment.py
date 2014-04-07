@@ -22,6 +22,7 @@ class Weapon(Item):
         self.range = 10
         self.damage = 1
         self.cooldown = 500 # in MS
+        self.speed = 4
         self.projectile = None
         self.loadWeapon(name)
 
@@ -66,18 +67,19 @@ class Weapon(Item):
 
     def shortUpdate(self):
         if self.attacking:
-            self.blit_pos[0] += self.sub_vector[0]
-            self.blit_pos[1] += self.sub_vector[1]
-            if self.receding:
-                self.attack_ticks += 1
-            elif not self.receding:
-                self.attack_ticks -= 1
-            # check all monsters for touching weapon
-            for index, monster in enumerate(self.game.EntityHandler.monsters):
-                if monster.rect.colliderect(self.weapon_rect):
-                    if self.potent:
-                        monster.takeDamage(index, self.damage)
-                        self.potent = False
+            for repeats in xrange(self.speed):
+                self.blit_pos[0] += self.sub_vector[0]
+                self.blit_pos[1] += self.sub_vector[1]
+                if self.receding:
+                    self.attack_ticks += 1
+                elif not self.receding:
+                    self.attack_ticks -= 1
+                # check all monsters for touching weapon
+                for index, monster in enumerate(self.game.EntityHandler.monsters):
+                    if monster.rect.colliderect(self.weapon_rect):
+                        if self.potent:
+                            monster.takeDamage(index, self.damage)
+                            self.potent = False
 
         if self.attacking and self.attack_ticks == self.range and self.receding:
             self.attacking = False
@@ -97,13 +99,13 @@ class Weapon(Item):
         self.attacking = True
         if self.game.Player.player_face == 'front':
             self.directional_attack_image = rotate(self.attack_image, 180)
-            self.sub_vector = [0, 2]
+            self.sub_vector = [0, 1]
         elif self.game.Player.player_face == 'left':
             self.directional_attack_image = rotate(self.attack_image, 90)
-            self.sub_vector = [1, 0]
+            self.sub_vector = [-1, 0]
         elif self.game.Player.player_face == 'back':
             self.directional_attack_image = rotate(self.attack_image, 0)
-            self.sub_vector = [0, 1]
+            self.sub_vector = [0, -1]
         elif self.game.Player.player_face == 'right':
             self.directional_attack_image = rotate(self.attack_image, 270)
             self.sub_vector = [1, 0]
@@ -125,11 +127,10 @@ class Weapon(Item):
         if self.attacking:
             height = self.directional_attack_image.get_rect().height
             d_rect = Rect([0, height - (self.range - self.attack_ticks)], [100, 100])
-            self.weapon_rect = self.game.screen.blit(self.directional_attack_image, self.game.off([self.blit_pos[0], self.blit_pos[1] + height - (self.range - self.attack_ticks)*2]), d_rect)
+            self.weapon_rect = self.game.screen.blit(self.directional_attack_image, self.game.off([self.blit_pos[0], self.blit_pos[1] + height - (self.range - self.attack_ticks)]), d_rect)
             unoff_pos = self.game.unoff([self.weapon_rect.x, self.weapon_rect.y])
             self.weapon_rect.x = unoff_pos[0]
             self.weapon_rect.y = unoff_pos[1]
-            #rect(self.game.screen, [255, 0, 0], d_rect)
 
     def longBlit(self):
         pass
