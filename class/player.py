@@ -26,6 +26,9 @@ class Player():
         self.player_masks = {}
         self.player_r = self.player.get_rect()
         self.player_dims = self.player.get_size()
+        # get initial player riggings
+        self.riggings = {}
+        execfile(os.path.join('rec', 'entity', 'player', 'config.py'))
 
         # setup attack vars
         self.last_attack = pygame.time.get_ticks()
@@ -144,12 +147,23 @@ class Player():
             return 0
         self.stats['defense'] -= self.equipment[name].getDefense()
 
+    def setRigging(self, front, back, left, right):
+        """
+        Set the rigging for each part of the player.
+        """
+        self.riggings['front'] = front
+        self.riggings['back'] = back
+        self.riggings['left'] = left
+        self.riggings['right'] = right
+
+    def getRigging(self):
+        return self.riggings[self.player_face]
+
     def onMove(self, offset, link_count = 0):
         """
         Called when the player moves. Used to make sure new positions are valid.
         Returns player to old location if not valid.
         """
-        fr = 1
         m_rects = [x.rect for x in self.game.EntityHandler.monsters]
         if self.player_r.x > self.game.Grid.bounds[0] or self.player_r.x <= 0:
             self.player_r.x -= offset[0]
@@ -171,9 +185,8 @@ class Player():
                     mask = pygame.mask.Mask((rect.width, rect.height))
                     mask.fill()
                     player_mask = self.player_masks[self.player_face + str(int(self.player_state)) + '.png']
-                    ppos = self.getPos()
-                    offset_x =  self.player_r.x - rect.x
-                    offset_y =  self.player_r.y - rect.y
+                    offset_x = self.player_r.x - rect.x
+                    offset_y = self.player_r.y - rect.y
 
                     if mask.overlap(player_mask, (offset_x, offset_y)):
                         self.player_r.y -= offset[1]
@@ -208,6 +221,7 @@ class Player():
             self.stats['attack'] = int(monster.attack)
             self.stats['defense'] = int(monster.defense)
             self.stats['speed'] = int(monster.speed)
+            self.riggings = monster.riggings
             mframe = monster.frames[monster.frames.keys()[0]]
             px = self.player_r.x
             py = self.player_r.y

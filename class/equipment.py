@@ -4,7 +4,7 @@ from pygame.image import load as img_load
 from pygame import Surface
 from pygame import Rect
 from pygame.transform import rotate
-from pygame.draw import rect
+from pygame.draw import circle
 from items import Item
 
 
@@ -18,7 +18,6 @@ class Weapon(Item):
         #setup base vars of all weapon(s)
         self.type = None
         self.shown = True
-        self.rigging = [0, 0]
         self.range = 10
         self.damage = 1
         self.cooldown = 500 # in MS
@@ -98,8 +97,9 @@ class Weapon(Item):
     def shortAttack(self):
         self.attacking = True
         if self.game.Player.player_face == 'front':
+            # I do not know why this vector needs to be 0 while the others are like, 1
             self.directional_attack_image = rotate(self.attack_image, 180)
-            self.sub_vector = [0, 1]
+            self.sub_vector = [0, 0]
         elif self.game.Player.player_face == 'left':
             self.directional_attack_image = rotate(self.attack_image, 90)
             self.sub_vector = [-1, 0]
@@ -114,7 +114,9 @@ class Weapon(Item):
         self.receding = False
         self.potent = True
         self.weapon_rect = Rect(1, 1, 1, 1)
-        self.blit_pos = [self.game.Player.player_r.x + self.rigging[0], self.game.Player.player_r.y]
+        p_coords = [self.game.Player.player_r.x, self.game.Player.player_r.y]
+        a_coords = [p_coords[0] + self.game.Player.getRigging()[0], p_coords[1] + self.game.Player.getRigging()[1]]
+        self.blit_pos = a_coords
         self.attack_ticks = self.range
 
     def longAttack(self):
@@ -125,12 +127,19 @@ class Weapon(Item):
 
     def shortBlit(self):
         if self.attacking:
-            height = self.directional_attack_image.get_rect().height
-            d_rect = Rect([0, height - (self.range - self.attack_ticks)], [100, 100])
-            self.weapon_rect = self.game.screen.blit(self.directional_attack_image, self.game.off([self.blit_pos[0], self.blit_pos[1] + height - (self.range - self.attack_ticks)]), d_rect)
-            unoff_pos = self.game.unoff([self.weapon_rect.x, self.weapon_rect.y])
-            self.weapon_rect.x = unoff_pos[0]
-            self.weapon_rect.y = unoff_pos[1]
+            if self.game.Player.player_face == 'front' or self.game.Player.player_face == 'back':
+                height = self.directional_attack_image.get_rect().height
+                d_rect = Rect([0, height - (self.range - self.attack_ticks)], [100, 100])
+                self.weapon_rect = self.game.screen.blit(self.directional_attack_image, self.game.off([self.blit_pos[0], self.blit_pos[1]]), d_rect)
+                unoff_pos = self.game.unoff([self.weapon_rect.x, self.weapon_rect.y])
+                self.weapon_rect.x = unoff_pos[0]
+                self.weapon_rect.y = unoff_pos[1]
+            elif self.game.Player.player_face == 'right' or self.game.Player.player_face == 'left':
+                pos = self.game.off([self.blit_pos[0], self.blit_pos[1] + self.rigging[0]])
+                self.weapon_rect = self.game.screen.blit(self.directional_attack_image, pos)
+                unoff_pos = self.game.unoff([self.weapon_rect.x, self.weapon_rect.y])
+                self.weapon_rect.x = unoff_pos[0]
+                self.weapon_rect.y = unoff_pos[1]
 
     def longBlit(self):
         pass
@@ -156,7 +165,9 @@ class Weapon(Item):
             self.drawInHand()
 
     def drawInHand(self):
-        self.game.screen.blit(self.hold_image, [self.game.center_point[0] + self.rigging[0] - 20, self.game.center_point[1] + self.rigging[1] - 25])
+        p_coords = [self.game.Player.player_r.x, self.game.Player.player_r.y]
+        a_coords = [p_coords[0] + self.game.Player.getRigging()[0] - self.game.Player.equipment['weapon'].rigging[0], p_coords[1] + self.game.Player.getRigging()[1] - self.game.Player.equipment['weapon'].rigging[1]]
+        self.game.screen.blit(self.hold_image, self.game.off(a_coords))
 
     def onClick(self, game, vector):
         """
@@ -213,5 +224,4 @@ class Garment(Item):
         Called when the garment is removed.
         Must be properly modified along with apply() if additional effects need to be removed.
         """
-        #called when player takes off garment
         self.game.Player.stats['defense'] -= self.defense
