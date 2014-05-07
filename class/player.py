@@ -50,7 +50,7 @@ class Player():
         self.stats['maxmxp'] = 1000
         self.stats['pxp'] = 312
         self.stats['mxp'] = 654
-        self.stats['attack'] = 5
+        self.stats['attack'] = 1
         self.stats['defense'] = 0
 
         # equipment

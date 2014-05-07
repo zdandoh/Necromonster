@@ -2,5 +2,5 @@
 self.type = 'ranged'
 self.range = 50
 self.shown = 1
-self.projectile = 'takeover'
+self.projectile = 'slime'
 self.rigging = [3, 25]

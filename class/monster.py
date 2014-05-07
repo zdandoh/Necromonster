@@ -30,6 +30,7 @@ class Monster(object):
         self.riggings = {'front': [0, 0], 'back': [0, 0], 'left': [0, 0], 'right': [0, 0]}
         self.index = None
         self.last_attack = get_ticks()
+        self.dmg_surfs = []
 
         #parse info.txt file
         self.execInfo()
@@ -124,6 +125,10 @@ class Monster(object):
         self.riggings['left'] = left
         self.riggings['right'] = right
 
+    def renderDamage(self, damage):
+        copy = self.rect.copy()
+        self.dmg_surfs.append([self.game.default_font.render(str(-damage), 0, (255,0,0)).convert(), 0, copy])
+
     def takeDamage(self, index, damage):
         """
         Does monster damage calculations. Takes into account defense.
@@ -136,6 +141,7 @@ class Monster(object):
         damage -= self.defense
         if damage <= 0:
             damage = 1
+        self.renderDamage(damage)
         self.hp -= damage
         if self.hp <= 0:
             self.onDeath(index)
@@ -156,6 +162,7 @@ class Monster(object):
             self.image = self.frames['%s%s.png' % (self.face, 3)]
 
         self.index = index
+
         if self.can_move == 1:
             getattr(pathfind, self.path)(self, self.game)
         self.pos[0] = self.rect.x
@@ -171,6 +178,14 @@ class Monster(object):
             pos = [self.pos[0], self.pos[1] - self.size[1] / 2]
             rect(self.game.screen, (200, 50, 0), (self.game.off(pos), (self.size[0], 5)))
             rect(self.game.screen, (0, 200, 50), (self.game.off(pos), (self.size[0] * (self.hp / self.maxhp), 5)))
+
+        if self.dmg_surfs:
+            for item in self.dmg_surfs: 
+                self.game.screen.blit(item[0], (self.game.off([item[2].centerx, item[2].y+item[1]])))
+                item[0].set_alpha(255 + item[1]*3)
+                item[1] -= 2
+                if item[1] < -70:
+                    self.dmg_surfs.remove(item)
 
         self.game.screen.blit(self.image, self.game.off([self.rect.x, self.rect.y]))
 
