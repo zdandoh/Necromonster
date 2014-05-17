@@ -67,6 +67,7 @@ class Weapon(Item):
     def shortUpdate(self):
         if self.attacking:
             for repeats in xrange(self.speed):
+                self.game.Player.player_state = 3
                 self.blit_pos[0] += self.sub_vector[0]
                 self.blit_pos[1] += self.sub_vector[1]
                 if self.receding:
@@ -108,7 +109,7 @@ class Weapon(Item):
             self.sub_vector = [0, -1]
         elif self.game.Player.player_face == 'right':
             self.directional_attack_image = rotate(self.attack_image, 270)
-            self.sub_vector = [1, 0]
+            self.sub_vector = [0.8, 0] # editing this seems to change the speed of the right dagger swing a bit
 
         self.game.Player.can_move = False
         self.receding = False
@@ -116,6 +117,8 @@ class Weapon(Item):
         self.weapon_rect = Rect(1, 1, 1, 1)
         p_coords = [self.game.Player.player_r.x, self.game.Player.player_r.y]
         a_coords = [p_coords[0] + self.game.Player.getRigging()[0], p_coords[1] + self.game.Player.getRigging()[1]]
+        if self.game.Player.player_face == 'right' or self.game.Player.player_face == 'left':
+            a_coords = [a_coords[0] - self.attack_image.get_height(), a_coords[1] - self.attack_image.get_width()]
         self.blit_pos = a_coords
         self.attack_ticks = self.range
 
@@ -135,8 +138,13 @@ class Weapon(Item):
                 self.weapon_rect.x = unoff_pos[0]
                 self.weapon_rect.y = unoff_pos[1]
             elif self.game.Player.player_face == 'right' or self.game.Player.player_face == 'left':
-                pos = self.game.off([self.blit_pos[0], self.blit_pos[1] + self.rigging[0]])
-                self.weapon_rect = self.game.screen.blit(self.directional_attack_image, pos)
+                pos = self.game.off([self.blit_pos[0] + self.rigging[1], self.blit_pos[1]])
+                if self.game.Player.player_face == 'left':
+                    #this prevents the "hover" look of the dagger off the default player body
+                    pos[0] += 7
+                width = self.directional_attack_image.get_rect().width
+                d_rect = Rect([width - (self.range - self.attack_ticks), 0], [100, 100])
+                self.weapon_rect = self.game.screen.blit(self.directional_attack_image, pos, d_rect)
                 unoff_pos = self.game.unoff([self.weapon_rect.x, self.weapon_rect.y])
                 self.weapon_rect.x = unoff_pos[0]
                 self.weapon_rect.y = unoff_pos[1]
