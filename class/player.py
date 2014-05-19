@@ -2,6 +2,7 @@ import pygame
 from pygame.locals import *
 
 import mapLoader
+from Entity import Entity
 
 import math
 import os
@@ -9,13 +10,13 @@ import time
 from ast import literal_eval
 
 
-class Player():
+class Player(Entity):
     def __init__(self, game):
         """
         Main player class. Controls all player movement, updates, and state data.
         """
-        self.game = game
         self.player = pygame.image.load(os.path.join('rec', 'entity', 'player', 'img', 'back1.png'))
+        super(Player, self).__init__(game, self.player)
         self.head_font = pygame.font.Font(os.path.join('rec', 'font', 'p_head.ttf'), 15)
         self.can_move = 1
         self.knocked = 0

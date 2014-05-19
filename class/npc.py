@@ -69,7 +69,7 @@ class NPC(Monster):
             self.interacting = False
             self.game.HUD.delPrompt()
 
-    def blit(self):
+    def draw(self):
         """
         overrides the blit method in the monster class to get rid of the uneeded health bar
         """

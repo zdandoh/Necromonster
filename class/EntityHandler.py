@@ -16,7 +16,7 @@ class EntityHandler():
         Draws every active entity to the screen object.
         """
         for index, entity in enumerate(self.all_entities):
-            entity.blit()
+            entity.draw()
         self.game.Player.blitPlayer()
 
     def updateAll(self, ttime):

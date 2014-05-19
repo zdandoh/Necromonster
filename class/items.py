@@ -1,14 +1,17 @@
+from Entity import Entity
+
 from uuid import uuid4
 from pygame.image import load
+from pygame import Surface
 from os.path import join
 
 
-class Item(object):
+class Item(Entity):
     def __init__(self, game, name, pos=[0, 0], spin=0, world=1):
         """
         Basic item class. Sets all default values and might render them in the world if world=1
         """
-        self.game = game
+        super(Item, self).__init__(game, Surface((1, 1)))
         self.name = name
         self.file = name.lower().replace(' ', '_') + '.png'
         self.pos = pos
@@ -59,7 +62,7 @@ class Item(object):
             self.game.Player.headDraw(self.name, self.game.Player.player_r)
             self.dead = 1
 
-    def blit(self):
+    def draw(self):
         """
         Draws items to the screen object
         """

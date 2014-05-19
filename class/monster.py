@@ -1,20 +1,23 @@
 import pathfind
+from Entity import Entity
 import os
 from random import randrange
+from pygame import Surface
 from pygame.image import load
 from pygame.draw import rect
 from pygame.time import get_ticks
 
 
-class Monster(object):
+class Monster(Entity):
     def __init__(self, game, name, pos, difficulty, pathfinding):
         """
         Initializes monster class, sets all default values.
         """
         self.game = game
+        self.frames = self.loadFrames(name)
+        super(Monster, self).__init__(game, Surface((1, 1)))
         self.name = name
         self.NPC = False
-        self.frames = self.loadFrames(name)
         self.state = 1.
         self.path = pathfinding
         self.rect = self.frames.values()[0].get_rect()
@@ -170,7 +173,7 @@ class Monster(object):
         if self.dead:
             return 1
 
-    def blit(self):
+    def draw(self):
         """
         Responsible for drawing the current monster frame to the screen
         """

@@ -1,6 +1,6 @@
 import sys
 import os
-import time
+
 sys.path.append('class')
 
 import pygame
@@ -8,6 +8,7 @@ from pygame.locals import *
 
 # class imports from rec\class
 import mapLoader
+from Entity import Entity
 from EntityHandler import EntityHandler
 from scheduler import Schedule
 from player import Player
@@ -47,6 +48,7 @@ class Necro():
         #Init and assign custom game class(es)
         self.EntityHandler = EntityHandler(self)
         self.Scheduler = Schedule(self)
+        self.Entity = Entity
         self.Projectile = Projectile
         self.Monster = Monster
         self.NPC = NPC
