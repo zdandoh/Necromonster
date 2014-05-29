@@ -147,5 +147,5 @@ class Projectile():
             self.sub()
         return self.dead
 
-    def blit(self):
+    def draw(self):
         self.game.screen.blit(self.frames[self.frame], self.game.off([self.pos[0], self.pos[1]]))
