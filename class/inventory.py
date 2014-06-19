@@ -37,6 +37,7 @@ class Invent():
             self.add('wand', 25)
             self.add('leather_shirt', 2)
             self.add('rusty_dagger', 5)
+            self.add('rusty_sword', 6)
         self.reload()
 
     def reload(self):

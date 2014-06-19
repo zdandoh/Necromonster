@@ -64,37 +64,6 @@ class Weapon(Item):
         else:
             pass
 
-    def shortUpdate(self):
-        if self.attacking:
-            for repeats in xrange(self.speed):
-                self.game.Player.player_state = 3
-                self.blit_pos[0] += self.sub_vector[0]
-                self.blit_pos[1] += self.sub_vector[1]
-                if self.receding:
-                    self.attack_ticks += 1
-                elif not self.receding:
-                    self.attack_ticks -= 1
-                # check all monsters for touching weapon
-                for index, monster in enumerate(self.game.EntityHandler.monsters):
-                    if monster.rect.colliderect(self.weapon_rect):
-                        if self.potent:
-                            monster.takeDamage(index, self.damage)
-                            self.potent = False
-
-        if self.attacking and self.attack_ticks == self.range and self.receding:
-            self.attacking = False
-            self.game.Player.can_move = True
-        elif self.attacking and self.attack_ticks <= 0 and not self.receding:
-            self.receding = True
-            self.sub_vector[0] *= -1
-            self.sub_vector[1] *= -1
-
-    def longUpdate(self):
-        pass
-
-    def rangedUpdate(self):
-        pass
-
     def shortAttack(self):
         self.attacking = True
         if self.game.Player.player_face == 'front':
@@ -122,11 +91,31 @@ class Weapon(Item):
         self.blit_pos = a_coords
         self.attack_ticks = self.range
 
-    def longAttack(self):
-        pass
 
-    def rangedAttack(self):
-        pass
+    def shortUpdate(self):
+        if self.attacking:
+            for repeats in xrange(self.speed):
+                self.game.Player.player_state = 3
+                self.blit_pos[0] += self.sub_vector[0]
+                self.blit_pos[1] += self.sub_vector[1]
+                if self.receding:
+                    self.attack_ticks += 1
+                elif not self.receding:
+                    self.attack_ticks -= 1
+                # check all monsters for touching weapon
+                for index, monster in enumerate(self.game.EntityHandler.monsters):
+                    if monster.rect.colliderect(self.weapon_rect):
+                        if self.potent:
+                            monster.takeDamage(index, self.damage)
+                            self.potent = False
+
+        if self.attacking and self.attack_ticks == self.range and self.receding:
+            self.attacking = False
+            self.game.Player.can_move = True
+        elif self.attacking and self.attack_ticks <= 0 and not self.receding:
+            self.receding = True
+            self.sub_vector[0] *= -1
+            self.sub_vector[1] *= -1
 
     def shortBlit(self):
         if self.attacking:
@@ -149,7 +138,30 @@ class Weapon(Item):
                 self.weapon_rect.x = unoff_pos[0]
                 self.weapon_rect.y = unoff_pos[1]
 
+    def longAttack(self):
+        self.attacking = True
+        if self.game.Player.player_face == "front":
+            self.init_angle = 180
+            self.directional_attack_image = rotate(self.attack_image, self.init_angle)
+        self.angle = 0
+
+    def longUpdate(self):
+        if self.attacking:
+            for x in xrange(5):
+                self.mod_DAT = self.game.rotopoint(self.directional_attack_image, self.angle+45, [3, 0])
+                if self.angle < -50:
+                    self.attacking = False
+                self.angle -= 1
+
     def longBlit(self):
+        if self.attacking:
+            blit_pos = self.game.off(self.game.Player.getPos())
+            self.game.screen.blit(self.mod_DAT, blit_pos)
+
+    def rangedAttack(self):
+        pass
+
+    def rangedUpdate(self):
         pass
 
     def rangedBlit(self):

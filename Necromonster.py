@@ -188,6 +188,19 @@ class Necro():
         newy = coords[1] + self.Player.player_r.y - 325
         return [newx, newy]
 
+    def getCenterBlit(self, surface, pos):
+        pos[0] = pos[0]  + surface.get_width() / 2
+        pos[1] = pos[1] + surface.get_height() / 2
+        return pos
+
+    def rotopoint(self, surface, angle, pos):
+        size = surface.get_size()
+        new_surf_size = [(size[0] - pos[0])*2, (size[1] - pos[1])*2]
+        new_surf_blit_pos = [new_surf_size[0] - size[0], new_surf_size[1] - size[1]]
+        new_surf = pygame.Surface(new_surf_size, pygame.SRCALPHA, 32)
+        new_surf.blit(surface, new_surf_blit_pos)
+        return pygame.transform.rotate(new_surf, angle)
+
     def Draw(self):
         """
         Completes all blitting to the screen object, includes HUD updates.
