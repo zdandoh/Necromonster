@@ -9,7 +9,7 @@ from pygame.time import get_ticks
 
 
 class Monster(Entity):
-    def __init__(self, game, name, pos, difficulty, pathfinding):
+    def __init__(self, game, name, pos, difficulty, pathfinding='neutral'):
         """
         Initializes monster class, sets all default values.
         """
@@ -106,9 +106,9 @@ class Monster(Entity):
         Returns all frames as a list of surfaces.
         """
         frames = {}
-        for fi in os.listdir(os.path.join(self.game.main_path, 'rec', 'entity', name, 'img')):
+        for fi in os.listdir(os.path.join('rec', 'entity', name, 'img')):
             if '.png' in fi:
-                frames[fi] = load(os.path.join(self.game.main_path, 'rec', 'entity', name, 'img', fi)).convert_alpha()
+                frames[fi] = load(os.path.join('rec', 'entity', name, 'img', fi)).convert_alpha()
         return frames
 
     def onDeath(self, index, drop=1):

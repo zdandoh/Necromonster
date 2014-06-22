@@ -6,6 +6,7 @@ from pygame import Rect
 from pygame.transform import rotate
 from pygame.draw import circle
 from items import Item
+import vector
 
 
 class Weapon(Item):
@@ -140,22 +141,35 @@ class Weapon(Item):
 
     def longAttack(self):
         self.attacking = True
+        self.y_offset = -self.game.Player.getSize()[1]*0.60 - self.attack_image.get_height()
+        self.x_offset = -self.game.Player.getSize()[0]*0.60
         if self.game.Player.player_face == "front":
             self.init_angle = 180
-            self.directional_attack_image = rotate(self.attack_image, self.init_angle)
+        elif self.game.Player.player_face == "back":
+            self.init_angle = 0
+        elif self.game.Player.player_face == "left":
+            self.init_angle = 90
+        elif self.game.Player.player_face == "right":
+            self.init_angle = 270
+        self.directional_attack_image = rotate(self.attack_image, self.init_angle)
         self.angle = 0
 
     def longUpdate(self):
         if self.attacking:
             for x in xrange(5):
                 self.mod_DAT = self.game.rotopoint(self.directional_attack_image, self.angle+45, [3, 0])
-                if self.angle < -50:
+                if self.angle < -90:
                     self.attacking = False
                 self.angle -= 1
 
     def longBlit(self):
         if self.attacking:
             blit_pos = self.game.off(self.game.Player.getPos())
+            blit_pos = vector.add(blit_pos, self.game.Player.getRigging())
+            blit_pos = vector.sub(blit_pos, self.attack_image.get_size())
+            if self.game.Player.player_face == "back":
+                blit_pos[0] += self.x_offset
+                blit_pos[1] += self.y_offset
             self.game.screen.blit(self.mod_DAT, blit_pos)
 
     def rangedAttack(self):
@@ -209,7 +223,7 @@ class Garment(Item):
         Class for armor and accessories. New armor must be registered here when added.
         """
         super(Garment, self).__init__(game, name, world=0)
-        # the following few lines of code are a waste of memory. Too bad I don't have the STATIC keyword.
+        # badly done
         self.head = {'leather_hat': 1}
         self.chest = {'leather_shirt': 2}
         self.pants = {'leather_pants': 1}

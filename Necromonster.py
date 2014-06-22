@@ -1,7 +1,7 @@
 import sys
 import os
 
-sys.path.append('class')
+#sys.path.append('class') used before classes.pth
 
 import pygame
 from pygame.locals import *
@@ -101,6 +101,7 @@ class Necro():
         Used for chat, interacting with objects, and inventory management
         """
         for event in pygame.event.get():
+            event # prevents exit button freeze up
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
@@ -117,12 +118,7 @@ class Necro():
                         return 0
                 # process chat messages. Remove or add characters while chat box is open
                 if event.key == K_ESCAPE or event.key == K_RETURN:
-                    message = self.HUD.chat_message.split()
-                    if len(message) > 1:
-                        if len(message) > 2:
-                           self.HUD.command(message[0], message[1], message[2])
-                        else:
-                            self.HUD.command(message[0], message[1])
+                    self.HUD.processCommand(self.HUD.chat_message)
                     self.HUD.chat_active = 0
                     self.Player.can_move = 1
                     self.HUD.chat_message = ''
@@ -189,7 +185,7 @@ class Necro():
         return [newx, newy]
 
     def getCenterBlit(self, surface, pos):
-        pos[0] = pos[0]  + surface.get_width() / 2
+        pos[0] = pos[0] + surface.get_width() / 2
         pos[1] = pos[1] + surface.get_height() / 2
         return pos
 

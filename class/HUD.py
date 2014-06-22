@@ -1,9 +1,9 @@
 import pygame
+import mapLoader
 from os.path import join
 import os
 import time
 from itertools import cycle
-from ast import literal_eval
 
 
 class HUD():
@@ -38,24 +38,22 @@ class HUD():
         self.items = [f.split('.')[0] for f in os.listdir(join(self.game.main_path, 'rec', 'items'))]
         self.monsters = os.listdir(join(self.game.main_path, 'rec', 'entity'))
 
-    def command(self, obj, pos, amount=1):
+    def processCommand(self, message):
         """
         Processes a chat command and spawns an item or monster accordingly.
         """
-        try:
-            position = literal_eval(pos)
-            amnt = int(amount)
-            
-            if obj in self.items:
-                for _ in xrange(amnt):
-                    self.game.Item(self.game, obj, [position[0], position[1]], world=1)
-            elif obj in self.monsters:
-                for _ in xrange(amnt):
-                    self.game.Monster(self.game, obj, [position[0], position[1]], 3, 'aggressive')
-            else:
-                pass
-        except:
-            print "Invalid Command!"
+        if message.startswith("/"):
+            # meant to be a command
+            message = message.replace('-', '_')
+            command = message.split(" ")
+            if 'spawn' in message:
+                self.game.Monster(self.game, command[1], self.game.unoff(list(pygame.mouse.get_pos())), 1)
+            elif 'place' in message:
+                self.game.Item(self.game, command[1], self.game.unoff(list(pygame.mouse.get_pos())), world=1)
+            elif 'get' in message:
+                self.game.Invent.add(command[1], self.game.Invent.nextFreeSlot())
+            elif 'map' in message:
+                self.game.blit_list = mapLoader.load(command[1], self.game)
 
     def makePrompt(self, npc_text):
         """
