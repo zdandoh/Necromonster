@@ -141,14 +141,17 @@ class Weapon(Item):
 
     def longAttack(self):
         self.attacking = True
-        self.y_offset = -self.game.Player.getSize()[1]*0.60 - self.attack_image.get_height()
-        self.x_offset = -self.game.Player.getSize()[0]*0.60
+        self.y_offset = 0
+        self.x_offset = 0
         if self.game.Player.player_face == "front":
             self.init_angle = 180
         elif self.game.Player.player_face == "back":
             self.init_angle = 0
+            self.y_offset = -self.game.Player.getSize()[1]*0.60 - self.attack_image.get_height()
+            self.x_offset = -self.game.Player.getSize()[0]*0.60
         elif self.game.Player.player_face == "left":
             self.init_angle = 90
+            self.x_offset = -self.game.Player.getSize()[0] - self.attack_image.get_height()
         elif self.game.Player.player_face == "right":
             self.init_angle = 270
         self.directional_attack_image = rotate(self.attack_image, self.init_angle)
@@ -157,7 +160,13 @@ class Weapon(Item):
     def longUpdate(self):
         if self.attacking:
             for x in xrange(5):
-                self.mod_DAT = self.game.rotopoint(self.directional_attack_image, self.angle+45, [3, 0])
+                attack_size = self.directional_attack_image.get_size()
+                turn_point = [0, 0]
+                if self.game.Player.isVertical():
+                    turn_point = [attack_size[0]/2, 0]
+                elif self.game.Player.isHorizontal():
+                    turn_point = [0, attack_size[1]/2]
+                self.mod_DAT = self.game.rotopoint(self.directional_attack_image, self.angle+45, turn_point)
                 if self.angle < -90:
                     self.attacking = False
                 self.angle -= 1
@@ -167,9 +176,10 @@ class Weapon(Item):
             blit_pos = self.game.off(self.game.Player.getPos())
             blit_pos = vector.add(blit_pos, self.game.Player.getRigging())
             blit_pos = vector.sub(blit_pos, self.attack_image.get_size())
-            if self.game.Player.player_face == "back":
-                blit_pos[0] += self.x_offset
-                blit_pos[1] += self.y_offset
+
+            #offset for left/back
+            blit_pos[0] += self.x_offset
+            blit_pos[1] += self.y_offset
             self.game.screen.blit(self.mod_DAT, blit_pos)
 
     def rangedAttack(self):

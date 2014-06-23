@@ -44,6 +44,7 @@ class Necro():
         #DEBUG values
         self.DEBUG = 1
         self.RECT_DEBUG = 0
+        self.angle = 0
 
         #Init and assign custom game class(es)
         self.EntityHandler = EntityHandler(self)
@@ -191,11 +192,20 @@ class Necro():
 
     def rotopoint(self, surface, angle, pos):
         size = surface.get_size()
+        if pos[0] > size[0]/2 or pos[1] > size[1]/2:
+            print 'BIG ASS HONKEY'
         new_surf_size = [(size[0] - pos[0])*2, (size[1] - pos[1])*2]
         new_surf_blit_pos = [new_surf_size[0] - size[0], new_surf_size[1] - size[1]]
         new_surf = pygame.Surface(new_surf_size, pygame.SRCALPHA, 32)
         new_surf.blit(surface, new_surf_blit_pos)
         return pygame.transform.rotate(new_surf, angle)
+
+    def testrot(self, image, angle):
+        loc = image.get_rect().center
+        new_rot = pygame.transform.rotate(image, angle)
+        new_rot.get_rect(center=loc)
+        return new_rot, new_rot.get_rect()
+
 
     def Draw(self):
         """
@@ -237,5 +247,18 @@ class Necro():
                 self.screen.blit(self.Player.head_drawn[0], self.Player.head_drawn[1])
             else:
                 self.Player.game.screen.blit(self.Player.head_drawn[0], self.off(self.Player.head_drawn[1]))
+        rand = pygame.image.load("C:\Users\Daniel\Dropbox\Games\Necromonster\\rec\weapon\\rusty_sword\\attack.png").convert_alpha()
+        rand2 = self.rotopoint(rand, self.angle, [3, 0])
+        rand3 = pygame.transform.rotate(rand, self.angle)
+        rand4 = self.testrot(rand, self.angle)
+        if self.angle > 360:
+            self.angle = 0
+        self.angle += 0.1
+        self.screen.blit(rand2, [300, 300])
+        self.screen.blit(rand3, [350, 300])
+        self.screen.blit(rand4[0], rand4[1])
+
+        pygame.draw.circle(self.screen, [0, 0, 255], [303, 340], 2)
+        pygame.draw.circle(self.screen, [255, 0, 0], [353, 320], 2)
         self.HUD.blitHUD()
 Necro()

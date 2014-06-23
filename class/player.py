@@ -160,6 +160,19 @@ class Player(Entity):
     def getRigging(self):
         return self.riggings[self.player_face]
 
+    def isVertical(self):
+        if self.game.Player.player_face == "back" or self.game.Player.player_face == "front":
+            return True
+        else:
+            return False
+
+    def isHorizontal(self):
+        if self.game.Player.player_face == "left" or self.game.Player.player_face == "right":
+            return True
+        else:
+            return False
+
+
     def onMove(self, offset, link_count = 0):
         """
         Called when the player moves. Used to make sure new positions are valid.
