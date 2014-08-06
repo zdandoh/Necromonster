@@ -136,68 +136,58 @@ def convertPath(monster):
     monster.path_progress.reverse()
 
 def heuristic(a, b):
+    """calculates the H cost using the Manhattan Method"""
     return 10*(abs(a[0] - b[0]) + abs(a[1] - b[1]))
 
-def getG(current, neighbor):
-    vector_sub = [abs(neighbor[0] - current[0]), abs(neighbor[1] - current[1])]
-    if sum(vector_sub) > 1:
-        move_cost = 14
-    else:
-        move_cost = 10
-    return move_cost
-
-def astar(array, start, dest, game):
+def astar(array, start, goal, game):
 
     neighbors = [(0,1),(0,-1),(1,0),(-1,0),(1,1),(1,-1),(-1,1),(-1,-1)]
+
     close_set = set()
     open_set = set()
-
     came_from = {}
-
-    gscore = {start : 0}
-    fscore = {start : heuristic(start, dest)}
-    lowest = []
+    gscore = {start:0}
+    fscore = {start:heuristic(start, goal)}
+    oheap = []
 
     open_set.add(start)
-
-
+    heappush(oheap, (fscore[start], start))
+    
     while len(open_set):
-        lowest = [(fscore[point], point) for point in open_set] #make list of fscores and grab the lowest one
-        lowest.sort()
-        current = lowest[0][1]
 
-        if current == dest: #check if path is done
-            path = []
+        current = heappop(oheap)[1]
+
+        if current == goal:
+            data = []
             while current in came_from:
-                path.append(current)
+                data.append(current)
                 current = came_from[current]
-            return path
-
-        open_set.discard(current) #drop current and place it in closed list
+            return data
+            
+        open_set.discard(current)
         close_set.add(current)
-
-        for x, y in neighbors: #chack neighbors
-            current_neighbor = current[0]+x , current[1]+y
-
-            new_g = gscore[current] + getG(current, current_neighbor)
-
-            if 0 <= current_neighbor[0] < array.shape[0]:
-                if 0 <= current_neighbor[1] < array.shape[1]:
-                    if array[current_neighbor[0]][current_neighbor[1]] == 1:
-                        continue # solid obstacle
+        for i, j in neighbors:
+            neighbor = current[0] + i, current[1] + j            
+            tentative_g_score = gscore[current] + heuristic(current, neighbor)
+            if 0 <= neighbor[0] < array.shape[0]:
+                if 0 <= neighbor[1] < array.shape[1]:                
+                    if array[neighbor[0]][neighbor[1]] == 1:
+                        continue
                 else:
                     # array bound y walls
                     continue
             else:
                 # array bound x walls
                 continue
-
-            if current_neighbor in close_set and new_g >= gscore.get(current_neighbor, 0):
+                
+            if neighbor in close_set and tentative_g_score >= gscore.get(neighbor, 0):
                 continue
-
-            if current_neighbor not in open_set or new_g < gscore.get(current_neighbor, 0):
-                came_from[current_neighbor] = current
-                gscore[current_neighbor] = new_g
-                fscore[current_neighbor] = new_g + getG(current, current_neighbor)
-                open_set.add(current_neighbor)
+                
+            if neighbor not in open_set or tentative_g_score < gscore.get(neighbor, 0):
+                came_from[neighbor] = current
+                gscore[neighbor] = tentative_g_score
+                fscore[neighbor] = tentative_g_score + heuristic(neighbor, goal)
+                open_set.add(neighbor)
+                heappush(oheap, (fscore[neighbor], neighbor))
+                
     return False
