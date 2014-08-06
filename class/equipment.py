@@ -155,6 +155,7 @@ class Weapon(Item):
         elif self.game.Player.player_face == "right":
             self.init_angle = 270
         self.directional_attack_image = rotate(self.attack_image, self.init_angle)
+        self.attack_rect = self.directional_attack_image.get_rect()
         self.angle = 0
 
     def longUpdate(self):
@@ -166,7 +167,7 @@ class Weapon(Item):
                     turn_point = [attack_size[0]/2, 0]
                 elif self.game.Player.isHorizontal():
                     turn_point = [0, attack_size[1]/2]
-                self.mod_DAT = self.game.rotopoint(self.directional_attack_image, self.angle+45, turn_point)
+                self.mod_DAT = rotate(self.directional_attack_image, self.angle + 45)
                 if self.angle < -90:
                     self.attacking = False
                 self.angle -= 1
@@ -180,7 +181,9 @@ class Weapon(Item):
             #offset for left/back
             blit_pos[0] += self.x_offset
             blit_pos[1] += self.y_offset
-            self.game.screen.blit(self.mod_DAT, blit_pos)
+            self.new_rect = self.game.screen.blit(self.mod_DAT, blit_pos)
+            self.new_rect.center = self.attack_rect.center
+            self.attack_rect = self.new_rect
 
     def rangedAttack(self):
         pass

@@ -1,7 +1,7 @@
 import sys
 import os
 
-#sys.path.append('class') used before classes.pth
+sys.path.append('class')
 
 import pygame
 from pygame.locals import *
@@ -81,6 +81,7 @@ class Necro():
         self.NPC(self, "blacksmith", [400, 400], 100, 'still')
         for i in xrange(4):
             self.Monster(self, 'chicken', [200+(i*50),650], 1, 'neutral')
+        self.Monster(self, "goop", [100, 100], 1, 'aggressive')
 
         # begin main game loop
         while 1:
@@ -247,18 +248,5 @@ class Necro():
                 self.screen.blit(self.Player.head_drawn[0], self.Player.head_drawn[1])
             else:
                 self.Player.game.screen.blit(self.Player.head_drawn[0], self.off(self.Player.head_drawn[1]))
-        rand = pygame.image.load("C:\Users\Daniel\Dropbox\Games\Necromonster\\rec\weapon\\rusty_sword\\attack.png").convert_alpha()
-        rand2 = self.rotopoint(rand, self.angle, [3, 0])
-        rand3 = pygame.transform.rotate(rand, self.angle)
-        rand4 = self.testrot(rand, self.angle)
-        if self.angle > 360:
-            self.angle = 0
-        self.angle += 0.1
-        self.screen.blit(rand2, [300, 300])
-        self.screen.blit(rand3, [350, 300])
-        self.screen.blit(rand4[0], rand4[1])
-
-        pygame.draw.circle(self.screen, [0, 0, 255], [303, 340], 2)
-        pygame.draw.circle(self.screen, [255, 0, 0], [353, 320], 2)
         self.HUD.blitHUD()
 Necro()

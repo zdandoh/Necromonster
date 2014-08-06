@@ -1,6 +1,6 @@
 import random
 import math
-import time
+from heapq import *
 from pygame.rect import Rect
 from pygame.time import get_ticks
 
@@ -107,7 +107,7 @@ def aggressive(monster, game):
         if game.Player.getDistance(monster.rect) > 400:
             return neutral(monster, game)
         monster.player_place = game.Player.getNode()
-        monster.path_found = astar(game.Grid.nodes, (monster.pos[0] / 10, monster.pos[1] / 10), monster.player_place, game)
+        monster.path_found = list(reversed(astar(game.Grid.nodes, (monster.pos[0] / 10, monster.pos[1] / 10), monster.player_place, game)))
         monster.player_node_when_pathfound = game.Player.getNode()
         convertPath(monster)
         return aggressive(monster, game)
@@ -135,44 +135,69 @@ def convertPath(monster):
         last_node = next_node
     monster.path_progress.reverse()
 
-def astar(m, startp, endp, game):
-    width, height = game.Grid.bounds
-    start_x, start_y = startp
-    end_x, end_y = endp
-    node = [None, start_x, start_y, 0, abs(end_x - start_x) + abs(end_y - start_y)]
-    closed_list = [node]
-    c_list = {}
-    c_list[start_y * width + start_x] = node
-    k = 0
-    while c_list:
-        node = closed_list.pop(0)
-        x = node[1]
-        y = node[2]
-        l = node[3] + 1
-        k += 1
-        if k & 1:
-            neighbours = ((x, y + 1), (x, y - 1), (x + 1, y), (x - 1, y))
-        else:
-            neighbours = ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1))
-        for nx, ny in neighbours:
-            if nx == end_x and ny == end_y:
-                path = [(end_x, end_y)]
-                while node:
-                    path.append((node[1], node[2]))
-                    node = node[0]
-                return list(reversed(path))
-            if 0 <= nx < width and 0 <= ny < height and m[ny][nx] == 0:
-                if ny * width + nx not in c_list:
-                    nn = (node, nx, ny, l, l + abs(nx - end_x) + abs(ny - end_y))
-                    c_list[ny * width + nx] = nn
-                    #adding to closelist ,using binary heap
-                    nni = len(closed_list)
-                    closed_list.append(nn)
-                    while nni:
-                        i = (nni - 1) >> 1
-                        if closed_list[i][4] > nn[4]:
-                            closed_list[i], closed_list[nni] = nn, closed_list[i]
-                            nni = i
-                        else:
-                            break
-    return 0
+def heuristic(a, b):
+    return 10*(abs(a[0] - b[0]) + abs(a[1] - b[1]))
+
+def getG(current, neighbor):
+    vector_sub = [abs(neighbor[0] - current[0]), abs(neighbor[1] - current[1])]
+    if sum(vector_sub) > 1:
+        move_cost = 14
+    else:
+        move_cost = 10
+    return move_cost
+
+def astar(array, start, dest, game):
+
+    neighbors = [(0,1),(0,-1),(1,0),(-1,0),(1,1),(1,-1),(-1,1),(-1,-1)]
+    close_set = set()
+    open_set = set()
+
+    came_from = {}
+
+    gscore = {start : 0}
+    fscore = {start : heuristic(start, dest)}
+    lowest = []
+
+    open_set.add(start)
+
+
+    while len(open_set):
+        lowest = [(fscore[point], point) for point in open_set] #make list of fscores and grab the lowest one
+        lowest.sort()
+        current = lowest[0][1]
+
+        if current == dest: #check if path is done
+            path = []
+            while current in came_from:
+                path.append(current)
+                current = came_from[current]
+            return path
+
+        open_set.discard(current) #drop current and place it in closed list
+        close_set.add(current)
+
+        for x, y in neighbors: #chack neighbors
+            current_neighbor = current[0]+x , current[1]+y
+
+            new_g = gscore[current] + getG(current, current_neighbor)
+
+            if 0 <= current_neighbor[0] < array.shape[0]:
+                if 0 <= current_neighbor[1] < array.shape[1]:
+                    if array[current_neighbor[0]][current_neighbor[1]] == 1:
+                        continue # solid obstacle
+                else:
+                    # array bound y walls
+                    continue
+            else:
+                # array bound x walls
+                continue
+
+            if current_neighbor in close_set and new_g >= gscore.get(current_neighbor, 0):
+                continue
+
+            if current_neighbor not in open_set or new_g < gscore.get(current_neighbor, 0):
+                came_from[current_neighbor] = current
+                gscore[current_neighbor] = new_g
+                fscore[current_neighbor] = new_g + getG(current, current_neighbor)
+                open_set.add(current_neighbor)
+    return False
