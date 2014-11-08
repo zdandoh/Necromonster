@@ -248,5 +248,7 @@ class Necro():
                 self.screen.blit(self.Player.head_drawn[0], self.Player.head_drawn[1])
             else:
                 self.Player.game.screen.blit(self.Player.head_drawn[0], self.off(self.Player.head_drawn[1]))
+        if self.Player.map_change:
+            self.HUD.updateMapTrans()
         self.HUD.blitHUD()
 Necro()

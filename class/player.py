@@ -24,6 +24,8 @@ class Player(Entity):
         self.player_face = 'back'  # this is the part of the player that you see
         self.player_state = 1.
         self.head_drawn = 0
+        self.map_change = False
+        self.map_vars = []
         self.player_masks = {}
         self.player_r = self.player.get_rect()
         self.player_dims = self.player.get_size()
@@ -193,7 +195,9 @@ class Player(Entity):
             if self.player_r.colliderect(rect):
                 if link_active:
                     if self.game.keys_pressed[K_SPACE]:
-                        self.game.blit_list = mapLoader.load(link[2], self.game, new_pos = link[3], face = link[4])
+                        self.map_change = True
+                        self.map_vars = link
+
                 else:
                     #bring on mask collision
                     mask = pygame.mask.Mask((rect.width, rect.height))

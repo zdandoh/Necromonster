@@ -31,6 +31,12 @@ class HUD():
         self.daytime_start = time.time()
         self.daytime = 0
 
+        #Map change vars
+        self.sheet = pygame.Surface(self.game.screen_res).convert()
+        self.sheet.fill([255]*3)
+        self.sheet_alpha = 1
+        self.fading = False
+
         self.xpbar = pygame.image.load(join(self.game.main_path, 'rec', 'gui', 'xpbar.png')).convert_alpha()
         self.hpbar = pygame.image.load(join(self.game.main_path, 'rec', 'gui', 'hpbar.png')).convert_alpha()
         self.text_box = pygame.image.load(join(self.game.main_path, 'rec', 'gui', 'text_box.png')).convert_alpha()
@@ -115,6 +121,24 @@ class HUD():
                     break
             else:
                 self.text_active[index] = self.game.speak_font.render(self.text_content[index], True, (255, 255, 255))
+
+    def updateMapTrans(self):
+        self.sheet.set_alpha(self.sheet_alpha)
+        self.game.screen.blit(self.sheet, (0,0))
+        self.game.Player.can_move = 0
+
+        if not self.fading:
+            self.sheet_alpha += 5
+            if self.sheet_alpha > 255:
+                self.fading = True
+                mv = self.game.Player.map_vars
+                self.game.blit_list =  mapLoader.load(mv[2], self.game, new_pos = mv[3], face = mv[4])
+        else:
+            self.sheet_alpha -= 5
+            if self.sheet_alpha <= 0:
+                self.fading = self.game.Player.map_change = False
+                self.sheet_alpha = self.game.Player.can_move = 1
+
 
     def updateDay(self):
         self.daytime = time.time() - self.daytime_start
