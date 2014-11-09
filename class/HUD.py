@@ -30,10 +30,11 @@ class HUD():
         self.screen_cover.fill((255, 255, 255))
         self.daytime_start = time.time()
         self.daytime = 0
+        self.outside_alpha = 0
 
         #Map change vars
         self.sheet = pygame.Surface(self.game.screen_res).convert()
-        self.sheet.fill([255]*3)
+        self.sheet.fill(0)
         self.sheet_alpha = 1
         self.fading = False
 
@@ -128,13 +129,13 @@ class HUD():
         self.game.Player.can_move = 0
 
         if not self.fading:
-            self.sheet_alpha += 5
-            if self.sheet_alpha > 255:
+            self.sheet_alpha += 8
+            if self.sheet_alpha > 270:
                 self.fading = True
                 mv = self.game.Player.map_vars
                 self.game.blit_list =  mapLoader.load(mv[2], self.game, new_pos = mv[3], face = mv[4])
         else:
-            self.sheet_alpha -= 5
+            self.sheet_alpha -= 8
             if self.sheet_alpha <= 0:
                 self.fading = self.game.Player.map_change = False
                 self.sheet_alpha = self.game.Player.can_move = 1

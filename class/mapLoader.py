@@ -115,12 +115,16 @@ def load(map_name, game, new_pos = 0, face = 0):
         if time == 1:
             surfaces.append('player')
     if not shadow_check:
+        game.HUD.screen_cover.set_alpha(game.HUD.outside_alpha)
         for surf in surfaces:
             if 'player' in surf:
                 pass
             else:
                 shad = Shadow(game, surf[0], surf[1])
                 game.shadows.append(shad)
+    else:
+        game.HUD.outside_alpha = game.HUD.screen_cover.get_alpha()
+        game.HUD.screen_cover.set_alpha(0)
 
     game.blit_list = surfaces
     game.Grid = Grid(game, borders)

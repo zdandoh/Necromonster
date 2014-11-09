@@ -25,4 +25,4 @@ class Entity(object):
         pass
 
     def draw(self):
-        self.game.screen.blit(self.surface, self.getPos())
+        self.game.screen.blit(self.surface, self.rect)
