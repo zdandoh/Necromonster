@@ -19,6 +19,7 @@ from inventory import Invent
 from HUD import HUD
 from projectile import Projectile
 from equipment import Weapon, Garment
+from particle import *
 
 pygame.init()
 
@@ -48,6 +49,7 @@ class Necro():
 
         #Init and assign custom game class(es)
         self.EntityHandler = EntityHandler(self)
+        self.ParticleManager = ParticleManager(self)
         self.Scheduler = Schedule(self)
         self.Entity = Entity
         self.Projectile = Projectile
@@ -162,6 +164,7 @@ class Necro():
             self.HUD.daytime_start += 3
         self.Scheduler.update()
         self.EntityHandler.updateAll(ttime)
+
         self.Invent.update()
         self.HUD.updateDay()
         for index, text in enumerate(self.text_list):
@@ -210,7 +213,7 @@ class Necro():
 
     def Draw(self):
         """
-        Completes all blitting to the screen object, includes HUD updates.
+        Completes all blitting to the screend object, includes HUD updates.
         """
         tile_width = self.tile[1][0]
         tile_height = self.tile[1][1]
@@ -248,6 +251,7 @@ class Necro():
                 self.screen.blit(self.Player.head_drawn[0], self.Player.head_drawn[1])
             else:
                 self.Player.game.screen.blit(self.Player.head_drawn[0], self.off(self.Player.head_drawn[1]))
+        self.ParticleManager.update()
         if self.Player.map_change:
             self.HUD.updateMapTrans()
         self.HUD.blitHUD()

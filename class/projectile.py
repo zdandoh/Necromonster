@@ -84,6 +84,8 @@ class Projectile():
         """
         Sets the projectile as dead. Will be removed in next EntityHandler update cycle.
         """
+        self.game.ParticleManager.new(self.game.off(self.pos), color=self.frames[self.frame].get_at((5,5)))
+
         self.dead = 1
         self.game.Player.can_move = 1
 
